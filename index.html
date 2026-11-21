@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rat Patrol Inc. — Client Database</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<style>
+  :root {
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --blue: #1c3d6e;
+    --blue-mid: #2a5298;
+    --blue-light: #e8eef8;
+    --gold: #c89b2a;
+    --gold-light: #fdf6e3;
+    --gold-bright: #f0b429;
+    --green: #28a745;
+    --green-light: #eaf7ed;
+    --red: #d63031;
+    --red-light: #fdf0f0;
+    --border: #e5e5ea;
+    --text: #1c1c1e;
+    --text-2: #3a3a3c;
+    --muted: #8e8e93;
+    --shadow: 0 1px 6px rgba(0,0,0,0.07);
+    --shadow-lg: 0 4px 24px rgba(0,0,0,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+  /* HEADER */
+  header {
+    background: var(--blue);
+    color: #fff;
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.08), 0 2px 16px rgba(0,0,0,0.18);
+  }
+  .logo { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; display: flex; align-items: center; gap: 10px; color: #fff; }
+  .logo-icon { font-size: 1.3rem; }
+  .logo-sub { font-size: 0.72rem; font-weight: 400; color: rgba(255,255,255,0.55); letter-spacing: 0.04em; text-transform: uppercase; margin-left: 2px; }
+  .header-tabs { display: flex; gap: 2px; }
+  .header-tab { background: transparent; border: none; color: rgba(255,255,255,0.6); padding: 7px 16px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.88rem; font-weight: 500; transition: all 0.15s; letter-spacing: -0.01em; }
+  .header-tab:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .header-tab.active { background: var(--gold-bright); color: var(--blue); font-weight: 700; }
+
+  /* MAIN LAYOUT */
+  .main { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
+
+  /* VIEWS */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* SEARCH BAR */
+  .search-bar { display: flex; gap: 10px; margin-bottom: 18px; align-items: center; }
+  .ic { width: 1em; height: 1em; display: inline-block; vertical-align: -0.14em; flex-shrink: 0; }
+  .search-wrap { flex: 1; position: relative; display: flex; }
+  .search-wrap .ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); width: 16px; height: 16px; pointer-events: none; }
+  .search-wrap .search-input { padding-left: 40px; }
+  .btn, .map-mode-btn, .map-link, .info-box-label { display: inline-flex; align-items: center; gap: 6px; }
+  .seg { display: inline-flex; background: #e9e9ee; border-radius: 10px; padding: 3px; margin-bottom: 14px; gap: 2px; }
+  .seg button { border: none; background: transparent; padding: 6px 14px; border-radius: 8px; font-family: inherit; font-size: 0.84rem; font-weight: 600; color: var(--text-2); cursor: pointer; }
+  .seg button.active { background: var(--card); color: var(--blue); box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+  .seg .count { color: var(--muted); font-weight: 500; margin-left: 4px; }
+  .lead-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; flex-shrink: 0; background: var(--gold-light); color: var(--gold); }
+  .client-avatar.lead { background: #c7c7cc; }
+  .match-tag { font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 10px; display: inline-block; }
+  .match-tag.linked { background: var(--green-light); color: var(--green); }
+  .match-tag.lead { background: var(--gold-light); color: var(--gold); }
+  .login-screen { position: fixed; inset: 0; z-index: 5000; background: var(--blue); display: none; align-items: center; justify-content: center; padding: 20px; }
+  .login-screen.open { display: flex; }
+  .login-card { background: var(--card); border-radius: 18px; padding: 28px 24px; width: 100%; max-width: 360px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 12px; }
+  .login-title { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
+  .login-sub { font-size: 0.85rem; color: var(--muted); margin-top: -6px; margin-bottom: 4px; }
+  .login-error { font-size: 0.82rem; color: var(--red); min-height: 1em; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .sync { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: rgba(255,255,255,0.65); white-space: nowrap; }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #8e8e93; }
+  .sync[data-s="saved"] .sync-dot { background: #34c759; }
+  .sync[data-s="saving"] .sync-dot, .sync[data-s="loading"] .sync-dot { background: var(--gold-bright); }
+  .sync[data-s="error"] .sync-dot { background: #ff453a; }
+  .icon-btn { background: transparent; border: none; color: rgba(255,255,255,0.65); cursor: pointer; padding: 6px; border-radius: 8px; display: inline-flex; font-size: 1rem; }
+  .icon-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+  .footer-links { display: flex; justify-content: center; gap: 18px; margin: 40px 0 8px; }
+  .footer-links .reset-link { margin: 0; }
+  .reset-link { display: block; margin: 40px auto 8px; background: none; border: none; color: var(--muted); font-family: inherit; font-size: 0.75rem; cursor: pointer; text-decoration: underline; opacity: 0.6; }
+  .reset-link:hover { color: var(--red); opacity: 1; }
+  #map-container .leaflet-tile-pane { filter: saturate(0.3) brightness(1.04) contrast(0.95); }
+  .search-input { flex: 1; padding: 11px 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 0.95rem; font-family: inherit; background: var(--card); outline: none; transition: border 0.15s, box-shadow 0.15s; color: var(--text); }
+  .search-input:focus { border-color: var(--blue-mid); box-shadow: 0 0 0 3px rgba(42,82,152,0.12); }
+  .btn { padding: 11px 20px; border: none; border-radius: 12px; font-size: 0.9rem; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.15s; letter-spacing: -0.01em; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { background: var(--blue-mid); }
+  .btn-gold { background: var(--gold-bright); color: var(--blue); }
+  .btn-gold:hover { background: var(--gold); color: #fff; }
+  .btn-outline { background: var(--card); border: 1.5px solid var(--border); color: var(--text-2); }
+  .btn-outline:hover { border-color: var(--blue-mid); color: var(--blue); }
+  .btn-sm { padding: 7px 13px; font-size: 0.82rem; border-radius: 9px; }
+  .btn-danger { background: var(--red-light); color: var(--red); border: 1.5px solid #f5c6c6; }
+  .btn-danger:hover { background: var(--red); color: #fff; }
+  .btn-green { background: var(--green-light); color: var(--green); border: 1.5px solid #b8e6c4; }
+  .btn-green:hover { background: var(--green); color: #fff; }
+
+  /* CLIENT CARDS */
+  .client-grid { display: grid; gap: 10px; }
+  .client-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: var(--shadow);
+  }
+  .client-card:hover { box-shadow: var(--shadow-lg); border-color: #c8d6ee; background: #fafcff; }
+  .client-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--blue); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; flex-shrink: 0; letter-spacing: -0.02em; }
+  .client-info { flex: 1; min-width: 0; }
+  .client-name { font-size: 1rem; font-weight: 600; margin-bottom: 2px; letter-spacing: -0.02em; color: var(--text); }
+  .client-address { color: var(--muted); font-size: 0.83rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .warranty-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; flex-shrink: 0; letter-spacing: 0.01em; }
+  .warranty-active { background: var(--green-light); color: var(--green); }
+  .warranty-expired { background: var(--red-light); color: var(--red); }
+  .warranty-none { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+  .next-appt { font-size: 0.8rem; color: var(--gold); font-weight: 600; flex-shrink: 0; }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 2000; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--card); border-radius: 18px; width: 100%; max-width: 660px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.18); }
+  .modal-header { padding: 20px 24px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--card); z-index: 10; border-radius: 18px 18px 0 0; }
+  .modal-title { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+  .modal-close { background: var(--bg); border: none; font-size: 1rem; cursor: pointer; color: var(--muted); line-height: 1; padding: 6px 8px; border-radius: 8px; font-weight: 600; }
+  .modal-close:hover { color: var(--text); background: var(--border); }
+  .modal-body { padding: 20px 24px; }
+  .modal-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
+
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  input, textarea, select { padding: 10px 13px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 0.93rem; font-family: inherit; background: var(--bg); outline: none; transition: border 0.15s, box-shadow 0.15s; color: var(--text); }
+  input:focus, textarea:focus, select:focus { border-color: var(--blue-mid); background: #fff; box-shadow: 0 0 0 3px rgba(42,82,152,0.10); }
+  textarea { resize: vertical; min-height: 88px; }
+  .section-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 20px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+
+  /* CLIENT DETAIL */
+  .detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .detail-avatar { width: 60px; height: 60px; border-radius: 50%; background: var(--blue); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 700; flex-shrink: 0; }
+  .detail-name { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text); }
+  .detail-sub { color: var(--muted); font-size: 0.84rem; margin-top: 3px; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .info-box { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+  .info-box-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 5px; }
+  .info-box-value { font-size: 0.93rem; font-weight: 500; word-break: break-word; color: var(--text); }
+  .info-box.full { grid-column: 1/-1; }
+  .map-link { color: var(--blue-mid); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 5px; font-size: 0.88rem; }
+  .map-link:hover { text-decoration: underline; }
+
+  /* WARRANTY SECTION */
+  .warranty-section { border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; }
+  .warranty-section.active { background: var(--green-light); border: 1px solid #b8e6c4; }
+  .warranty-section.expired { background: var(--red-light); border: 1px solid #f5c6c6; }
+  .warranty-section.none { background: var(--bg); border: 1px solid var(--border); }
+  .warranty-big { font-size: 1rem; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.01em; }
+  .warranty-detail { font-size: 0.84rem; color: var(--muted); margin-top: 2px; }
+
+  /* APPOINTMENTS */
+  .appt-list { display: flex; flex-direction: column; gap: 8px; }
+  .appt-item { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 11px 14px; display: flex; align-items: center; gap: 12px; }
+  .appt-date-block { background: var(--blue); color: #fff; border-radius: 10px; padding: 7px 10px; text-align: center; flex-shrink: 0; min-width: 50px; }
+  .appt-month { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; opacity: 0.8; }
+  .appt-day { font-size: 1.3rem; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+  .appt-info { flex: 1; }
+  .appt-title { font-weight: 600; margin-bottom: 2px; font-size: 0.93rem; }
+  .appt-sub { font-size: 0.8rem; color: var(--muted); }
+  .appt-past { opacity: 0.45; }
+
+  /* CALENDAR VIEW */
+  .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .cal-month { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-day-name { text-align: center; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding: 6px 0; }
+  .cal-cell { min-height: 72px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 6px; }
+  .cal-cell.other-month { background: transparent; border-color: transparent; opacity: 0.3; }
+  .cal-cell.today { border-color: var(--gold-bright); border-width: 2px; }
+  .cal-date { font-size: 0.8rem; font-weight: 600; margin-bottom: 3px; color: var(--text-2); }
+  .cal-cell.today .cal-date { color: var(--gold); font-weight: 700; }
+  .cal-event { background: var(--blue); color: #fff; border-radius: 5px; padding: 2px 6px; font-size: 0.68rem; margin-bottom: 2px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+  .cal-event:hover { background: var(--gold-bright); color: var(--blue); }
+
+  /* EMPTY STATE */
+  .empty { text-align: center; padding: 52px 20px; color: var(--muted); }
+  .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.5; }
+  .empty-text { font-size: 0.95rem; }
+
+  /* TABS inside modal */
+  .modal-tabs { display: flex; gap: 0; margin-bottom: 18px; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+  .modal-tab { white-space: nowrap; }
+  .modal-tab { background: none; border: none; padding: 9px 16px; font-family: inherit; font-size: 0.88rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.12s; }
+  .modal-tab:hover { color: var(--text); }
+  .modal-tab.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 700; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: rgba(28,28,30,0.92); color: #fff; padding: 12px 22px; border-radius: 40px; font-weight: 500; font-size: 0.88rem; z-index: 3000; box-shadow: var(--shadow-lg); opacity: 0; transition: all 0.25s; white-space: nowrap; backdrop-filter: blur(10px); }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  /* STATS BAR */
+  .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; text-align: center; box-shadow: var(--shadow); }
+  .stat-num { font-size: 1.8rem; font-weight: 700; color: var(--blue); letter-spacing: -0.04em; line-height: 1; }
+  .stat-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-top: 4px; }
+
+  .upcoming-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+
+  /* MAP VIEW */
+  #map-container { border-radius: 14px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow); height: calc(100vh - 260px); min-height: 360px; isolation: isolate; }
+  .map-controls { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
+  .map-mode-btn { padding: 8px 16px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--card); font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.15s; color: var(--text-2); }
+  .map-mode-btn:hover { border-color: var(--blue-mid); color: var(--blue); }
+  .map-mode-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .map-legend { display: flex; gap: 16px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--muted); font-weight: 500; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .map-geocode-status { font-size: 0.78rem; color: var(--muted); margin-top: 6px; }
+  .map-day-picker { display: flex; align-items: center; gap: 8px; }
+  .map-day-picker input { padding: 7px 11px; border: 1.5px solid var(--border); border-radius: 9px; font-size: 0.88rem; font-family: inherit; background: var(--card); color: var(--text); }
+
+  /* IMPORT */
+  .import-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  .import-table th { text-align: left; padding: 7px 10px; border-bottom: 2px solid var(--border); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 700; position: sticky; top: 0; background: var(--card); }
+  .import-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .import-table tr:last-child td { border-bottom: none; }
+  .import-table tr.flagged { background: #fffbea; }
+  .import-table tr.skip td { opacity: 0.4; text-decoration: line-through; }
+  .import-row-toggle { background: none; border: 1.5px solid var(--border); border-radius: 6px; padding: 3px 8px; font-size: 0.75rem; cursor: pointer; font-family: inherit; font-weight: 600; color: var(--muted); }
+  .import-row-toggle.include { border-color: var(--green); color: var(--green); background: var(--green-light); }
+  .import-row-toggle.skip { border-color: var(--red); color: var(--red); }
+  .import-flag { font-size: 0.7rem; background: #fef3c7; color: #92400e; padding: 2px 7px; border-radius: 10px; font-weight: 600; display: inline-block; margin-top: 3px; }
+  .import-scroll { max-height: 420px; overflow-y: auto; border: 1px solid var(--border); border-radius: 12px; }
+  .import-summary { background: var(--blue-light); border: 1px solid #c8d6ee; border-radius: 10px; padding: 12px 16px; margin-bottom: 14px; font-size: 0.88rem; color: var(--blue); font-weight: 500; }
+
+  @media (max-width: 600px) {
+    header { padding: 0 12px; }
+    .logo { font-size: 0.9rem; white-space: nowrap; }
+    .search-bar { flex-wrap: wrap; }
+    .search-wrap { flex-basis: 100%; }
+    .search-bar .btn { flex: 1; padding: 10px 8px; font-size: 0.82rem; justify-content: center; }
+    .main { padding: 16px 14px; }
+    .sync-label { display: none; }
+    .logo-sub { display: none; }
+    .form-grid { grid-template-columns: 1fr; }
+    .info-grid { grid-template-columns: 1fr; }
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .header-tabs { gap: 0; }
+    .header-tab { padding: 7px 10px; font-size: 0.82rem; }
+    .modal-tab { padding: 9px 11px; }
+    .cal-grid { gap: 2px; }
+    .cal-cell { min-height: 52px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo" style="flex:1">
+    <span class="logo-icon" data-i="shield"></span>
+    <div>Rat Patrol Inc.<span class="logo-sub"> &nbsp;Client Database</span></div>
+  </div>
+  <div class="header-tabs">
+    <button class="header-tab active" onclick="showView('clients')">Clients</button>
+    <button class="header-tab" onclick="showView('calendar')">Calendar</button>
+    <button class="header-tab" onclick="showView('map')">Map</button>
+  </div>
+  <div class="header-right" style="flex:1;justify-content:flex-end">
+    <span class="sync" id="sync" data-s="loading" title="Database status"><span class="sync-dot"></span><span class="sync-label" id="sync-label">Loading</span></span>
+    <button class="icon-btn" onclick="signOut()" title="Sign out"><span data-i="logout"></span></button>
+  </div>
+</header>
+
+<div class="login-screen" id="login-screen">
+  <form class="login-card" onsubmit="event.preventDefault(); signIn();">
+    <div class="login-title"><span data-i="shield"></span> Rat Patrol Inc.</div>
+    <div class="login-sub">Sign in to the client database</div>
+    <input id="login-email" type="email" placeholder="Email" autocomplete="username" required>
+    <input id="login-password" type="password" placeholder="Password" autocomplete="current-password" required>
+    <div class="login-error" id="login-error"></div>
+    <button class="btn btn-primary" type="submit" id="login-btn">Sign in</button>
+  </form>
+</div>
+
+<div class="main">
+
+  <!-- CLIENTS VIEW -->
+  <div class="view active" id="view-clients">
+    <div class="stats-bar" id="stats-bar"></div>
+    <div class="search-bar">
+      <div class="search-wrap"><span data-i="search"></span><input class="search-input" type="text" id="search-input" placeholder="Search by name or address" oninput="renderClients()"></div>
+      <button class="btn btn-outline" onclick="document.getElementById('vcf-file-input').click()"><span data-i="upload"></span> Import .vcf</button>
+      <input type="file" id="vcf-file-input" accept=".vcf,.txt" style="display:none" onchange="handleVcfUpload(event)">
+      <button class="btn btn-outline" onclick="document.getElementById('ics-file-input').click()"><span data-i="calendar"></span> Import .ics</button>
+      <input type="file" id="ics-file-input" accept=".ics" style="display:none" onchange="handleIcsUpload(event)">
+      <button class="btn btn-primary" onclick="openAddClient()">+ Add Client</button>
+    </div>
+    <div class="seg" id="client-filter"></div>
+    <div class="client-grid" id="client-list"></div>
+    <div class="footer-links">
+      <button class="reset-link" onclick="exportBackup()">Export backup</button>
+      <button class="reset-link" onclick="resetAllData()">Reset all data</button>
+    </div>
+  </div>
+
+  <!-- CALENDAR VIEW -->
+  <div class="view" id="view-calendar">
+    <div class="cal-header">
+      <button class="btn btn-outline btn-sm" onclick="changeMonth(-1)"><span data-i="chevL"></span> Prev</button>
+      <div class="cal-month" id="cal-month-label"></div>
+      <button class="btn btn-outline btn-sm" onclick="changeMonth(1)">Next <span data-i="chevR"></span></button>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div style="margin-top:22px">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:12px;color:var(--brown)">Upcoming Appointments</div>
+      <div class="upcoming-list" id="upcoming-list"></div>
+    </div>
+  </div>
+
+
+  <!-- MAP VIEW -->
+  <div class="view" id="view-map">
+    <div class="map-controls">
+      <button class="map-mode-btn active" id="map-btn-all" onclick="setMapMode('all')"><span data-i="pin"></span> All Clients</button>
+      <button class="map-mode-btn" id="map-btn-day" onclick="setMapMode('day')"><span data-i="calendar"></span> Day's Appointments</button>
+      <div class="map-day-picker" id="map-day-picker" style="display:none">
+        <input type="date" id="map-date-input" onchange="renderMapPins()">
+      </div>
+      <button class="map-mode-btn" onclick="clearAndRetryMap()" title="Use this if pins are missing"><span data-i="refresh"></span> Retry Missing</button>
+    </div>
+    <div id="map-container"></div>
+    <div class="map-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#28a745"></div> Active Warranty</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#d63031"></div> Expired / No Warranty</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#1c3d6e"></div> Appointment</div>
+    </div>
+    <div class="map-geocode-status" id="map-status"></div>
+  </div>
+</div>
+
+
+<!-- IMPORT MODAL -->
+<div class="modal-overlay" id="modal-import">
+  <div class="modal" style="max-width:820px">
+    <div class="modal-header">
+      <div class="modal-title">Import Contacts from .vcf</div>
+      <button class="modal-close" onclick="closeModal('modal-import')"><span data-i="x"></span></button>
+    </div>
+    <div class="modal-body">
+      <div class="import-summary" id="import-summary"></div>
+      <div class="import-scroll">
+        <table class="import-table">
+          <thead>
+            <tr>
+              <th style="width:28px"></th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Job Date → Warranty</th>
+              <th>Notes / Flags</th>
+            </tr>
+          </thead>
+          <tbody id="import-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div style="font-size:0.82rem;color:var(--muted);flex:1">
+        <span id="import-count-label"></span>
+      </div>
+      <button class="btn btn-outline" onclick="closeModal('modal-import')">Cancel</button>
+      <button class="btn btn-primary" onclick="commitImport()">Import Selected</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-ics">
+  <div class="modal" style="max-width:860px">
+    <div class="modal-header">
+      <div class="modal-title">Import Appointments from .ics</div>
+      <button class="modal-close" onclick="closeModal('modal-ics')"><span data-i="x"></span></button>
+    </div>
+    <div class="modal-body">
+      <div class="import-summary" id="ics-summary"></div>
+      <div class="import-scroll">
+        <table class="import-table">
+          <thead><tr><th style="width:28px"></th><th>Name</th><th>Phone</th><th>Address</th><th>Visits</th><th>Status</th></tr></thead>
+          <tbody id="ics-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div style="font-size:0.82rem;color:var(--muted);flex:1"><span id="ics-count-label"></span></div>
+      <button class="btn btn-outline" onclick="closeModal('modal-ics')">Cancel</button>
+      <button class="btn btn-primary" onclick="commitIcsImport()">Import Selected</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-detail">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="detail-modal-title">Client Details</div>
+      <button class="modal-close" onclick="closeModal('modal-detail')"><span data-i="x"></span></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('detail','info')">Info</button>
+        <button class="modal-tab" onclick="switchTab('detail','warranty')">Warranty</button>
+        <button class="modal-tab" onclick="switchTab('detail','appointments')">Appointments</button>
+        <button class="modal-tab" onclick="switchTab('detail','notes')">Notes</button>
+      </div>
+      <div id="detail-tab-info"></div>
+      <div id="detail-tab-warranty" style="display:none"></div>
+      <div id="detail-tab-appointments" style="display:none"></div>
+      <div id="detail-tab-notes" style="display:none"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline btn-sm" onclick="editCurrentClient()"><span data-i="edit"></span> Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteCurrentClient()"><span data-i="trash"></span> Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT CLIENT MODAL -->
+<div class="modal-overlay" id="modal-form">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="form-modal-title">Add Client</div>
+      <button class="modal-close" onclick="closeModal('modal-form')"><span data-i="x"></span></button>
+    </div>
+    <div class="modal-body">
+      <div class="section-label">Client Info</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>First Name *</label>
+          <input id="f-firstname" type="text" placeholder="John">
+        </div>
+        <div class="form-group">
+          <label>Last Name *</label>
+          <input id="f-lastname" type="text" placeholder="Smith">
+        </div>
+        <div class="form-group full">
+          <label>Email</label>
+          <input id="f-email" type="email" placeholder="john@email.com">
+        </div>
+        <div class="form-group full">
+          <label>Phone</label>
+          <input id="f-phone" type="tel" placeholder="(555) 000-0000">
+        </div>
+      </div>
+
+      <div class="section-label">Property Address</div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Street Address *</label>
+          <input id="f-street" type="text" placeholder="123 Main St" oninput="scheduleAddressLookup()">
+        </div>
+        <div class="form-group">
+          <label>City</label>
+          <input id="f-city" type="text" placeholder="Oakland" oninput="scheduleAddressLookup()">
+        </div>
+        <div class="form-group" style="position:relative">
+          <label>ZIP Code <span id="zip-spinner" style="display:none;font-size:0.75rem;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">looking up…</span></label>
+          <input id="f-zip" type="text" placeholder="94601" maxlength="5">
+        </div>
+        <div class="form-group">
+          <label>State</label>
+          <input id="f-state" type="text" value="CA" readonly style="background:#f0ece4;color:var(--muted);cursor:default">
+        </div>
+      </div>
+
+      <div class="section-label">Warranty</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Warranty Start Date</label>
+          <input id="f-warranty-start" type="date" oninput="autoFillWarrantyEnd()">
+        </div>
+        <div class="form-group">
+          <label>Warranty End Date <span style="font-size:0.75rem;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(auto-filled)</span></label>
+          <input id="f-warranty-end" type="date">
+        </div>
+        <div class="form-group full">
+          <label>Warranty Notes</label>
+          <input id="f-warranty-notes" type="text" placeholder="2-year full exclusion warranty">
+        </div>
+      </div>
+
+      <div class="section-label">Notes</div>
+      <div class="form-group">
+        <label>General Notes</label>
+        <textarea id="f-notes" placeholder="Entry points found, materials used, special instructions…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-form')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveClient()">Save Client</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD APPOINTMENT MODAL -->
+<div class="modal-overlay" id="modal-appt">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <div class="modal-title">Add Appointment</div>
+      <button class="modal-close" onclick="closeModal('modal-appt')"><span data-i="x"></span></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Client *</label>
+          <select id="a-client"></select>
+        </div>
+        <div class="form-group full">
+          <label>Date *</label>
+          <input id="a-date" type="date">
+        </div>
+        <div class="form-group">
+          <label>Time</label>
+          <input id="a-time" type="time">
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select id="a-type">
+            <option>Initial Inspection</option>
+            <option>Exclusion Work</option>
+            <option>Follow-up Check</option>
+            <option>Warranty Visit</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Notes</label>
+          <textarea id="a-notes" placeholder="What to bring, special access notes…" style="min-height:70px"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-appt')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAppt()">Save Appointment</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ── SUPABASE CONFIG: paste your project's values here ────────────────
+const SUPABASE_URL      = 'https://hiadqdapjdlzdsyraqmf.supabase.co';       // e.g. https://abcdefgh.supabase.co
+const SUPABASE_KEY      = 'sb_publishable_ArIUNMfFlOPFxESlKGsNRQ_pF2rLAt1';   // Settings > API Keys > publishable key (safe to publish)
+
+// ── DATA ─────────────────────────────────────────────────────────────
+// The app works on these in-memory lists; save() syncs changes to Supabase.
+let clients = [];
+let appointments = [];
+let editingClientId = null;
+let currentClientId = null;
+let calYear, calMonth;
+let detailActiveTab = 'info';
+
+// ── DATABASE SYNC ─────────────────────────────────────────────────────
+const configured = !SUPABASE_URL.startsWith('PASTE');
+const sb = (configured && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+const nz = v => (v === '' || v === undefined) ? null : v;
+const CLIENT_COLS = { id:'id', status:'status', source:'source', createdAt:'created_at', firstName:'first_name', lastName:'last_name',
+  phone:'phone', email:'email', street:'street', city:'city', zip:'zip', state:'state', lat:'lat', lon:'lon',
+  warrantyStart:'warranty_start', warrantyEnd:'warranty_end', warrantyNotes:'warranty_notes', notes:'notes' };
+const APPT_COLS = { id:'id', clientId:'client_id', date:'date', time:'time', type:'type', notes:'notes', icsUid:'ics_uid' };
+const NUM = new Set(['lat', 'lon']);
+
+function toRow(obj, cols) {
+  const r = {};
+  for (const k in cols) r[cols[k]] = nz(obj[k]);
+  if (cols === CLIENT_COLS) { r.status = r.status || 'customer'; r.state = r.state || 'CA'; r.first_name = r.first_name || ''; r.last_name = r.last_name || ''; }
+  return r;
+}
+function fromRow(row, cols) {
+  const o = {};
+  for (const k in cols) { const v = row[cols[k]]; o[k] = v === null || v === undefined ? (NUM.has(k) ? null : '') : v; }
+  if (cols === CLIENT_COLS && !o.status) o.status = 'customer';
+  return o;
+}
+
+let snapC = new Map(), snapA = new Map();   // id -> JSON of the row as the database has it
+let flushing = false, flushAgain = false, flushTimer = null, lastLoad = 0;
+
+function setSync(state, text) {
+  const el = document.getElementById('sync'); if (!el) return;
+  el.dataset.s = state;
+  document.getElementById('sync-label').textContent = text ||
+    ({ saved: 'Saved', saving: 'Saving…', loading: 'Loading…', error: 'Not saved; retrying' })[state];
+}
+
+// Called after every change. Batches rapid changes, then sends only what differs.
+function save() {
+  clearTimeout(flushTimer);
+  flushTimer = setTimeout(flush, 300);
+}
+
+const chunks = (arr, n) => { const out = []; for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n)); return out; };
+
+async function flush() {
+  if (!sb) return;
+  if (flushing) { flushAgain = true; return; }
+  flushing = true;
+  try {
+    const cRows = clients.map(c => toRow(c, CLIENT_COLS));
+    const aRows = appointments.map(a => toRow(a, APPT_COLS));
+    const changedC = cRows.filter(r => snapC.get(r.id) !== JSON.stringify(r));
+    const changedA = aRows.filter(r => snapA.get(r.id) !== JSON.stringify(r));
+    const cIds = new Set(cRows.map(r => r.id)), aIds = new Set(aRows.map(r => r.id));
+    const delA = [...snapA.keys()].filter(id => !aIds.has(id));
+    const delC = [...snapC.keys()].filter(id => !cIds.has(id));
+    if (changedC.length + changedA.length + delA.length + delC.length) {
+      setSync('saving');
+      // Clients before appointments (appointments point at clients)
+      for (const ch of chunks(changedC, 500)) { const { error } = await sb.from('clients').upsert(ch); if (error) throw error; ch.forEach(r => snapC.set(r.id, JSON.stringify(r))); }
+      for (const ch of chunks(changedA, 500)) { const { error } = await sb.from('appointments').upsert(ch); if (error) throw error; ch.forEach(r => snapA.set(r.id, JSON.stringify(r))); }
+      for (const ch of chunks(delA, 100)) { const { error } = await sb.from('appointments').delete().in('id', ch); if (error) throw error; ch.forEach(id => snapA.delete(id)); }
+      for (const ch of chunks(delC, 100)) { const { error } = await sb.from('clients').delete().in('id', ch); if (error) throw error; ch.forEach(id => snapC.delete(id)); }
+    }
+    setSync('saved');
+  } catch (e) {
+    console.error('Sync failed', e);
+    setSync('error');
+    flushAgain = false;
+    setTimeout(flush, 10000);   // keep the changes in memory and retry
+  } finally {
+    flushing = false;
+    if (flushAgain) { flushAgain = false; flush(); }
+  }
+}
+
+// Resolves once everything currently in memory has been written
+async function saveNow() {
+  clearTimeout(flushTimer);
+  await flush();
+  while (flushing) await new Promise(r => setTimeout(r, 100));
+  return document.getElementById('sync').dataset.s !== 'error';
+}
+
+async function fetchAll(table) {
+  const rows = [];
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await sb.from(table).select('*').order('id').range(from, from + 999);
+    if (error) throw error;
+    rows.push(...data);
+    if (data.length < 1000) return rows;
+  }
+}
+
+async function loadAll() {
+  setSync('loading');
+  const [cRows, aRows] = await Promise.all([fetchAll('clients'), fetchAll('appointments')]);
+  snapC = new Map(); snapA = new Map();
+  clients = cRows.map(r => fromRow(r, CLIENT_COLS));
+  appointments = aRows.map(r => fromRow(r, APPT_COLS));
+  // Snapshot in the same shape save() produces, so unchanged rows are not re-sent
+  clients.forEach(c => { const r = toRow(c, CLIENT_COLS); snapC.set(r.id, JSON.stringify(r)); });
+  appointments.forEach(a => { const r = toRow(a, APPT_COLS); snapA.set(r.id, JSON.stringify(r)); });
+  lastLoad = Date.now();
+  setSync('saved');
+  refreshViews();
+}
+
+function refreshViews() {
+  renderClients(); renderStats();
+  if (document.getElementById('view-calendar').classList.contains('active')) renderCalendar();
+  if (document.getElementById('view-map').classList.contains('active') && map) renderMapPins();
+}
+
+// One-time: move data saved in this browser (before the database) into Supabase
+async function offerLocalUpload() {
+  let lc, la;
+  try { lc = JSON.parse(localStorage.getItem('rg_clients') || '[]'); la = JSON.parse(localStorage.getItem('rg_appts') || '[]'); } catch { return; }
+  if (!lc.length && !la.length) return;
+  if (!confirm(`This device has ${lc.length} clients and ${la.length} appointments saved from before the database.\n\nUpload them now? (Anything already in the database is kept.)`)) return;
+  const haveC = new Set(clients.map(c => c.id)), haveA = new Set(appointments.map(a => a.id));
+  lc.filter(c => !haveC.has(c.id)).forEach(c => clients.push(c));
+  la.filter(a => !haveA.has(a.id) && (haveC.has(a.clientId) || lc.some(c => c.id === a.clientId))).forEach(a => appointments.push(a));
+  refreshViews();
+  if (await saveNow()) {
+    localStorage.removeItem('rg_clients'); localStorage.removeItem('rg_appts');
+    showToast('Device data uploaded to the database.');
+  } else {
+    showToast('Upload failed; it will be offered again next time.');
+  }
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────────
+function showLogin(msg) {
+  document.getElementById('login-screen').classList.add('open');
+  document.getElementById('login-error').textContent = msg || '';
+}
+async function signIn() {
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  const { error } = await sb.auth.signInWithPassword({
+    email: document.getElementById('login-email').value.trim(),
+    password: document.getElementById('login-password').value
+  });
+  btn.disabled = false; btn.textContent = 'Sign in';
+  if (error) { document.getElementById('login-error').textContent = error.message; return; }
+  document.getElementById('login-screen').classList.remove('open');
+  document.getElementById('login-password').value = '';
+  await startData();
+}
+async function signOut() {
+  if (!sb) return;
+  await saveNow();
+  await sb.auth.signOut();
+  clients = []; appointments = []; snapC = new Map(); snapA = new Map();
+  refreshViews();
+  showLogin();
+}
+async function startData() {
+  try { await loadAll(); await offerLocalUpload(); }
+  catch (e) { console.error(e); setSync('error', 'Offline'); showToast('Could not reach the database.'); }
+}
+async function startApp() {
+  if (!sb) {
+    showLogin(configured ? 'Could not load the database library; check the connection.' :
+      'Setup needed: paste the Supabase project URL and publishable key near the top of this file.');
+    document.getElementById('login-btn').disabled = true;
+    return;
+  }
+  const { data } = await sb.auth.getSession();
+  if (!data.session) return showLogin();
+  await startData();
+}
+// Pick up changes made on another device when this one comes back to the foreground
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState !== 'visible' || !sb || Date.now() - lastLoad < 60000) return;
+  const { data } = await sb.auth.getSession();
+  if (!data.session) return;
+  if (await saveNow()) { try { await loadAll(); } catch {} }
+});
+
+// ── BACKUP ────────────────────────────────────────────────────────────
+function exportBackup() {
+  const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), clients, appointments }, null, 1)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `rat-patrol-backup-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+const isLead = c => c.status === 'lead';
+let clientFilter = 'customers';
+function setClientFilter(f) { clientFilter = f; renderClients(); }
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+// ── VIEWS ─────────────────────────────────────────────────────────────
+function showView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  document.querySelectorAll('.header-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  if (v === 'clients') { renderClients(); renderStats(); }
+  if (v === 'calendar') renderCalendar();
+  if (v === 'map') {
+    setTimeout(() => {
+      initMap();
+      renderMapPins();
+    }, 50);
+  }
+}
+
+// ── CLIENTS ──────────────────────────────────────────────────────────
+function renderStats() {
+  const total = clients.filter(c => !isLead(c)).length;
+  const active = clients.filter(c => warrantyStatus(c) === 'active').length;
+  const expired = clients.filter(c => warrantyStatus(c) === 'expired').length;
+  const today = new Date().toISOString().slice(0,10);
+  const todayAppts = appointments.filter(a => a.date === today).length;
+  document.getElementById('stats-bar').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Customers</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--green)">${active}</div><div class="stat-label">Active Warranties</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--red)">${expired}</div><div class="stat-label">Expired Warranties</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--gold)">${todayAppts}</div><div class="stat-label">Appts Today</div></div>
+  `;
+}
+
+function warrantyStatus(c) {
+  if (!c.warrantyEnd) return 'none';
+  const today = new Date().toISOString().slice(0,10);
+  return c.warrantyEnd >= today ? 'active' : 'expired';
+}
+
+function warrantyLabel(c) {
+  const s = warrantyStatus(c);
+  if (s === 'active') return `<span class="warranty-badge warranty-active">${I.check} Warranty Active</span>`;
+  if (s === 'expired') return `<span class="warranty-badge warranty-expired">${I.alert} Warranty Expired</span>`;
+  return `<span class="warranty-badge warranty-none">No Warranty</span>`;
+}
+
+function nextAppt(clientId) {
+  const today = new Date().toISOString().slice(0,10);
+  const upcoming = appointments.filter(a => a.clientId === clientId && a.date >= today).sort((a,b)=>a.date.localeCompare(b.date));
+  if (!upcoming.length) return '';
+  const a = upcoming[0];
+  return `<div class="next-appt">${I.calendar} ${fmtDate(a.date)}</div>`;
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const [y,m,day] = d.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[parseInt(m)-1]} ${parseInt(day)}, ${y}`;
+}
+
+function initials(c) {
+  return (((c.firstName||'')[0]||'') + ((c.lastName||'')[0]||'') || '?').toUpperCase();
+}
+
+function renderClients() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const nCust = clients.filter(c => !isLead(c)).length, nLead = clients.length - nCust;
+  document.getElementById('client-filter').innerHTML =
+    [['customers','Customers',nCust],['leads','Leads',nLead],['all','All',clients.length]]
+      .map(([k,l,n]) => `<button class="${clientFilter===k?'active':''}" onclick="setClientFilter('${k}')">${l}<span class="count">${n}</span></button>`).join('');
+  let list = clientFilter === 'customers' ? clients.filter(c => !isLead(c))
+           : clientFilter === 'leads' ? clients.filter(isLead) : clients;
+  const todayStr = new Date().toISOString().slice(0,10);
+  const nextByClient = {};
+  for (const a of appointments) if (a.date >= todayStr && (!nextByClient[a.clientId] || a.date < nextByClient[a.clientId])) nextByClient[a.clientId] = a.date;
+  if (q) list = list.filter(c =>
+    (c.firstName+' '+c.lastName).toLowerCase().includes(q) ||
+    (c.street||'').toLowerCase().includes(q) ||
+    (c.city||'').toLowerCase().includes(q)
+  );
+  const el = document.getElementById('client-list');
+  if (!list.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">${I.search}</div><div class="empty-text">${clients.length ? 'Nothing matches in this list.' : 'No clients yet. Add your first one!'}</div></div>`;
+    return;
+  }
+  el.innerHTML = list.map(c => `
+    <div class="client-card" onclick="openDetail('${c.id}')">
+      <div class="client-avatar ${isLead(c)?'lead':''}">${initials(c)}</div>
+      <div class="client-info">
+        <div class="client-name">${c.firstName} ${c.lastName}</div>
+        <div class="client-address">${[c.street, c.city, [c.state||'CA', c.zip].filter(Boolean).join(' ')].filter(Boolean).join(', ')}</div>
+      </div>
+      ${isLead(c) ? '<span class="lead-badge">Inspection only</span>' : warrantyLabel(c)}
+      ${nextByClient[c.id] ? `<div class="next-appt">${I.calendar} ${fmtDate(nextByClient[c.id])}</div>` : ''}
+    </div>
+  `).join('');
+  renderStats();
+}
+
+// ── ADD / EDIT CLIENT ─────────────────────────────────────────────────
+function openAddClient() {
+  editingClientId = null;
+  document.getElementById('form-modal-title').textContent = 'Add New Client';
+  ['firstname','lastname','email','phone','street','city','zip','warranty-start','warranty-end','warranty-notes','notes'].forEach(f => {
+    const el = document.getElementById('f-'+f);
+    if (el) el.value = '';
+  });
+  document.getElementById('f-state').value = 'CA';
+  openModal('modal-form');
+}
+
+function editCurrentClient() {
+  const c = clients.find(x => x.id === currentClientId);
+  if (!c) return;
+  closeModal('modal-detail');
+  editingClientId = c.id;
+  document.getElementById('form-modal-title').textContent = 'Edit Client';
+  document.getElementById('f-firstname').value = c.firstName || '';
+  document.getElementById('f-lastname').value = c.lastName || '';
+  document.getElementById('f-email').value = c.email || '';
+  document.getElementById('f-phone').value = c.phone || '';
+  document.getElementById('f-street').value = c.street || '';
+  document.getElementById('f-city').value = c.city || '';
+  document.getElementById('f-zip').value = c.zip || '';
+  document.getElementById('f-state').value = 'CA';
+  document.getElementById('f-warranty-start').value = c.warrantyStart || '';
+  document.getElementById('f-warranty-end').value = c.warrantyEnd || '';
+  document.getElementById('f-warranty-notes').value = c.warrantyNotes || '';
+  document.getElementById('f-notes').value = c.notes || '';
+  openModal('modal-form');
+}
+
+function saveClient() {
+  const firstName = document.getElementById('f-firstname').value.trim();
+  const lastName = document.getElementById('f-lastname').value.trim();
+  const street = document.getElementById('f-street').value.trim();
+  if (!firstName || !lastName) { showToast('Please enter a first and last name.'); return; }
+  const data = {
+    firstName, lastName,
+    email: document.getElementById('f-email').value.trim(),
+    phone: document.getElementById('f-phone').value.trim(),
+    street,
+    city: document.getElementById('f-city').value.trim(),
+    zip: document.getElementById('f-zip').value.trim(),
+    state: 'CA',
+    warrantyStart: document.getElementById('f-warranty-start').value,
+    warrantyEnd: document.getElementById('f-warranty-end').value,
+    warrantyNotes: document.getElementById('f-warranty-notes').value.trim(),
+    notes: document.getElementById('f-notes').value.trim(),
+  };
+  if (editingClientId) {
+    const i = clients.findIndex(x => x.id === editingClientId);
+    const old = clients[i];
+    // Clear cached coords if address changed
+    if (old.street !== data.street || old.city !== data.city || old.zip !== data.zip) {
+      data.lat = null; data.lon = null;
+    }
+    clients[i] = { ...old, ...data };
+    showToast('Client updated!');
+    // Re-geocode in background if address changed
+    if (data.lat === null) geocodeAndStore(clients[i]);
+  } else {
+    data.id = uid();
+    data.createdAt = new Date().toISOString().slice(0,10);
+    clients.push(data);
+    showToast('Client added!');
+    geocodeAndStore(data);
+  }
+  save(); closeModal('modal-form'); renderClients();
+}
+
+// Geocode a single client and store coords directly on the record
+async function geocodeAndStore(c) {
+  if (c.lat && c.lon) return; // already have it
+  const addr = clientAddress(c);
+  if (!addr) return;
+  const coords = await geocodeAddress(addr, { street: c.street, city: c.city, zip: c.zip });
+  if (coords) {
+    c.lat = coords.lat;
+    c.lon = coords.lon;
+    save();
+  }
+}
+
+function deleteCurrentClient() {
+  if (!confirm('Delete this client? This cannot be undone.')) return;
+  clients = clients.filter(c => c.id !== currentClientId);
+  appointments = appointments.filter(a => a.clientId !== currentClientId);
+  save(); closeModal('modal-detail'); renderClients(); showToast('Client deleted.');
+}
+
+// ── DETAIL ────────────────────────────────────────────────────────────
+function openDetail(id) {
+  currentClientId = id;
+  const c = clients.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('detail-modal-title').textContent = `${c.firstName} ${c.lastName}`;
+  switchTab('detail', 'info');
+  openModal('modal-detail');
+}
+
+function switchTab(modal, tab) {
+  detailActiveTab = tab;
+  const tabs = ['info','warranty','appointments','notes'];
+  tabs.forEach(t => {
+    document.getElementById(`detail-tab-${t}`).style.display = t===tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('#modal-detail .modal-tab').forEach((btn,i) => {
+    btn.classList.toggle('active', tabs[i]===tab);
+  });
+  const c = clients.find(x => x.id === currentClientId);
+  if (!c) return;
+  if (tab==='info') renderDetailInfo(c);
+  if (tab==='warranty') renderDetailWarranty(c);
+  if (tab==='appointments') renderDetailAppts(c);
+  if (tab==='notes') renderDetailNotes(c);
+}
+
+function renderDetailInfo(c) {
+  const addr = [c.street, c.city, c.statezip].filter(Boolean).join(', ');
+  const mapUrl = addr ? `https://maps.apple.com/?q=${encodeURIComponent(addr)}` : null;
+  document.getElementById('detail-tab-info').innerHTML = `
+    <div class="detail-header">
+      <div class="detail-avatar">${initials(c)}</div>
+      <div>
+        <div class="detail-name">${c.firstName} ${c.lastName}</div>
+        <div class="detail-sub">Client since ${fmtDate(c.createdAt)}</div>
+      </div>
+    </div>
+    <div class="info-grid">
+      <div class="info-box">
+        <div class="info-box-label">${I.mail} Email</div>
+        <div class="info-box-value">${c.email ? `<a href="mailto:${c.email}" style="color:var(--accent)">${c.email}</a>` : '—'}</div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-label">${I.phone} Phone</div>
+        <div class="info-box-value">${c.phone ? `<a href="tel:${c.phone}" style="color:var(--accent)">${c.phone}</a>` : '—'}</div>
+      </div>
+      <div class="info-box full">
+        <div class="info-box-label">${I.home} Property Address</div>
+        <div class="info-box-value">${addr || '—'}</div>
+        ${mapUrl ? `<a class="map-link" href="${mapUrl}" target="_blank">${I.map} Open in Apple Maps</a>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderDetailWarranty(c) {
+  if (isLead(c)) {
+    const visits = appointments.filter(a => a.clientId === c.id).length;
+    document.getElementById('detail-tab-warranty').innerHTML = `
+      <div class="warranty-section none">
+        <div class="warranty-big">Inspection only</div>
+        <div class="warranty-detail">${visits} visit${visits!==1?'s':''} on file; no job or warranty recorded.</div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="convertCurrentLead()">Convert to customer</button>`;
+    return;
+  }
+  const s = warrantyStatus(c);
+  const statusMap = { active: ['active', I.check + ' Warranty Active'], expired: ['expired', I.alert + ' Warranty Expired'], none: ['none','No Warranty On File'] };
+  const [cls, label] = statusMap[s];
+  let daysLeft = '';
+  if (s==='active' && c.warrantyEnd) {
+    const diff = Math.round((new Date(c.warrantyEnd) - new Date()) / 86400000);
+    daysLeft = `<div class="warranty-detail">${diff} days remaining</div>`;
+  }
+  document.getElementById('detail-tab-warranty').innerHTML = `
+    <div class="warranty-section ${cls}">
+      <div class="warranty-big">${label}</div>
+      ${s !== 'none' ? `<div class="warranty-detail">Start: ${fmtDate(c.warrantyStart)} &nbsp;|&nbsp; End: ${fmtDate(c.warrantyEnd)}</div>` : ''}
+      ${daysLeft}
+      ${c.warrantyNotes ? `<div class="warranty-detail" style="margin-top:8px">${c.warrantyNotes}</div>` : ''}
+    </div>
+    <p style="color:var(--muted);font-size:0.88rem">Warranty is tied to <strong>${c.firstName} ${c.lastName}</strong> personally — it does not transfer to a new occupant at this address.</p>
+    <div style="margin-top:16px">
+      <button class="btn btn-outline btn-sm" onclick="editCurrentClient()">Edit Warranty Dates</button>
+    </div>
+  `;
+}
+
+function renderDetailAppts(c) {
+  const all = appointments.filter(a => a.clientId === c.id).sort((a,b)=>a.date.localeCompare(b.date));
+  const today = new Date().toISOString().slice(0,10);
+  const upcoming = all.filter(a => a.date >= today);
+  const past = all.filter(a => a.date < today);
+
+  const renderApptItem = (a, isPast) => {
+    const [y,m,d] = a.date.split('-');
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `
+      <div class="appt-item ${isPast ? 'appt-past' : ''}">
+        <div class="appt-date-block">
+          <div class="appt-month">${months[parseInt(m)-1]}</div>
+          <div class="appt-day">${parseInt(d)}</div>
+        </div>
+        <div class="appt-info">
+          <div class="appt-title">${a.type}</div>
+          <div class="appt-sub">${a.time || 'Time TBD'}${a.notes ? ' — '+a.notes : ''}</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="deleteAppt('${a.id}')">${I.x}</button>
+      </div>`;
+  };
+
+  document.getElementById('detail-tab-appointments').innerHTML = `
+    <button class="btn btn-green btn-sm" style="margin-bottom:14px" onclick="openAddAppt('${c.id}')">+ Add Appointment</button>
+    ${upcoming.length ? `<div style="font-weight:600;margin-bottom:8px;color:var(--brown)">Upcoming</div><div class="appt-list">${upcoming.map(a=>renderApptItem(a,false)).join('')}</div>` : `<p style="color:var(--muted);font-size:0.9rem;margin-bottom:14px">No upcoming appointments.</p>`}
+    ${past.length ? `<div style="font-weight:600;margin:14px 0 8px;color:var(--muted)">Past</div><div class="appt-list">${past.reverse().map(a=>renderApptItem(a,true)).join('')}</div>` : ''}
+    ${!all.length ? `<div class="empty" style="padding:30px 0"><div class="empty-icon">${I.calendar}</div><div class="empty-text">No appointments yet.</div></div>` : ''}
+  `;
+}
+
+function renderDetailNotes(c) {
+  document.getElementById('detail-tab-notes').innerHTML = `
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea id="notes-editor" style="min-height:200px">${c.notes || ''}</textarea>
+    </div>
+    <div style="margin-top:12px">
+      <button class="btn btn-primary btn-sm" onclick="saveNotes()">Save Notes</button>
+    </div>
+  `;
+}
+
+function saveNotes() {
+  const c = clients.find(x => x.id === currentClientId);
+  if (!c) return;
+  c.notes = document.getElementById('notes-editor').value;
+  save(); showToast('Notes saved!');
+}
+
+// ── APPOINTMENTS ──────────────────────────────────────────────────────
+function openAddAppt(prefillClientId) {
+  const sel = document.getElementById('a-client');
+  sel.innerHTML = clients.map(c => `<option value="${c.id}" ${c.id===prefillClientId?'selected':''}>${c.firstName} ${c.lastName}</option>`).join('');
+  document.getElementById('a-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('a-time').value = '';
+  document.getElementById('a-notes').value = '';
+  document.getElementById('a-type').value = 'Initial Inspection';
+  openModal('modal-appt');
+}
+
+function saveAppt() {
+  const clientId = document.getElementById('a-client').value;
+  const date = document.getElementById('a-date').value;
+  if (!clientId || !date) { showToast('Please select a client and date.'); return; }
+  appointments.push({
+    id: uid(),
+    clientId,
+    date,
+    time: document.getElementById('a-time').value,
+    type: document.getElementById('a-type').value,
+    notes: document.getElementById('a-notes').value.trim()
+  });
+  save(); closeModal('modal-appt');
+  showToast('Appointment saved!');
+  if (detailActiveTab === 'appointments') {
+    const c = clients.find(x => x.id === clientId);
+    if (c && c.id === currentClientId) renderDetailAppts(c);
+  }
+  renderClients();
+  renderCalendar();
+}
+
+function deleteAppt(id) {
+  if (!confirm('Remove this appointment?')) return;
+  appointments = appointments.filter(a => a.id !== id);
+  save();
+  const c = clients.find(x => x.id === currentClientId);
+  if (c) renderDetailAppts(c);
+  renderCalendar(); renderClients();
+  showToast('Appointment removed.');
+}
+
+// ── CALENDAR ──────────────────────────────────────────────────────────
+function initCal() {
+  const now = new Date();
+  calYear = now.getFullYear();
+  calMonth = now.getMonth();
+}
+
+function changeMonth(d) {
+  calMonth += d;
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-month-label').textContent = `${months[calMonth]} ${calYear}`;
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const today = new Date().toISOString().slice(0,10);
+
+  let html = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="cal-day-name">${d}</div>`).join('');
+
+  for (let i=0; i<firstDay; i++) html += `<div class="cal-cell other-month"></div>`;
+
+  for (let d=1; d<=daysInMonth; d++) {
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayAppts = appointments.filter(a => a.date === dateStr);
+    const isToday = dateStr === today;
+    html += `<div class="cal-cell ${isToday?'today':''}">
+      <div class="cal-date">${d}</div>
+      ${dayAppts.map(a => {
+        const c = clients.find(x => x.id === a.clientId);
+        return `<div class="cal-event" title="${a.type}" onclick="openDetail('${a.clientId}')">${c ? c.firstName+' '+c.lastName[0] : '?'}</div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  document.getElementById('cal-grid').innerHTML = html;
+
+  // Upcoming list
+  const todayStr = new Date().toISOString().slice(0,10);
+  const upcoming = appointments.filter(a => a.date >= todayStr).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,10);
+  const ul = document.getElementById('upcoming-list');
+  if (!upcoming.length) {
+    ul.innerHTML = `<div class="empty" style="padding:20px 0"><div class="empty-icon">${I.calendar}</div><div class="empty-text">No upcoming appointments.</div></div>`;
+  } else {
+    ul.innerHTML = upcoming.map(a => {
+      const c = clients.find(x => x.id === a.clientId);
+      const [y,m,d] = a.date.split('-');
+      const mnames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return `<div class="appt-item" onclick="openDetail('${a.clientId}')" style="cursor:pointer">
+        <div class="appt-date-block"><div class="appt-month">${mnames[parseInt(m)-1]}</div><div class="appt-day">${parseInt(d)}</div></div>
+        <div class="appt-info">
+          <div class="appt-title">${c ? c.firstName+' '+c.lastName : 'Unknown'}</div>
+          <div class="appt-sub">${a.type}${a.time?' @ '+a.time:''}${a.notes?' — '+a.notes:''}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Add button for calendar
+  const existing = document.getElementById('cal-add-btn');
+  if (!existing) {
+    const btn = document.createElement('button');
+    btn.id = 'cal-add-btn';
+    btn.className = 'btn btn-primary';
+    btn.style.marginBottom = '16px';
+    btn.textContent = '+ Add Appointment';
+    btn.onclick = () => openAddAppt(null);
+    document.getElementById('view-calendar').insertBefore(btn, document.getElementById('cal-grid').nextSibling);
+  }
+}
+
+// ── MODAL UTILS ───────────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+
+// ── TOAST ─────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── ADDRESS AUTOFILL ──────────────────────────────────────────────────
+let addressLookupTimer = null;
+
+function scheduleAddressLookup() {
+  clearTimeout(addressLookupTimer);
+  addressLookupTimer = setTimeout(doAddressLookup, 900);
+}
+
+async function doAddressLookup() {
+  const street = document.getElementById('f-street').value.trim();
+  const city = document.getElementById('f-city').value.trim();
+  if (!street || !city) return;
+
+  // Only look up if zip is empty (don't overwrite user input)
+  const zipField = document.getElementById('f-zip');
+  if (zipField.value.trim()) return;
+
+  const spinner = document.getElementById('zip-spinner');
+  spinner.style.display = 'inline';
+
+  try {
+    const query = `${street}, ${city}, CA, USA`;
+    const cacheKey = 'zip:' + query.toLowerCase();
+    if (geocodeCache[cacheKey]) {
+      zipField.value = geocodeCache[cacheKey];
+      spinner.style.display = 'none';
+      return;
+    }
+    const params = new URLSearchParams({
+      format: 'json', limit: '1', countrycodes: 'us', addressdetails: '1',
+      street, city, state: 'CA', country: 'US'
+    });
+    const url = `https://nominatim.openstreetmap.org/search?${params}`;
+    const r = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+    const data = await r.json();
+    if (data && data.length && data[0].address && data[0].address.postcode) {
+      const zip = data[0].address.postcode.slice(0,5);
+      zipField.value = zip;
+      geocodeCache[cacheKey] = zip;
+      // Also cache the lat/lon for later map use
+      const fullAddr = clientAddress({ street, city, zip, state: 'CA' });
+      geocodeCache[fullAddr] = { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+      saveGeoCache();
+      // Auto-fill city if blank (in case only street was typed)
+      if (!document.getElementById('f-city').value.trim() && data[0].address.city) {
+        document.getElementById('f-city').value = data[0].address.city;
+      }
+    }
+  } catch(e) {}
+  spinner.style.display = 'none';
+}
+
+// ── WARRANTY AUTO-FILL ────────────────────────────────────────────────
+function autoFillWarrantyEnd() {
+  const start = document.getElementById('f-warranty-start').value;
+  if (!start) return;
+  const endField = document.getElementById('f-warranty-end');
+  // Only auto-fill if end is empty or was previously auto-filled
+  const d = new Date(start);
+  d.setFullYear(d.getFullYear() + 2);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  endField.value = `${yyyy}-${mm}-${dd}`;
+  // Also fill in default warranty notes if blank
+  const notesField = document.getElementById('f-warranty-notes');
+  if (!notesField.value.trim()) notesField.value = '2-year full exclusion warranty';
+}
+
+// ── MAP ───────────────────────────────────────────────────────────────
+let map = null;
+let mapMode = 'all';
+let mapMarkers = [];
+// geocode cache: address string -> {lat, lon} or null
+let geocodeCache = JSON.parse(localStorage.getItem('rg_geocache') || '{}');
+
+function saveGeoCache() { localStorage.setItem('rg_geocache', JSON.stringify(geocodeCache)); }
+
+function clientAddress(c) {
+  const statezip = [c.state || 'CA', c.zip].filter(Boolean).join(' ');
+  return [c.street, c.city, statezip].filter(Boolean).join(', ');
+}
+
+async function geocodeAddress(addr, structured) {
+  if (!addr) return null;
+  if (geocodeCache[addr] !== undefined) return geocodeCache[addr];
+
+  // Build queries: structured first (most reliable), then freeform fallback
+  const queries = [];
+
+  if (structured) {
+    const { street, city, zip } = structured;
+    // Structured query — Nominatim handles these much more reliably
+    const params = new URLSearchParams({
+      format: 'json', limit: '1', countrycodes: 'us', addressdetails: '1',
+      street, city, state: 'CA', postalcode: zip || '', country: 'US'
+    });
+    queries.push({ url: `https://nominatim.openstreetmap.org/search?${params}`, key: addr });
+
+    // Fallback 1: without ZIP (in case ZIP is wrong/missing)
+    const params2 = new URLSearchParams({
+      format: 'json', limit: '1', countrycodes: 'us', addressdetails: '1',
+      street, city, state: 'CA', country: 'US'
+    });
+    queries.push({ url: `https://nominatim.openstreetmap.org/search?${params2}`, key: addr + '_nz' });
+  }
+
+  // Fallback 2: freeform string
+  queries.push({ url: `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr + ', CA, USA')}&limit=1&countrycodes=us&addressdetails=1`, key: addr + '_ff' });
+
+  for (const q of queries) {
+    if (geocodeCache[q.key] !== undefined) {
+      const res = geocodeCache[q.key];
+      if (res) { geocodeCache[addr] = res; saveGeoCache(); return res; }
+      continue;
+    }
+    try {
+      const r = await fetch(q.url, { headers: { 'Accept-Language': 'en' } });
+      if (r.status === 429) {
+        // Rate limited — wait longer and retry once
+        await new Promise(res => setTimeout(res, 2500));
+        const r2 = await fetch(q.url, { headers: { 'Accept-Language': 'en' } });
+        if (!r2.ok) continue;
+        const data2 = await r2.json();
+        if (data2 && data2.length) {
+          const result = { lat: parseFloat(data2[0].lat), lon: parseFloat(data2[0].lon) };
+          geocodeCache[addr] = result; geocodeCache[q.key] = result;
+          saveGeoCache(); return result;
+        }
+        continue;
+      }
+      const data = await r.json();
+      if (data && data.length) {
+        const result = { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+        geocodeCache[addr] = result; geocodeCache[q.key] = result;
+        saveGeoCache(); return result;
+      }
+    } catch(e) {}
+    // Nominatim rate limit: must wait >= 1 second between requests
+    await new Promise(res => setTimeout(res, 1100));
+  }
+
+  geocodeCache[addr] = null;
+  saveGeoCache();
+  return null;
+}
+
+function initMap() {
+  if (map) return;
+  // Center on Alameda/Contra Costa counties
+  map = L.map('map-container', { zoomControl: true }).setView([37.82, -122.05], 10);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 19
+  }).addTo(map);
+}
+
+function clearMapMarkers() {
+  mapMarkers.forEach(m => map.removeLayer(m));
+  mapMarkers = [];
+}
+
+function makeIcon(color, label) {
+  return L.divIcon({
+    className: '',
+    html: `<div style="
+      display:flex;flex-direction:column;align-items:center;
+    "><div style="
+      width:28px;height:28px;background:${color};border-radius:50% 50% 50% 0;
+      transform:rotate(-45deg);border:2.5px solid rgba(255,255,255,0.9);
+      box-shadow:0 2px 8px rgba(0,0,0,0.22);
+    "></div></div>`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 28],
+    popupAnchor: [0, -30]
+  });
+}
+
+function clearAndRetryMap() {
+  // Remove all null/failed cache entries so they get retried fresh
+  Object.keys(geocodeCache).forEach(k => {
+    if (geocodeCache[k] === null) delete geocodeCache[k];
+  });
+  saveGeoCache();
+  renderMapPins();
+}
+
+function setMapMode(mode) {
+  mapMode = mode;
+  document.getElementById('map-btn-all').classList.toggle('active', mode === 'all');
+  document.getElementById('map-btn-day').classList.toggle('active', mode === 'day');
+  document.getElementById('map-day-picker').style.display = mode === 'day' ? 'flex' : 'none';
+  if (mode === 'day' && !document.getElementById('map-date-input').value) {
+    document.getElementById('map-date-input').value = new Date().toISOString().slice(0,10);
+  }
+  renderMapPins();
+}
+
+async function renderMapPins() {
+  if (!map) return;
+  clearMapMarkers();
+
+  let targets = [];
+  if (mapMode === 'all') {
+    targets = clients.filter(c => !isLead(c) && clientAddress(c));
+  } else {
+    const date = document.getElementById('map-date-input').value;
+    if (!date) { document.getElementById('map-status').textContent = 'Pick a date above.'; return; }
+    const dayAppts = appointments.filter(a => a.date === date);
+    const clientIds = [...new Set(dayAppts.map(a => a.clientId))];
+    targets = clients.filter(c => clientIds.includes(c.id) && clientAddress(c));
+  }
+
+  if (!targets.length) {
+    document.getElementById('map-status').textContent = mapMode === 'all' ? 'No clients with addresses yet.' : 'No appointments on this day.';
+    return;
+  }
+
+  const addPin = (c, coords) => {
+    const addr = clientAddress(c);
+    const ws = warrantyStatus(c);
+    let color = ws === 'active' ? '#28a745' : '#d63031';
+    if (mapMode === 'day') color = '#1c3d6e';
+    const apptCount = appointments.filter(a => a.clientId === c.id && a.date >= new Date().toISOString().slice(0,10)).length;
+    const popup = `
+      <div style="font-family:Inter,sans-serif;min-width:190px;padding:2px 0">
+        <div style="font-weight:700;font-size:1rem;margin-bottom:4px">${c.firstName} ${c.lastName}</div>
+        <div style="color:#888;font-size:0.83rem;margin-bottom:6px;line-height:1.4">${addr}</div>
+        ${c.phone ? `<div style="font-size:0.84rem;margin-bottom:3px">${I.phone} <a href="tel:${c.phone}" style="color:#1c3d6e">${c.phone}</a></div>` : ''}
+        <div style="margin-top:7px;font-size:0.8rem;font-weight:600;padding:3px 8px;border-radius:20px;display:inline-block;background:${ws==='active'?'#eaf7ed':'#fdf0f0'};color:${ws==='active'?'#28a745':'#d63031'}">${ws==='active'?'Warranty Active':ws==='expired'?'Warranty Expired':'No Warranty'}</div>
+        ${apptCount ? `<div style="font-size:0.82rem;color:#c89b2a;margin-top:5px">${I.calendar} ${apptCount} upcoming appt${apptCount>1?'s':''}</div>` : ''}
+        <button onclick="openDetail('${c.id}')" style="margin-top:10px;padding:6px 14px;background:#1c3d6e;color:#fff;border:none;border-radius:8px;font-size:0.82rem;cursor:pointer;font-family:Inter,sans-serif;font-weight:600">View Client →</button>
+      </div>`;
+    const marker = L.marker([coords.lat, coords.lon], { icon: makeIcon(color) })
+      .bindPopup(popup, { maxWidth: 240 })
+      .addTo(map);
+    mapMarkers.push(marker);
+  };
+
+  // Phase 1: instantly place all clients that already have coords stored
+  let placed = 0;
+  const needsGeocode = [];
+  for (const c of targets) {
+    if (c.lat && c.lon) {
+      addPin(c, { lat: c.lat, lon: c.lon });
+      placed++;
+    } else {
+      needsGeocode.push(c);
+    }
+  }
+
+  // Fit map to whatever we have immediately
+  if (mapMarkers.length) {
+    map.fitBounds(L.featureGroup(mapMarkers).getBounds().pad(0.15));
+  }
+
+  if (!needsGeocode.length) {
+    document.getElementById('map-status').textContent = `Showing ${placed} location${placed!==1?'s':''}.`;
+    return;
+  }
+
+  // Phase 2: fetch missing ones in background, adding pins as they resolve
+  document.getElementById('map-status').textContent =
+    `${placed} cached · looking up ${needsGeocode.length} new address${needsGeocode.length!==1?'es':''}…`;
+
+  let failed = 0;
+  for (let i = 0; i < needsGeocode.length; i++) {
+    const c = needsGeocode[i];
+    document.getElementById('map-status').textContent =
+      `${placed} shown · fetching ${i+1} of ${needsGeocode.length}…`;
+    const coords = await geocodeAddress(clientAddress(c), { street: c.street, city: c.city, zip: c.zip });
+    if (coords) {
+      // Persist coords on the record so we never fetch again
+      c.lat = coords.lat; c.lon = coords.lon;
+      save();
+      addPin(c, coords);
+      placed++;
+      // Re-fit bounds as new pins come in
+      if (mapMarkers.length > 1) map.fitBounds(L.featureGroup(mapMarkers).getBounds().pad(0.15));
+    } else {
+      failed++;
+    }
+  }
+
+  const msg = `Showing ${placed} location${placed!==1?'s':''}` +
+    (failed ? ` · ${failed} address${failed>1?'es':''} not found; try Retry Missing` : '');
+  document.getElementById('map-status').textContent = msg;
+}
+
+// ── VCF IMPORT ────────────────────────────────────────────────────────
+let importCandidates = [];
+
+function normalizePhone(raw) {
+  if (!raw) return '';
+  const digits = raw.replace(/\D/g, '');
+  if (digits.length === 11 && digits[0] === '1') return normalizePhone(digits.slice(1));
+  if (digits.length === 10) return `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+  return raw.trim(); // return as-is if unusual
+}
+
+function addWarrantyEnd(startDate) {
+  if (!startDate) return '';
+  const d = new Date(startDate);
+  d.setFullYear(d.getFullYear() + 2);
+  return d.toISOString().slice(0,10);
+}
+
+// Extract email from NOTE field if present
+function extractEmailFromNote(note) {
+  if (!note) return { email: '', note };
+  const emailRx = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/;
+  const match = note.match(emailRx);
+  if (match) {
+    const email = match[0];
+    const cleanedNote = note.replace(email, '').replace(/^\s*[\n\r]+/, '').trim();
+    return { email, note: cleanedNote };
+  }
+  return { email: '', note };
+}
+
+function parseVcf(text) {
+  const cards = text.split(/BEGIN:VCARD/i).filter(s => s.trim());
+  return cards.map(card => {
+    const get = (rx) => { const m = card.match(rx); return m ? m[1].trim() : ''; };
+    const getAll = (rx) => { const matches = [...card.matchAll(rx)]; return matches.map(m => m[1].trim()); };
+
+    // Name
+    const nField = get(/^N:(.+)$/m).split(';');
+    const fn = get(/^FN:(.+)$/m);
+    const nameParts = fn.split(' ');
+    const firstName = (nField[1] || '').trim() || nameParts[0] || '';
+    const lastName  = (nField[0] || '').trim() || nameParts.slice(1).join(' ') || '';
+
+    // Phone — prefer pref, fall back to any
+    const prefPhone = get(/^TEL[^:\n]*pref[^:\n]*:(.+)$/mi) || get(/^TEL[^:\n]*:(.+)$/mi);
+    const phone = normalizePhone(prefPhone);
+
+    // Email
+    const emailDirect = get(/^EMAIL[^:]*:(.+)$/m);
+
+    // Address: ;;street;city;state;zip;country
+    const adrRaw = get(/^ADR[^:\n]*:(.+)$/mi);
+    let street = '', city = '', zip = '';
+    if (adrRaw) {
+      const parts = adrRaw.split(';');
+      // format: po;ext;street;city;state;zip;country
+      street = (parts[2] || '').replace(/\\,/g, ',').trim();
+      city   = (parts[3] || '').trim();
+      zip    = (parts[5] || '').trim();
+    }
+
+    // Custom fields by label
+    const labeledDates = [...card.matchAll(/item(\d+)\.X-ABDATE[^:]*:(.+)/g)];
+    const labeledNames = [...card.matchAll(/item(\d+)\.X-ABRELATEDNAMES[^:]*:(.+)/g)];
+    const labeledLabels = [...card.matchAll(/item(\d+)\.X-ABLabel:(.+)/g)];
+
+    const getLabelValue = (labelText) => {
+      const labelEntry = labeledLabels.find(m => m[2].trim().toLowerCase() === labelText.toLowerCase());
+      if (!labelEntry) return '';
+      const idx = labelEntry[1];
+      const val = labeledNames.find(m => m[1] === idx);
+      return val ? val[2].trim() : '';
+    };
+
+    const getDateByLabel = (labelText) => {
+      const labelEntry = labeledLabels.find(m => m[2].trim().toLowerCase() === labelText.toLowerCase());
+      if (!labelEntry) return '';
+      const idx = labelEntry[1];
+      const val = labeledDates.find(m => m[1] === idx);
+      return val ? val[2].trim() : '';
+    };
+
+    const jobDate    = getDateByLabel('job date');
+    const pestType   = getLabelValue('pest-mac') || getLabelValue('pest');
+    const amount     = getLabelValue('amount-mac') || getLabelValue('amount');
+
+    // Note
+    const rawNote = get(/^NOTE:(.+)$/m).replace(/\\n/g, '\n');
+    const { email: noteEmail, note: cleanNote } = extractEmailFromNote(rawNote);
+    const email = emailDirect || noteEmail;
+
+    // Build notes string
+    const noteParts = [];
+    if (pestType) noteParts.push(`Pest: ${pestType}`);
+    if (amount)   noteParts.push(`Job amount: ${amount}`);
+    if (cleanNote) noteParts.push(cleanNote);
+    const notes = noteParts.join('\n');
+
+    const warrantyStart = jobDate;
+    const warrantyEnd   = addWarrantyEnd(jobDate);
+
+    return { firstName, lastName, phone, email, street, city, zip, state: 'CA',
+             warrantyStart, warrantyEnd, warrantyNotes: '2-year full exclusion warranty',
+             notes, _raw: { pestType, amount, jobDate } };
+  }).filter(c => c.firstName || c.lastName);
+}
+
+function detectDuplicates(candidates) {
+  // Flag if same address already exists in DB or within the import batch
+  const flags = candidates.map(() => []);
+  const allAddrs = candidates.map(c => (c.street + c.city).toLowerCase().replace(/\s/g,''));
+  const dbAddrs  = clients.map(c => (c.street + c.city).toLowerCase().replace(/\s/g,''));
+
+  candidates.forEach((c, i) => {
+    // Duplicate address in import batch
+    const batchDupe = allAddrs.findIndex((a, j) => j !== i && a === allAddrs[i] && allAddrs[i]);
+    if (batchDupe !== -1) flags[i].push('Same address as row ' + (batchDupe + 1));
+    // Already in DB
+    const dbMatch = dbAddrs.findIndex(a => a === allAddrs[i] && allAddrs[i]);
+    if (dbMatch !== -1) flags[i].push(isLead(clients[dbMatch]) ? 'Upgrades existing lead' : 'Already in database');
+    // Name already in DB
+    const nameMatch = clients.find(c2 =>
+      c2.firstName.toLowerCase() === c.firstName.toLowerCase() &&
+      c2.lastName.toLowerCase()  === c.lastName.toLowerCase());
+    if (nameMatch) flags[i].push('Name already in database');
+  });
+  return flags;
+}
+
+function handleVcfUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    importCandidates = parseVcf(e.target.result);
+    const flags = detectDuplicates(importCandidates);
+    renderImportModal(importCandidates, flags);
+    openModal('modal-import');
+    event.target.value = ''; // reset so same file can be re-uploaded
+  };
+  reader.readAsText(file);
+}
+
+function renderImportModal(candidates, flags) {
+  const flagged = flags.filter(f => f.length).length;
+  document.getElementById('import-summary').innerHTML =
+    `Found <strong>${candidates.length} contacts</strong> in file &nbsp;·&nbsp; ` +
+    `<strong style="color:var(--green)">${candidates.length - flagged}</strong> clean &nbsp;·&nbsp; ` +
+    `<strong style="color:var(--gold)">${flagged}</strong> flagged for review`;
+
+  const tbody = document.getElementById('import-table-body');
+  tbody.innerHTML = candidates.map((c, i) => {
+    const f = flags[i];
+    const isFlagged = f.length > 0;
+    const addr = [c.street, c.city, c.zip].filter(Boolean).join(', ');
+    const warrantyStr = c.warrantyStart
+      ? `${c.warrantyStart} → ${c.warrantyEnd}`
+      : '<span style="color:var(--muted)">No date</span>';
+    const flagHtml = f.map(fl => `<span class="import-flag">${fl}</span>`).join(' ');
+    const notesShort = c.notes.length > 60 ? c.notes.slice(0,60) + '…' : c.notes;
+    return `<tr class="${isFlagged ? 'flagged' : ''}" id="import-row-${i}">
+      <td>
+        <button class="import-row-toggle include" id="import-toggle-${i}" onclick="toggleImportRow(${i})">${I.check}</button>
+      </td>
+      <td><strong>${c.firstName} ${c.lastName}</strong></td>
+      <td style="white-space:nowrap">${c.phone || '—'}</td>
+      <td>${addr || '—'}</td>
+      <td style="white-space:nowrap;font-size:0.78rem">${warrantyStr}</td>
+      <td>
+        ${flagHtml}
+        ${notesShort ? `<div style="color:var(--muted);font-size:0.78rem;margin-top:2px">${notesShort}</div>` : ''}
+      </td>
+    </tr>`;
+  }).join('');
+
+  updateImportCount();
+}
+
+function toggleImportRow(i) {
+  const row = document.getElementById(`import-row-${i}`);
+  const btn = document.getElementById(`import-toggle-${i}`);
+  if (btn.classList.contains('include')) {
+    btn.classList.remove('include');
+    btn.classList.add('skip');
+    btn.innerHTML = I.x;
+    row.classList.add('skip');
+  } else {
+    btn.classList.remove('skip');
+    btn.classList.add('include');
+    btn.innerHTML = I.check;
+    row.classList.remove('skip');
+  }
+  updateImportCount();
+}
+
+function updateImportCount() {
+  const total = importCandidates.length;
+  const skipped = document.querySelectorAll('#import-table-body tr.skip').length;
+  const importing = total - skipped;
+  document.getElementById('import-count-label').textContent =
+    `${importing} of ${total} selected for import`;
+}
+
+function commitImport() {
+  let added = 0;
+  const newClients = [];
+  importCandidates.forEach((c, i) => {
+    const btn = document.getElementById(`import-toggle-${i}`);
+    if (!btn || !btn.classList.contains('include')) return;
+    const lead = clients.find(x => isLead(x) && sameName(x, c) && addrKey(x) && addrKey(x) === addrKey(c))
+             || clients.find(x => isLead(x) && sameName(x, c) && phoneKey(x.phone) && phoneKey(x.phone) === phoneKey(c.phone));
+    if (lead) {
+      // Merge into the existing lead: keeps its visit history, fills in job data
+      for (const k of ['firstName','lastName','phone','email','street','city','zip','warrantyStart','warrantyEnd','warrantyNotes']) if (c[k]) lead[k] = c[k];
+      lead.notes = [lead.notes, c.notes].filter(Boolean).join('\n');
+      lead.status = 'customer';
+      newClients.push(lead);
+    } else {
+      const record = { ...c, id: uid(), createdAt: new Date().toISOString().slice(0,10) };
+      clients.push(record);
+      newClients.push(record);
+    }
+    added++;
+  });
+  save();
+  closeModal('modal-import');
+  renderClients();
+  showToast(`${added} client${added !== 1 ? 's' : ''} imported. Geocoding in background…`);
+  // Geocode all new clients sequentially in background
+  (async () => {
+    for (const c of newClients) await geocodeAndStore(c);
+    showToast('All addresses geocoded and saved.');
+  })();
+}
+
+// ── ICS IMPORT ────────────────────────────────────────────────────────
+let icsGroups = [];
+
+// Match key: house number + first street word + city, e.g. "1173spruce|livermore"
+function addrKey(c) {
+  const m = (c.street || '').match(/^\s*(\d+)\s+([A-Za-z0-9]+)/);
+  if (!m) return '';
+  return m[1] + m[2].toLowerCase() + '|' + (c.city || '').toLowerCase().replace(/[^a-z]/g, '');
+}
+const phoneKey = p => (p || '').replace(/\D/g, '').slice(-10);
+
+function lev(a, b) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+    d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+  return d[a.length][b.length];
+}
+const letters = s => (s || '').toLowerCase().replace(/[^a-z]/g, '');
+// Same person? Last names within 2 typos (Douglass/Douglas), or same first name (married-name changes)
+function sameName(a, b) {
+  const la = letters(a.lastName), lb = letters(b.lastName), fa = letters(a.firstName), fb = letters(b.firstName);
+  if (la && lb && (la === lb || (Math.min(la.length, lb.length) >= 4 && lev(la, lb) <= 2))) return true;
+  return !!(fa && fb && fa === fb && (la || lb));
+}
+
+function icsUnescape(v) { return (v || '').replace(/\\n/gi, '\n').replace(/\\([,;\\])/g, '$1').trim(); }
+
+function parseIcsLocation(loc) {
+  const parts = icsUnescape(loc).split(/\n|,\s*/).map(p => p.trim())
+    .filter(p => p && !/^united states$/i.test(p));
+  const zipM = parts.join(' ').match(/\b(\d{5})\b/);
+  const street = parts[0] || '';
+  let city = (parts[1] || '').replace(/\s+ca\b.*$/i, '').replace(/\b\d{5}\b/, '').trim();
+  if (/^ca$/i.test(city)) city = '';
+  city = city.replace(/\b\w/g, ch => ch.toUpperCase());
+  return { street, city, zip: zipM ? zipM[1] : '' };
+}
+
+function parseIcs(text) {
+  const unfolded = text.replace(/\r\n/g, '\n').replace(/\n[ \t]/g, '');
+  const blocks = unfolded.split('BEGIN:VEVENT').slice(1).map(b => b.split('END:VEVENT')[0]);
+  const prop = (b, k) => { const m = b.match(new RegExp('^' + k + '(?:;[^:\\n]*)?:(.*)$', 'm')); return m ? m[1] : ''; };
+  return blocks.map(b => {
+    const dt = prop(b, 'DTSTART').match(/(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2}))?/);
+    if (!dt) return null;
+    const summary = icsUnescape(prop(b, 'SUMMARY'));
+    const desc = icsUnescape(prop(b, 'DESCRIPTION'));
+    // Name is before the first spaced hyphen ("Last, First - 123 Main..."); keeps "Flynn-Curran"
+    const split = summary.replace(/^\*/, '').split(/\s+-\s*|\s*-\s+/);
+    let rawName = split.length > 1 ? split[0] : summary.replace(/^\*/, '').split(/[\d($]/)[0];
+    rawName = rawName.trim();
+    let firstName = rawName, lastName = '';
+    if (rawName.includes(',')) { [lastName, firstName] = rawName.split(',').map(s => s.trim()); }
+    else if (rawName.split(' ').length === 2) { [firstName, lastName] = rawName.split(' '); }
+    const phoneM = (desc + ' ' + summary).match(/\(?\d{3}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}/);
+    const emailM = desc.match(/[\w.%+\-]+@[\w.\-]+\.[a-z]{2,}/i);
+    const geo = b.match(/geo:(-?[\d.]+)\\?,(-?[\d.]+)/);
+    const loc = parseIcsLocation(prop(b, 'LOCATION'));
+    const notesText = [split.length > 1 ? split.slice(1).join(' - ') : '', desc.replace(/\n+/g, ' · ')].filter(Boolean).join(' · ');
+    return {
+      uid: prop(b, 'UID'),
+      date: `${dt[1]}-${dt[2]}-${dt[3]}`,
+      time: dt[4] ? `${dt[4]}:${dt[5]}` : '',
+      firstName, lastName,
+      phone: phoneM ? normalizePhone(phoneM[0]) : '',
+      email: emailM ? emailM[0] : '',
+      ...loc,
+      lat: geo ? parseFloat(geo[1]) : null,
+      lon: geo ? parseFloat(geo[2]) : null,
+      notes: notesText
+    };
+  }).filter(Boolean);
+}
+
+function handleIcsUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const events = parseIcs(e.target.result);
+    const seenUids = new Set(appointments.map(a => a.icsUid).filter(Boolean));
+    const byAddr = {}, byPhone = {};
+    clients.forEach(c => { const k = addrKey(c); if (k) byAddr[k] = c; const p = phoneKey(c.phone); if (p) byPhone[p] = c; });
+
+    // Group events by person (address, then phone, then name)
+    const groups = {};
+    let skippedDup = 0;
+    for (const ev of events) {
+      if (ev.uid && seenUids.has(ev.uid)) { skippedDup++; continue; }
+      const pk = phoneKey(ev.phone);
+      const gk = addrKey(ev) || (pk ? 'p' + pk : 'n' + (ev.firstName + ev.lastName).toLowerCase());
+      if (!groups[gk]) groups[gk] = { person: ev, events: [] };
+      groups[gk].events.push(ev);
+      if (ev.date > groups[gk].person.date) groups[gk].person = { ...ev, lat: ev.lat ?? groups[gk].person.lat, lon: ev.lon ?? groups[gk].person.lon };
+    }
+    // Link only when address or phone agrees AND the name is similar
+    for (const g of Object.values(groups)) {
+      const p = g.person, aC = byAddr[addrKey(p)], pC = byPhone[phoneKey(p.phone)];
+      g.match = (aC && sameName(aC, p)) ? aC : (pC && sameName(pC, p)) ? pC : null;
+      if (g.match) {
+        g.otherAddr = addrKey(g.match) !== addrKey(p) && !!p.street;
+        g.nameDiff = letters(g.match.lastName) !== letters(p.lastName) ? `${p.firstName} ${p.lastName}` : '';
+      } else if (aC || pC) {
+        g.hint = aC ? `Same address as ${aC.firstName} ${aC.lastName}` : `Shares phone with ${pC.firstName} ${pC.lastName}`;
+      }
+    }
+    icsGroups = Object.values(groups).sort((a, b) => (b.match ? 1 : 0) - (a.match ? 1 : 0) || b.person.date.localeCompare(a.person.date));
+    icsGroups.forEach(g => g.include = true);
+    renderIcsModal(events.length, skippedDup);
+    openModal('modal-ics');
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function renderIcsModal(total, skippedDup) {
+  const linked = icsGroups.filter(g => g.match).length;
+  document.getElementById('ics-summary').innerHTML =
+    `${total} events, grouped into <strong>${icsGroups.length} people</strong> &nbsp;·&nbsp; ` +
+    `<strong style="color:var(--green)">${linked}</strong> linked to existing clients &nbsp;·&nbsp; ` +
+    `<strong style="color:var(--gold)">${icsGroups.length - linked}</strong> new leads` +
+    (skippedDup ? ` &nbsp;·&nbsp; ${skippedDup} already imported` : '');
+  document.getElementById('ics-table-body').innerHTML = icsGroups.map((g, i) => {
+    const p = g.person, dates = g.events.map(e => e.date).sort();
+    return `<tr id="ics-row-${i}">
+      <td><button class="import-row-toggle include" id="ics-toggle-${i}" onclick="toggleIcsRow(${i})">${I.check}</button></td>
+      <td><strong>${p.firstName} ${p.lastName}</strong></td>
+      <td style="white-space:nowrap">${p.phone || '—'}</td>
+      <td>${[p.street, p.city].filter(Boolean).join(', ') || '—'}</td>
+      <td style="white-space:nowrap;font-size:0.78rem">${g.events.length > 1 ? `${g.events.length} visits<br>${dates[0]} to ${dates[dates.length-1]}` : dates[0]}</td>
+      <td>${g.match ? `<span class="match-tag linked">Links to ${g.match.firstName} ${g.match.lastName}</span>`
+          + (g.nameDiff ? `<span class="import-flag">Calendar spells it ${g.nameDiff}</span>` : '')
+          + (g.otherAddr ? '<span class="import-flag">Visit at a different property</span>' : '')
+        : '<span class="match-tag lead">New lead</span>' + (g.hint ? `<span class="import-flag">${g.hint}; not linked</span>` : '')}</td>
+    </tr>`;
+  }).join('');
+  updateIcsCount();
+}
+
+function toggleIcsRow(i) {
+  const g = icsGroups[i]; g.include = !g.include;
+  const btn = document.getElementById(`ics-toggle-${i}`);
+  btn.className = 'import-row-toggle ' + (g.include ? 'include' : 'skip');
+  btn.innerHTML = g.include ? I.check : I.x;
+  document.getElementById(`ics-row-${i}`).classList.toggle('skip', !g.include);
+  updateIcsCount();
+}
+
+function updateIcsCount() {
+  const sel = icsGroups.filter(g => g.include);
+  document.getElementById('ics-count-label').textContent =
+    `${sel.length} of ${icsGroups.length} people · ${sel.reduce((n, g) => n + g.events.length, 0)} appointments selected`;
+}
+
+function commitIcsImport() {
+  let appts = 0, leads = 0;
+  for (const g of icsGroups) {
+    if (!g.include) continue;
+    let client = g.match;
+    if (!client) {
+      const p = g.person, first = g.events.map(e => e.date).sort()[0];
+      client = { id: uid(), status: 'lead', source: 'BusyCal', createdAt: first,
+        firstName: p.firstName, lastName: p.lastName, phone: p.phone, email: p.email,
+        street: p.street, city: p.city, zip: p.zip, state: 'CA', lat: p.lat, lon: p.lon,
+        warrantyStart: '', warrantyEnd: '', warrantyNotes: '', notes: '' };
+      clients.push(client); leads++;
+    } else {
+      // Fill blanks on the client from the calendar; never overwrite contact data
+      const p = g.person;
+      for (const k of ['phone', 'email']) if (!client[k] && p[k]) client[k] = p[k];
+      if (!g.otherAddr) {
+        for (const k of ['street', 'city', 'zip']) if (!client[k] && p[k]) client[k] = p[k];
+        if (!client.lat && p.lat) { client.lat = p.lat; client.lon = p.lon; }   // free coords from Apple
+      }
+    }
+    for (const ev of g.events) {
+      const away = g.match && addrKey(ev) && addrKey(ev) !== addrKey(client);
+      appointments.push({ id: uid(), clientId: client.id, date: ev.date, time: ev.time,
+        type: 'Initial Inspection', notes: (away ? `At ${ev.street}, ${ev.city} · ` : '') + ev.notes, icsUid: ev.uid });
+      appts++;
+    }
+  }
+  save();
+  closeModal('modal-ics');
+  renderClients();
+  showToast(`${appts} appointments imported · ${leads} new leads`);
+}
+
+function convertCurrentLead() {
+  const c = clients.find(x => x.id === currentClientId);
+  if (!c) return;
+  c.status = 'customer';
+  save(); renderClients();
+  editCurrentClient();   // opens the form so warranty dates can be filled in
+  showToast('Converted to customer; add the job date to start the warranty.');
+}
+
+// ── ICONS ─────────────────────────────────────────────────────────────
+const ICON_PATHS = {
+  shield:   '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/>',
+  search:   '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/>',
+  upload:   '<path d="M12 16V4M7 9l5-5 5 5M4 20h16"/>',
+  chevL:    '<path d="M15 18l-6-6 6-6"/>',
+  chevR:    '<path d="M9 18l6-6-6-6"/>',
+  pin:      '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  refresh:  '<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',
+  x:        '<path d="M18 6L6 18M6 6l12 12"/>',
+  edit:     '<path d="M4 20h4L19 9l-4-4L4 16v4z"/>',
+  trash:    '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+  check:    '<path d="M5 12l5 5 9-10"/>',
+  alert:    '<path d="M12 3L2 21h20L12 3z"/><path d="M12 10v5M12 18h.01"/>',
+  mail:     '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+  phone:    '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+  home:     '<path d="M3 11l9-7 9 7M5 10v10h14V10"/>',
+  map:      '<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/>',
+  logout:   '<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/>'
+};
+const I = {};
+for (const k in ICON_PATHS) I[k] = `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATHS[k]}</svg>`;
+function hydrateIcons(root = document) {
+  root.querySelectorAll('[data-i]').forEach(el => { el.outerHTML = I[el.dataset.i] || ''; });
+}
+
+// ── RESET ─────────────────────────────────────────────────────────────
+function resetAllData() {
+  const typed = prompt('This permanently deletes ALL clients and appointments from the database, on every device.\n\nExport a backup first if unsure. Type DELETE to confirm.');
+  if (typed !== 'DELETE') { if (typed !== null) showToast('Reset cancelled.'); return; }
+  clients = []; appointments = []; geocodeCache = {};
+  localStorage.removeItem('rg_geocache');
+  renderClients(); renderStats();
+  if (map) clearMapMarkers();
+  saveNow().then(ok => showToast(ok ? 'All data cleared.' : 'Could not reach the database; will retry.'));
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+hydrateIcons();
+initCal();
+renderClients();
+renderStats();
+startApp();
+</script>
+</body>
+</html>
