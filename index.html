@@ -89,6 +89,180 @@
   .icon-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
   .footer-links { display: flex; justify-content: center; gap: 18px; margin: 40px 0 8px; }
   .footer-links .reset-link { margin: 0; }
+  /* CALENDAR (Apple / BusyCal style) */
+  :root { --hour: 52px; }
+  .k-new    { --k: #84cc16; --kt: #eef9dd; --kx: #3f6212; }
+  .k-recall { --k: #e5484d; --kt: #fdecec; --kx: #9b1c1f; }
+  .k-renew  { --k: #1f7a3a; --kt: #e3f1e7; --kx: #14532d; }
+  .k-check  { --k: #f2c230; --kt: #fdf5d6; --kx: #7a5b00; }
+  .k-other  { --k: #8e8e93; --kt: #f0f0f3; --kx: #3a3a3c; }
+  .cv-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .cv-title { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; }
+  .cv-title span { color: var(--muted); font-weight: 400; }
+  .cv-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .cv-controls .seg { margin-bottom: 0; }
+  .cv-nav { display: inline-flex; border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--card); }
+  .cv-nav button { border: none; background: transparent; padding: 6px 11px; font-family: inherit; font-size: 0.85rem; font-weight: 600; color: var(--text-2); cursor: pointer; display: inline-flex; align-items: center; }
+  .cv-nav button + button { border-left: 1px solid var(--border); }
+  .cv-nav button:hover { background: var(--bg); }
+  .cv-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .cv-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--card); font-family: inherit; font-size: 0.8rem; font-weight: 600; color: var(--text-2); cursor: pointer; }
+  .cv-chip .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--k); }
+  .cv-chip.off { opacity: 0.45; }
+  .cv-chip.off .dot { background: transparent; border: 2px solid var(--k); width: 6px; height: 6px; }
+  /* month */
+  .cv-month { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+  .cv-dow { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-bottom: 1px solid var(--border); }
+  .cv-dow div { text-align: right; padding: 6px 8px; font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .cv-mgrid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .cv-day { min-height: 104px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 4px 4px 6px; cursor: pointer; min-width: 0; }
+  .cv-day:nth-child(7n) { border-right: none; }
+  .cv-day.out { background: #fafafc; }
+  .cv-day.out .cv-num { color: #c7c7cc; }
+  .cv-day.sel { background: var(--blue-light); }
+  .cv-num { text-align: right; font-size: 0.82rem; font-weight: 600; color: var(--text-2); margin-bottom: 2px; }
+  .cv-num b { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; border-radius: 12px; padding: 0 5px; font-weight: 600; }
+  .cv-day.today .cv-num b { background: var(--gold-bright); color: var(--blue); font-weight: 800; }
+  .cv-ev { display: flex; align-items: center; gap: 4px; font-size: 0.72rem; line-height: 1.35; padding: 1px 4px; border-radius: 4px; white-space: nowrap; overflow: hidden; color: var(--text); }
+  .cv-ev:hover { background: var(--kt); }
+  .cv-ev .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--k); flex-shrink: 0; }
+  .cv-ev .t { color: var(--muted); flex-shrink: 0; }
+  .cv-ev .n { overflow: hidden; text-overflow: ellipsis; }
+  .cv-more { font-size: 0.7rem; color: var(--muted); font-weight: 600; padding: 1px 4px; }
+  .cv-dots { display: none; gap: 3px; justify-content: center; flex-wrap: wrap; padding-top: 2px; }
+  .cv-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--k); }
+  /* agenda */
+  .cv-agenda { margin-top: 16px; }
+  .cv-agenda h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+  .cv-item { display: flex; gap: 12px; align-items: stretch; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; }
+  .cv-item:hover { border-color: #c8d6ee; }
+  .cv-item .bar { width: 4px; border-radius: 2px; background: var(--k); flex-shrink: 0; }
+  .cv-item .when { width: 64px; flex-shrink: 0; font-size: 0.8rem; font-weight: 600; color: var(--text-2); line-height: 1.3; }
+  .cv-item .when small { display: block; color: var(--muted); font-weight: 500; }
+  .cv-item .what { flex: 1; min-width: 0; }
+  .cv-item .what b { display: block; font-size: 0.93rem; }
+  .cv-item .what span { display: block; font-size: 0.8rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cv-tag { font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: var(--kt); color: var(--kx); align-self: center; flex-shrink: 0; }
+  .cv-item a.dir { align-self: center; color: var(--blue-mid); display: inline-flex; padding: 6px; border-radius: 8px; }
+  .cv-item a.dir:hover { background: var(--bg); }
+  /* week / day time grid */
+  .tg { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+  .tg-row { display: grid; grid-template-columns: 52px repeat(var(--cols), minmax(0, 1fr)); }
+  .tg-head { border-bottom: 1px solid var(--border); }
+  .tg-dh { text-align: center; padding: 6px 2px; cursor: pointer; font-size: 0.72rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+  .tg-dh b { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; border-radius: 14px; font-size: 1.05rem; color: var(--text); margin-left: 4px; }
+  .tg-dh.today b { background: var(--gold-bright); color: var(--blue); }
+  .tg-allday { border-bottom: 1px solid var(--border); min-height: 26px; }
+  .tg-allday .lbl, .tg-gut { font-size: 0.66rem; color: var(--muted); text-align: right; padding-right: 6px; }
+  .tg-allday .lbl { padding-top: 6px; }
+  .tg-allday .cell { border-left: 1px solid var(--border); padding: 2px; min-width: 0; }
+  .tg-scroll { max-height: calc(100vh - 300px); min-height: 360px; overflow-y: auto; }
+  .tg-gut div { height: var(--hour); position: relative; top: -0.5em; }
+  .tg-col { position: relative; border-left: 1px solid var(--border); background: repeating-linear-gradient(to bottom, var(--border) 0, var(--border) 1px, transparent 1px, transparent var(--hour)); cursor: copy; min-width: 0; }
+  .tg-col.today { background-color: #fffbea; }
+  .tg-ev { position: absolute; border-radius: 6px; background: var(--kt); border-left: 3px solid var(--k); color: var(--kx); padding: 2px 5px; font-size: 0.72rem; line-height: 1.25; overflow: hidden; cursor: pointer; box-shadow: 0 0 0 1px #fff; }
+  .tg-ev b { display: block; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tg-ev span { display: block; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tg-ev:hover { filter: brightness(0.97); z-index: 3; }
+  .tg-now { position: absolute; left: 0; right: 0; height: 2px; background: #e5484d; z-index: 4; pointer-events: none; }
+  .tg-now::before { content: ''; position: absolute; left: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: #e5484d; }
+  .tg-pill { display: block; font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: var(--kt); color: var(--kx); border-left: 3px solid var(--k); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+  @media (max-width: 600px) {
+    .cv-title { font-size: 1.3rem; }
+    .cv-day { min-height: 54px; padding: 3px 1px; }
+    .cv-dow div { text-align: center; padding: 6px 0; }
+    .cv-num { text-align: center; }
+    .cv-ev, .cv-more { display: none; }
+    .cv-dots { display: flex; }
+    .tg-row { grid-template-columns: 34px repeat(var(--cols), minmax(0, 1fr)); }
+    .tg-dh { font-size: 0.6rem; padding: 4px 0; }
+    .tg-dh b { display: flex; width: max-content; margin: 2px auto 0; min-width: 24px; height: 24px; font-size: 0.9rem; }
+    .cv-filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-right: -14px; padding-right: 14px; }
+    .cv-chip { flex-shrink: 0; }
+    .tg.week .tg-ev { padding: 1px 2px; font-size: 0.6rem; }
+    .tg.week .tg-ev span { display: none; }
+  }
+
+  /* PROPOSALS */
+  .prop-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .prop-item { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 11px 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+  .prop-item:hover { border-color: #c8d6ee; }
+  .prop-item .appt-info { min-width: 0; }
+  .prop-status { padding: 3px 9px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; flex-shrink: 0; }
+  .prop-status.draft { background: var(--gold-light); color: var(--gold); }
+  .prop-status.signed { background: var(--green-light); color: var(--green); }
+  .modal.sheet-modal { max-width: 720px; }
+  .opt-row { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; padding: 6px 0; }
+  .opt-row input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--blue); flex-shrink: 0; }
+  .sig-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .sig-row:last-child { border-bottom: none; }
+  .sig-row .sig-label { flex: 1; font-size: 0.9rem; font-weight: 600; }
+  .sig-row .sig-label small { display: block; font-weight: 400; color: var(--muted); font-size: 0.78rem; }
+  .sig-thumb { height: 40px; max-width: 150px; object-fit: contain; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 2px 6px; }
+  .lock-note { background: var(--green-light); border: 1px solid #b8e6c4; color: var(--green); border-radius: 10px; padding: 10px 14px; font-size: 0.85rem; display: flex; align-items: center; gap: 10px; justify-content: space-between; flex-wrap: wrap; margin-bottom: 6px; }
+  .modal-footer.wrap { flex-wrap: wrap; }
+  .modal-footer .spacer { flex: 1; font-size: 0.8rem; color: var(--muted); align-self: center; }
+  #sign-canvas { width: 100%; height: 220px; display: block; touch-action: none; background: #fff; border: 1.5px dashed var(--border); border-radius: 12px; cursor: crosshair; }
+  .sign-hint { font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; }
+  .preview-wrap { overflow: hidden; background: #e9e9ee; border-radius: 12px; padding: 0; }
+  .preview-inner { transform-origin: top left; }
+  #print-area { display: none; }
+  #modal-appt { z-index: 2050; } #modal-proposal { z-index: 2100; } #modal-preview { z-index: 2200; } #modal-sign { z-index: 2300; }
+
+  /* The proposal sheet: mirrors the paper form, letter size */
+  .ps-page { width: 8.5in; min-height: 11in; box-sizing: border-box; padding: 0.25in 0.4in; background: #fff; color: #111; font-family: Arial, Helvetica, sans-serif; font-size: 10.5pt; }
+  .ps-box { border: 1.6px solid #111; border-radius: 22px; position: relative; }
+  .ps-main { padding: 14px 0 0; }
+  .ps-title { position: absolute; top: -0.8em; left: 50%; transform: translateX(-50%); background: #fff; padding: 0 8px; font-weight: 900; font-size: 17pt; letter-spacing: 0.04em; font-family: 'Arial Black', Arial, sans-serif; }
+  .ps-head { display: flex; justify-content: space-between; gap: 16px; padding: 4px 22px 8px 26px; }
+  .ps-logo { position: relative; width: 3.15in; flex-shrink: 0; }
+  .ps-logo img { width: 100%; display: block; }
+  .ps-addr { position: absolute; left: 25.5%; top: 63%; font-family: 'Times New Roman', Times, serif; font-weight: 700; font-size: 10.5pt; line-height: 1.2; }
+  .ps-terms { width: 3.25in; font-size: 8.6pt; line-height: 1.28; padding-top: 16px; }
+  .ps-grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1.3px solid #111; }
+  .ps-cell { border-bottom: 1.3px solid #111; min-height: 0.33in; padding: 1px 6px 2px; position: relative; }
+  .ps-grid > .ps-cell:nth-child(odd), .ps-grid > .ps-split:nth-child(odd) { border-right: 1.3px solid #111; }
+  .ps-split { display: flex; border-bottom: 1.3px solid #111; }
+  .ps-split .ps-cell { border-bottom: none; flex: 1; }
+  .ps-split .ps-cell + .ps-cell { border-left: 1.3px solid #111; }
+  .ps-lab { font-size: 9pt; line-height: 1.1; }
+  .ps-val { font-family: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive; color: #1c3d6e; font-size: 11.5pt; line-height: 1.12; padding-left: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .ps-spec { padding: 3px 6px 0; }
+  .ps-lines { position: relative; min-height: calc(9 * 0.265in); background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(0.265in - 1.2px), #111 calc(0.265in - 1.2px), #111 0.265in); margin: 2px -6px 0; padding: 0 10px; }
+  .ps-lines .ps-val { line-height: 0.265in; font-size: 11.5pt; padding-left: 4px; }
+  .ps-checks { padding: 10px 0 6px 34px; min-height: 1.15in; }
+  .ps-check { display: flex; align-items: center; gap: 10px; height: 0.25in; font-size: 9.5pt; }
+  .ps-check .box { width: 13px; height: 13px; border: 1.4px solid #111; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #1c3d6e; }
+  .ps-sum { border-top: 1.3px solid #111; padding: 8px 18px 8px 0; position: relative; }
+  .ps-propose { text-align: right; font-size: 10.5pt; }
+  .ps-amount { text-align: right; margin-top: 4px; font-size: 10pt; }
+  .ps-amount b { font-size: 15pt; }
+  .ps-line { display: inline-block; border-bottom: 1.2px solid #111; min-width: 1.75in; text-align: center; vertical-align: bottom; }
+  .ps-pay { display: flex; align-items: flex-end; gap: 6px; margin: 4px 0 0 1.75in; }
+  .ps-pay .ps-line { flex: 1; text-align: left; }
+  .ps-rule { border-bottom: 1.2px solid #111; height: 0.22in; margin-left: 18px; }
+  .ps-authsig { display: flex; align-items: flex-end; justify-content: flex-end; gap: 4px; margin-top: 4px; }
+  .ps-siglbl { font-size: 9.5pt; text-align: right; line-height: 1.15; }
+  .ps-sigline { position: relative; width: 3.15in; height: 0.42in; border-bottom: 1.2px solid #111; }
+  .ps-sigline img { position: absolute; left: 6px; bottom: 1px; height: 0.5in; max-width: 96%; object-fit: contain; object-position: left bottom; }
+  .ps-note { width: 3.6in; margin: 2px 0 0 auto; font-size: 9.5pt; line-height: 1.5; }
+  .ps-note .ps-line { min-width: 1.3in; }
+  .ps-accept { margin-top: 10px; padding: 8px 16px 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; align-items: end; }
+  .ps-accept-text { font-size: 9.5pt; line-height: 1.3; }
+  .ps-accept-text b { font-weight: 700; }
+  .ps-row { display: flex; align-items: flex-end; gap: 6px; font-size: 9.5pt; }
+  .ps-row .ps-sigline { flex: 1; width: auto; height: 0.36in; }
+  .ps-row .ps-line { flex: 1; min-width: 0; text-align: left; padding-left: 8px; }
+  .ps-row .ps-line .ps-val { padding-left: 0; }
+
+  @media print {
+    @page { size: letter; margin: 0; }
+    body { background: #fff !important; }
+    body > *:not(#print-area) { display: none !important; }
+    #print-area { display: block !important; }
+    .ps-page { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
   .reset-link { display: block; margin: 40px auto 8px; background: none; border: none; color: var(--muted); font-family: inherit; font-size: 0.75rem; cursor: pointer; text-decoration: underline; opacity: 0.6; }
   .reset-link:hover { color: var(--red); opacity: 1; }
   #map-container .leaflet-tile-pane { filter: saturate(0.3) brightness(1.04) contrast(0.95); }
@@ -101,6 +275,7 @@
   .btn-gold:hover { background: var(--gold); color: #fff; }
   .btn-outline { background: var(--card); border: 1.5px solid var(--border); color: var(--text-2); }
   .btn-outline:hover { border-color: var(--blue-mid); color: var(--blue); }
+  .btn:disabled { opacity: 0.45; cursor: default; pointer-events: none; }
   .btn-sm { padding: 7px 13px; font-size: 0.82rem; border-radius: 9px; }
   .btn-danger { background: var(--red-light); color: var(--red); border: 1.5px solid #f5c6c6; }
   .btn-danger:hover { background: var(--red); color: #fff; }
@@ -108,7 +283,8 @@
   .btn-green:hover { background: var(--green); color: #fff; }
 
   /* CLIENT CARDS */
-  .client-grid { display: grid; gap: 10px; }
+  .client-grid { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr); }
+  .client-name { overflow-wrap: anywhere; }
   .client-card {
     background: var(--card);
     border: 1.5px solid var(--border);
@@ -121,6 +297,8 @@
     transition: all 0.15s;
     box-shadow: var(--shadow);
   }
+  .client-card { min-width: 0; }
+  .show-more { width: 100%; justify-content: center; }
   .client-card:hover { box-shadow: var(--shadow-lg); border-color: #c8d6ee; background: #fafcff; }
   .client-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--blue); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; flex-shrink: 0; letter-spacing: -0.02em; }
   .client-info { flex: 1; min-width: 0; }
@@ -304,7 +482,7 @@
   <div class="view active" id="view-clients">
     <div class="stats-bar" id="stats-bar"></div>
     <div class="search-bar">
-      <div class="search-wrap"><span data-i="search"></span><input class="search-input" type="text" id="search-input" placeholder="Search by name or address" oninput="renderClients()"></div>
+      <div class="search-wrap"><span data-i="search"></span><input class="search-input" type="text" id="search-input" placeholder="Search by name or address" oninput="listLimit = 100; renderClients()"></div>
       <button class="btn btn-outline" onclick="document.getElementById('vcf-file-input').click()"><span data-i="upload"></span> Import .vcf</button>
       <input type="file" id="vcf-file-input" accept=".vcf,.txt" style="display:none" onchange="handleVcfUpload(event)">
       <button class="btn btn-outline" onclick="document.getElementById('ics-file-input').click()"><span data-i="calendar"></span> Import .ics</button>
@@ -321,18 +499,22 @@
 
   <!-- CALENDAR VIEW -->
   <div class="view" id="view-calendar">
-    <div class="cal-header">
-      <button class="btn btn-outline btn-sm" onclick="changeMonth(-1)"><span data-i="chevL"></span> Prev</button>
-      <div class="cal-month" id="cal-month-label"></div>
-      <button class="btn btn-outline btn-sm" onclick="changeMonth(1)">Next <span data-i="chevR"></span></button>
+    <div class="cv-toolbar">
+      <div class="cv-title" id="cv-title"></div>
+      <div class="cv-controls">
+        <div class="seg" id="cv-seg"></div>
+        <div class="cv-nav">
+          <button onclick="calStep(-1)" aria-label="Previous"><span data-i="chevL"></span></button>
+          <button onclick="calToday()">Today</button>
+          <button onclick="calStep(1)" aria-label="Next"><span data-i="chevR"></span></button>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openAddAppt(null, calSel)">+ New</button>
+      </div>
     </div>
-    <div class="cal-grid" id="cal-grid"></div>
-    <div style="margin-top:22px">
-      <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:12px;color:var(--brown)">Upcoming Appointments</div>
-      <div class="upcoming-list" id="upcoming-list"></div>
-    </div>
+    <div class="cv-filters" id="cv-filters"></div>
+    <div id="cv-body"></div>
+    <div class="cv-agenda" id="cv-agenda"></div>
   </div>
-
 
   <!-- MAP VIEW -->
   <div class="view" id="view-map">
@@ -397,6 +579,10 @@
       <button class="modal-close" onclick="closeModal('modal-ics')"><span data-i="x"></span></button>
     </div>
     <div class="modal-body">
+      <div class="form-group" style="max-width:280px;margin-bottom:12px">
+        <label>Import these appointments as</label>
+        <select id="ics-kind" onchange="renderIcsModal()"><option>New</option><option>Recall</option><option>Renew</option><option>Check</option><option>Other</option></select>
+      </div>
       <div class="import-summary" id="ics-summary"></div>
       <div class="import-scroll">
         <table class="import-table">
@@ -413,6 +599,58 @@
   </div>
 </div>
 
+<!-- PROPOSAL EDITOR -->
+<div class="modal-overlay" id="modal-proposal">
+  <div class="modal sheet-modal">
+    <div class="modal-header">
+      <div class="modal-title" id="prop-title">Proposal</div>
+      <button class="modal-close" onclick="closeProposal()"><span data-i="x"></span></button>
+    </div>
+    <div class="modal-body" id="prop-body"></div>
+    <div class="modal-footer wrap">
+      <span class="spacer" id="prop-save-state"></span>
+      <button class="btn btn-danger btn-sm" onclick="deleteProposal()"><span data-i="trash"></span> Delete</button>
+      <button class="btn btn-outline btn-sm" onclick="openProposalPreview()"><span data-i="eye"></span> Preview</button>
+      <button class="btn btn-primary btn-sm" onclick="printProposal()"><span data-i="printer"></span> Print / PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROPOSAL PREVIEW -->
+<div class="modal-overlay" id="modal-preview">
+  <div class="modal" style="max-width:880px">
+    <div class="modal-header">
+      <div class="modal-title">Preview</div>
+      <button class="modal-close" onclick="closeModal('modal-preview')"><span data-i="x"></span></button>
+    </div>
+    <div class="modal-body"><div class="preview-wrap" id="preview-wrap"><div class="preview-inner" id="preview-inner"></div></div></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('modal-preview')">Back to editing</button>
+      <button class="btn btn-primary btn-sm" onclick="printProposal()"><span data-i="printer"></span> Print / PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIGNATURE PAD -->
+<div class="modal-overlay" id="modal-sign">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header">
+      <div class="modal-title" id="sign-title">Sign</div>
+      <button class="modal-close" onclick="closeModal('modal-sign')"><span data-i="x"></span></button>
+    </div>
+    <div class="modal-body">
+      <div class="sign-hint" id="sign-hint">Sign with a finger in the box.</div>
+      <canvas id="sign-canvas"></canvas>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline btn-sm" onclick="clearSignPad()">Clear</button>
+      <button class="btn btn-primary btn-sm" onclick="finishSignPad()">Done</button>
+    </div>
+  </div>
+</div>
+
+<div id="print-area"></div>
+
 <div class="modal-overlay" id="modal-detail">
   <div class="modal">
     <div class="modal-header">
@@ -425,11 +663,13 @@
         <button class="modal-tab" onclick="switchTab('detail','warranty')">Warranty</button>
         <button class="modal-tab" onclick="switchTab('detail','appointments')">Appointments</button>
         <button class="modal-tab" onclick="switchTab('detail','notes')">Notes</button>
+        <button class="modal-tab" onclick="switchTab('detail','proposals')">Proposals</button>
       </div>
       <div id="detail-tab-info"></div>
       <div id="detail-tab-warranty" style="display:none"></div>
       <div id="detail-tab-appointments" style="display:none"></div>
       <div id="detail-tab-notes" style="display:none"></div>
+      <div id="detail-tab-proposals" style="display:none"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline btn-sm" onclick="editCurrentClient()"><span data-i="edit"></span> Edit</button>
@@ -519,7 +759,7 @@
 <div class="modal-overlay" id="modal-appt">
   <div class="modal" style="max-width:480px">
     <div class="modal-header">
-      <div class="modal-title">Add Appointment</div>
+      <div class="modal-title" id="appt-modal-title">New Appointment</div>
       <button class="modal-close" onclick="closeModal('modal-appt')"><span data-i="x"></span></button>
     </div>
     <div class="modal-body">
@@ -533,16 +773,20 @@
           <input id="a-date" type="date">
         </div>
         <div class="form-group">
-          <label>Time</label>
-          <input id="a-time" type="time">
+          <label>Starts</label>
+          <input id="a-time" type="time" onchange="apptStartChanged()">
         </div>
         <div class="form-group">
+          <label>Ends</label>
+          <input id="a-end" type="time">
+        </div>
+        <div class="form-group full">
           <label>Type</label>
           <select id="a-type">
-            <option>Initial Inspection</option>
-            <option>Exclusion Work</option>
-            <option>Follow-up Check</option>
-            <option>Warranty Visit</option>
+            <option>New</option>
+            <option>Recall</option>
+            <option>Renew</option>
+            <option>Check</option>
             <option>Other</option>
           </select>
         </div>
@@ -553,8 +797,11 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal('modal-appt')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveAppt()">Save Appointment</button>
+      <button class="btn btn-danger btn-sm" id="appt-del" onclick="deleteAppt(editingApptId, true)"><span data-i="trash"></span> Delete</button>
+      <button class="btn btn-outline btn-sm" id="appt-open-client" onclick="openApptClient()">Open client</button>
+      <span style="flex:1"></span>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('modal-appt')">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="saveAppt()">Save</button>
     </div>
   </div>
 </div>
@@ -562,7 +809,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 // ── SUPABASE CONFIG: paste your project's values here ────────────────
 const SUPABASE_URL      = 'https://hiadqdapjdlzdsyraqmf.supabase.co';       // e.g. https://abcdefgh.supabase.co
@@ -585,7 +832,7 @@ const nz = v => (v === '' || v === undefined) ? null : v;
 const CLIENT_COLS = { id:'id', status:'status', source:'source', createdAt:'created_at', firstName:'first_name', lastName:'last_name',
   phone:'phone', email:'email', street:'street', city:'city', zip:'zip', state:'state', lat:'lat', lon:'lon',
   warrantyStart:'warranty_start', warrantyEnd:'warranty_end', warrantyNotes:'warranty_notes', notes:'notes' };
-const APPT_COLS = { id:'id', clientId:'client_id', date:'date', time:'time', type:'type', notes:'notes', icsUid:'ics_uid' };
+const APPT_COLS = { id:'id', clientId:'client_id', date:'date', time:'time', endTime:'end_time', type:'type', notes:'notes', icsUid:'ics_uid' };
 const NUM = new Set(['lat', 'lon']);
 
 function toRow(obj, cols) {
@@ -602,7 +849,7 @@ function fromRow(row, cols) {
 }
 
 let snapC = new Map(), snapA = new Map();   // id -> JSON of the row as the database has it
-let flushing = false, flushAgain = false, flushTimer = null, lastLoad = 0;
+let flushing = false, flushAgain = false, flushTimer = null, lastLoad = 0, editGen = 0, dataLoaded = false;
 
 function setSync(state, text) {
   const el = document.getElementById('sync'); if (!el) return;
@@ -613,6 +860,7 @@ function setSync(state, text) {
 
 // Called after every change. Batches rapid changes, then sends only what differs.
 function save() {
+  editGen++;
   clearTimeout(flushTimer);
   flushTimer = setTimeout(flush, 300);
 }
@@ -638,6 +886,7 @@ async function flush() {
       for (const ch of chunks(changedA, 500)) { const { error } = await sb.from('appointments').upsert(ch); if (error) throw error; ch.forEach(r => snapA.set(r.id, JSON.stringify(r))); }
       for (const ch of chunks(delA, 100)) { const { error } = await sb.from('appointments').delete().in('id', ch); if (error) throw error; ch.forEach(id => snapA.delete(id)); }
       for (const ch of chunks(delC, 100)) { const { error } = await sb.from('clients').delete().in('id', ch); if (error) throw error; ch.forEach(id => snapC.delete(id)); }
+      writeCache();
     }
     setSync('saved');
   } catch (e) {
@@ -659,28 +908,86 @@ async function saveNow() {
   return document.getElementById('sync').dataset.s !== 'error';
 }
 
+// Fetch every row: count first, then all 1000-row pages at once instead of one after another
 async function fetchAll(table) {
-  const rows = [];
-  for (let from = 0; ; from += 1000) {
-    const { data, error } = await sb.from(table).select('*').order('id').range(from, from + 999);
-    if (error) throw error;
-    rows.push(...data);
-    if (data.length < 1000) return rows;
+  const { count, error } = await sb.from(table).select('id', { count: 'exact', head: true });
+  if (error) throw error;
+  const pages = Math.max(1, Math.ceil((count || 0) / 1000));
+  const res = await Promise.all(Array.from({ length: pages }, (_, i) =>
+    sb.from(table).select('*').order('id').range(i * 1000, i * 1000 + 999)));
+  for (const r of res) if (r.error) throw r.error;
+  const rows = res.flatMap(r => r.data);
+  // Rows added on another device between the count and the fetch
+  for (let from = pages * 1000; res[res.length - 1].data.length === 1000; from += 1000) {
+    const r = await sb.from(table).select('*').order('id').range(from, from + 999);
+    if (r.error) throw r.error;
+    rows.push(...r.data);
+    res.push(r);
   }
+  return rows;
 }
 
-async function loadAll() {
-  setSync('loading');
-  const [cRows, aRows] = await Promise.all([fetchAll('clients'), fetchAll('appointments')]);
+// Put database rows into the app, and remember them as "already saved"
+function applyRows(cRows, aRows) {
   snapC = new Map(); snapA = new Map();
   clients = cRows.map(r => fromRow(r, CLIENT_COLS));
   appointments = aRows.map(r => fromRow(r, APPT_COLS));
-  // Snapshot in the same shape save() produces, so unchanged rows are not re-sent
   clients.forEach(c => { const r = toRow(c, CLIENT_COLS); snapC.set(r.id, JSON.stringify(r)); });
   appointments.forEach(a => { const r = toRow(a, APPT_COLS); snapA.set(r.id, JSON.stringify(r)); });
+  dataLoaded = true;
+}
+
+// Fresh copy from the database. Runs in the background when a cached copy is already showing.
+async function loadAll() {
+  if (!await saveNow()) return;          // never replace edits that have not reached the database
+  const gen = editGen;
+  setSync('loading', dataLoaded ? 'Updating…' : 'Loading…');
+  const [cRows, aRows] = await Promise.all([fetchAll('clients'), fetchAll('appointments')]);
+  if (gen !== editGen) { setTimeout(() => loadAll().catch(() => {}), 3000); return; }   // edited mid-load; try again shortly
+  applyRows(cRows, aRows);
   lastLoad = Date.now();
   setSync('saved');
   refreshViews();
+  writeCache();
+}
+
+// ── ON-DEVICE CACHE ───────────────────────────────────────────────────
+// A copy of the last saved database state, so the app opens instantly; the database stays the source of truth.
+const IDB = {
+  db: null,
+  open() {
+    return this.db ||= new Promise((res, rej) => {
+      const r = indexedDB.open('ratpatrol', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('kv');
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  },
+  async run(mode, fn) {
+    try {
+      const db = await this.open();
+      return await new Promise((res, rej) => {
+        const t = db.transaction('kv', mode), q = fn(t.objectStore('kv'));
+        t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error);
+      });
+    } catch (e) { console.warn('Cache unavailable', e); }
+  },
+  get: k => IDB.run('readonly', st => st.get(k)),
+  set: (k, v) => IDB.run('readwrite', st => st.put(v, k)),
+  del: k => IDB.run('readwrite', st => st.delete(k))
+};
+let cacheTimer = null;
+function writeCache() {
+  clearTimeout(cacheTimer);
+  // Only what the database has confirmed, so a cached copy never hides an unsaved change
+  cacheTimer = setTimeout(() => IDB.set('data', { savedAt: Date.now(), c: [...snapC.values()], a: [...snapA.values()] }), 800);
+}
+async function showCached() {
+  const d = await IDB.get('data');
+  if (!d || !d.c) return false;
+  applyRows(d.c.map(JSON.parse), d.a.map(JSON.parse));
+  refreshViews();
+  return true;
 }
 
 function refreshViews() {
@@ -729,13 +1036,14 @@ async function signOut() {
   if (!sb) return;
   await saveNow();
   await sb.auth.signOut();
-  clients = []; appointments = []; snapC = new Map(); snapA = new Map();
+  clearTimeout(cacheTimer); await IDB.del('data');
+  clients = []; appointments = []; snapC = new Map(); snapA = new Map(); dataLoaded = false;
   refreshViews();
   showLogin();
 }
 async function startData() {
   try { await loadAll(); await offerLocalUpload(); }
-  catch (e) { console.error(e); setSync('error', 'Offline'); showToast('Could not reach the database.'); }
+  catch (e) { console.error(e); setSync('error', dataLoaded ? 'Offline; showing saved copy' : 'Offline'); if (!dataLoaded) showToast('Could not reach the database.'); }
 }
 async function startApp() {
   if (!sb) {
@@ -746,6 +1054,7 @@ async function startApp() {
   }
   const { data } = await sb.auth.getSession();
   if (!data.session) return showLogin();
+  if (await showCached()) setSync('loading', 'Updating…');
   await startData();
 }
 // Pick up changes made on another device when this one comes back to the foreground
@@ -757,8 +1066,10 @@ document.addEventListener('visibilitychange', async () => {
 });
 
 // ── BACKUP ────────────────────────────────────────────────────────────
-function exportBackup() {
-  const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), clients, appointments }, null, 1)], { type: 'application/json' });
+async function exportBackup() {
+  let proposals = [];
+  try { proposals = await fetchAll('proposals'); } catch (e) { console.warn('Proposals not included in backup', e); }
+  const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), clients, appointments, proposals }, null, 1)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `rat-patrol-backup-${new Date().toISOString().slice(0,10)}.json`;
@@ -766,8 +1077,8 @@ function exportBackup() {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 const isLead = c => c.status === 'lead';
-let clientFilter = 'customers';
-function setClientFilter(f) { clientFilter = f; renderClients(); }
+let clientFilter = 'customers', listLimit = 100;
+function setClientFilter(f) { clientFilter = f; listLimit = 100; renderClients(); }
 
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 
@@ -843,8 +1154,14 @@ function renderClients() {
   let list = clientFilter === 'customers' ? clients.filter(c => !isLead(c))
            : clientFilter === 'leads' ? clients.filter(isLead) : clients;
   const todayStr = new Date().toISOString().slice(0,10);
-  const nextByClient = {};
-  for (const a of appointments) if (a.date >= todayStr && (!nextByClient[a.clientId] || a.date < nextByClient[a.clientId])) nextByClient[a.clientId] = a.date;
+  const nextByClient = {}, lastByClient = {};
+  for (const a of appointments) {
+    if (a.date >= todayStr && (!nextByClient[a.clientId] || a.date < nextByClient[a.clientId])) nextByClient[a.clientId] = a.date;
+    if (!lastByClient[a.clientId] || a.date > lastByClient[a.clientId]) lastByClient[a.clientId] = a.date;
+  }
+  // Most recent activity first: latest visit, job date or date added
+  const recent = c => [lastByClient[c.id], c.warrantyStart, c.createdAt].filter(Boolean).sort().pop() || '';
+  list = list.map(c => [recent(c), c]).sort((x, y) => x[0] < y[0] ? 1 : x[0] > y[0] ? -1 : 0).map(x => x[1]);
   if (q) list = list.filter(c =>
     (c.firstName+' '+c.lastName).toLowerCase().includes(q) ||
     (c.street||'').toLowerCase().includes(q) ||
@@ -852,10 +1169,11 @@ function renderClients() {
   );
   const el = document.getElementById('client-list');
   if (!list.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">${I.search}</div><div class="empty-text">${clients.length ? 'Nothing matches in this list.' : 'No clients yet. Add your first one!'}</div></div>`;
+    el.innerHTML = `<div class="empty"><div class="empty-icon">${I.search}</div><div class="empty-text">${!dataLoaded && sb ? 'Loading…' : clients.length ? 'Nothing matches in this list.' : 'No clients yet. Add your first one!'}</div></div>`;
     return;
   }
-  el.innerHTML = list.map(c => `
+  const more = list.length - listLimit;
+  el.innerHTML = list.slice(0, listLimit).map(c => `
     <div class="client-card" onclick="openDetail('${c.id}')">
       <div class="client-avatar ${isLead(c)?'lead':''}">${initials(c)}</div>
       <div class="client-info">
@@ -865,7 +1183,7 @@ function renderClients() {
       ${isLead(c) ? '<span class="lead-badge">Inspection only</span>' : warrantyLabel(c)}
       ${nextByClient[c.id] ? `<div class="next-appt">${I.calendar} ${fmtDate(nextByClient[c.id])}</div>` : ''}
     </div>
-  `).join('');
+  `).join('') + (more > 0 ? `<button class="btn btn-outline show-more" onclick="listLimit += 200; renderClients()">Show ${Math.min(more, 200)} more of ${more}</button>` : '');
   renderStats();
 }
 
@@ -973,7 +1291,7 @@ function openDetail(id) {
 
 function switchTab(modal, tab) {
   detailActiveTab = tab;
-  const tabs = ['info','warranty','appointments','notes'];
+  const tabs = ['info','warranty','appointments','notes','proposals'];
   tabs.forEach(t => {
     document.getElementById(`detail-tab-${t}`).style.display = t===tab ? 'block' : 'none';
   });
@@ -986,6 +1304,7 @@ function switchTab(modal, tab) {
   if (tab==='warranty') renderDetailWarranty(c);
   if (tab==='appointments') renderDetailAppts(c);
   if (tab==='notes') renderDetailNotes(c);
+  if (tab==='proposals') renderDetailProposals(c);
 }
 
 function renderDetailInfo(c) {
@@ -1060,16 +1379,16 @@ function renderDetailAppts(c) {
     const [y,m,d] = a.date.split('-');
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return `
-      <div class="appt-item ${isPast ? 'appt-past' : ''}">
-        <div class="appt-date-block">
+      <div class="appt-item ${isPast ? 'appt-past' : ''} k-${kindOf(a.type)}" style="cursor:pointer" onclick="openApptEditor('${a.id}')">
+        <div class="appt-date-block" style="background:var(--k);color:${kindOf(a.type) === 'check' || kindOf(a.type) === 'new' ? '#1c1c1e' : '#fff'}">
           <div class="appt-month">${months[parseInt(m)-1]}</div>
           <div class="appt-day">${parseInt(d)}</div>
         </div>
         <div class="appt-info">
-          <div class="appt-title">${a.type}</div>
-          <div class="appt-sub">${a.time || 'Time TBD'}${a.notes ? ' — '+a.notes : ''}</div>
+          <div class="appt-title">${KINDS[kindOf(a.type)]}</div>
+          <div class="appt-sub">${a.time ? fmtTime(a.time) : 'Any time'}${a.notes ? ' · ' + esc(a.notes) : ''}</div>
         </div>
-        <button class="btn btn-danger btn-sm" onclick="deleteAppt('${a.id}')">${I.x}</button>
+        <button class="btn btn-danger btn-sm" onclick="event.stopPropagation(); deleteAppt('${a.id}')">${I.x}</button>
       </div>`;
   };
 
@@ -1100,122 +1419,258 @@ function saveNotes() {
   save(); showToast('Notes saved!');
 }
 
+// ── APPOINTMENT TYPES ─────────────────────────────────────────────────
+const KINDS = { new: 'New', recall: 'Recall', renew: 'Renew', check: 'Check', other: 'Other' };
+function kindOf(type) {
+  const t = (type || '').toLowerCase();
+  if (/recall/.test(t)) return 'recall';
+  if (/renew/.test(t)) return 'renew';
+  if (/check|follow/.test(t)) return 'check';
+  if (/new|initial/.test(t)) return 'new';
+  return 'other';
+}
+const toMin = t => { const m = /^(\d{1,2}):(\d{2})/.exec(t || ''); return m ? +m[1] * 60 + +m[2] : null; };
+const fromMin = n => `${String(Math.floor(n / 60) % 24).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`;
+function fmtTime(t, short) {
+  const n = toMin(t); if (n === null) return '';
+  const h = Math.floor(n / 60), m = n % 60, h12 = h % 12 || 12, ap = h < 12 ? 'AM' : 'PM';
+  return short ? `${h12}${m ? ':' + String(m).padStart(2, '0') : ''}${ap[0].toLowerCase()}` : `${h12}:${String(m).padStart(2, '0')} ${ap}`;
+}
+const apptEnd = a => { const s = toMin(a.time); if (s === null) return null; const e = toMin(a.endTime); return e !== null && e > s ? e : s + 60; };
+
 // ── APPOINTMENTS ──────────────────────────────────────────────────────
-function openAddAppt(prefillClientId) {
-  const sel = document.getElementById('a-client');
-  sel.innerHTML = clients.map(c => `<option value="${c.id}" ${c.id===prefillClientId?'selected':''}>${c.firstName} ${c.lastName}</option>`).join('');
-  document.getElementById('a-date').value = new Date().toISOString().slice(0,10);
-  document.getElementById('a-time').value = '';
+let editingApptId = null;
+function fillClientSelect(selectedId) {
+  const sorted = [...clients].sort((x, y) => (x.lastName + x.firstName).localeCompare(y.lastName + y.firstName));
+  document.getElementById('a-client').innerHTML = sorted.map(c =>
+    `<option value="${c.id}" ${c.id === selectedId ? 'selected' : ''}>${esc(c.lastName ? c.lastName + ', ' + c.firstName : c.firstName)}</option>`).join('');
+}
+function openAddAppt(prefillClientId, date, time) {
+  editingApptId = null;
+  document.getElementById('appt-modal-title').textContent = 'New Appointment';
+  fillClientSelect(prefillClientId || currentClientId);
+  document.getElementById('a-date').value = date || todayISO();
+  document.getElementById('a-time').value = time || '';
+  document.getElementById('a-end').value = time ? fromMin(toMin(time) + 60) : '';
   document.getElementById('a-notes').value = '';
-  document.getElementById('a-type').value = 'Initial Inspection';
+  document.getElementById('a-type').value = 'New';
+  document.getElementById('appt-del').style.display = 'none';
+  document.getElementById('appt-open-client').style.display = 'none';
   openModal('modal-appt');
 }
-
-function saveAppt() {
-  const clientId = document.getElementById('a-client').value;
-  const date = document.getElementById('a-date').value;
-  if (!clientId || !date) { showToast('Please select a client and date.'); return; }
-  appointments.push({
-    id: uid(),
-    clientId,
-    date,
-    time: document.getElementById('a-time').value,
-    type: document.getElementById('a-type').value,
-    notes: document.getElementById('a-notes').value.trim()
-  });
-  save(); closeModal('modal-appt');
-  showToast('Appointment saved!');
-  if (detailActiveTab === 'appointments') {
-    const c = clients.find(x => x.id === clientId);
-    if (c && c.id === currentClientId) renderDetailAppts(c);
+function openApptEditor(id) {
+  const a = appointments.find(x => x.id === id);
+  if (!a) return;
+  editingApptId = id;
+  document.getElementById('appt-modal-title').textContent = 'Appointment';
+  fillClientSelect(a.clientId);
+  document.getElementById('a-date').value = a.date;
+  document.getElementById('a-time').value = a.time || '';
+  document.getElementById('a-end').value = a.endTime || (a.time ? fromMin(apptEnd(a)) : '');
+  document.getElementById('a-notes').value = a.notes || '';
+  document.getElementById('a-type').value = KINDS[kindOf(a.type)];
+  document.getElementById('appt-del').style.display = '';
+  document.getElementById('appt-open-client').style.display = '';
+  openModal('modal-appt');
+}
+function apptStartChanged() {
+  const s = toMin(document.getElementById('a-time').value), endEl = document.getElementById('a-end');
+  if (s !== null && (toMin(endEl.value) === null || toMin(endEl.value) <= s)) endEl.value = fromMin(s + 60);
+}
+function openApptClient() {
+  const a = appointments.find(x => x.id === editingApptId);
+  closeModal('modal-appt');
+  if (a) openDetail(a.clientId);
+}
+function afterApptChange(clientId) {
+  save();
+  if (document.getElementById('modal-detail').classList.contains('open') && clientId === currentClientId && detailActiveTab === 'appointments') {
+    const c = clients.find(x => x.id === clientId); if (c) renderDetailAppts(c);
   }
   renderClients();
   renderCalendar();
 }
-
-function deleteAppt(id) {
-  if (!confirm('Remove this appointment?')) return;
-  appointments = appointments.filter(a => a.id !== id);
-  save();
-  const c = clients.find(x => x.id === currentClientId);
-  if (c) renderDetailAppts(c);
-  renderCalendar(); renderClients();
+function saveAppt() {
+  const clientId = document.getElementById('a-client').value;
+  const date = document.getElementById('a-date').value;
+  if (!clientId || !date) { showToast('Please select a client and date.'); return; }
+  const time = document.getElementById('a-time').value;
+  const fields = { clientId, date, time, endTime: time ? document.getElementById('a-end').value : '',
+    type: document.getElementById('a-type').value, notes: document.getElementById('a-notes').value.trim() };
+  const existing = appointments.find(x => x.id === editingApptId);
+  if (existing) Object.assign(existing, fields);
+  else appointments.push({ id: uid(), icsUid: '', ...fields });
+  closeModal('modal-appt');
+  calSel = date;
+  afterApptChange(clientId);
+  showToast(existing ? 'Appointment updated.' : 'Appointment saved.');
+}
+function deleteAppt(id, fromEditor) {
+  if (!id || !confirm('Remove this appointment?')) return;
+  const a = appointments.find(x => x.id === id);
+  appointments = appointments.filter(x => x.id !== id);
+  if (fromEditor) closeModal('modal-appt');
+  afterApptChange(a && a.clientId);
   showToast('Appointment removed.');
 }
 
 // ── CALENDAR ──────────────────────────────────────────────────────────
-function initCal() {
-  const now = new Date();
-  calYear = now.getFullYear();
-  calMonth = now.getMonth();
-}
+const ISO = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const fromISO = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+let calView = 'month', calSel = null, hiddenKinds = new Set();
+try { hiddenKinds = new Set(JSON.parse(localStorage.getItem('rp_hidden_kinds') || '[]')); calView = localStorage.getItem('rp_cal_view') || 'month'; } catch {}
 
-function changeMonth(d) {
-  calMonth += d;
-  if (calMonth < 0) { calMonth = 11; calYear--; }
-  if (calMonth > 11) { calMonth = 0; calYear++; }
+function initCal() { calSel = todayISO(); }
+function setCalView(v) { calView = v; try { localStorage.setItem('rp_cal_view', v); } catch {} renderCalendar(); }
+function calToday() { calSel = todayISO(); renderCalendar(); }
+function calStep(dir) {
+  const d = fromISO(calSel);
+  if (calView === 'month') { const t = new Date(d.getFullYear(), d.getMonth() + dir, 1); calSel = ISO(t); }
+  else calSel = ISO(addDays(d, dir * (calView === 'week' ? 7 : 1)));
+  renderCalendar();
+}
+function selectDay(iso, open) { calSel = iso; if (open) calView = 'day'; renderCalendar(); }
+function toggleKind(k) {
+  hiddenKinds.has(k) ? hiddenKinds.delete(k) : hiddenKinds.add(k);
+  try { localStorage.setItem('rp_hidden_kinds', JSON.stringify([...hiddenKinds])); } catch {}
   renderCalendar();
 }
 
+// Visible appointments grouped by date, sorted by start time (untimed first)
+function apptIndex(fromIso, toIso) {
+  const idx = {};
+  for (const a of appointments) {
+    if (a.date < fromIso || a.date > toIso || hiddenKinds.has(kindOf(a.type))) continue;
+    (idx[a.date] = idx[a.date] || []).push(a);
+  }
+  for (const k in idx) idx[k].sort((x, y) => (toMin(x.time) ?? -1) - (toMin(y.time) ?? -1));
+  return idx;
+}
+function clientMap() { const m = {}; for (const c of clients) m[c.id] = c; return m; }
+const shortName = c => c ? (c.lastName ? `${c.lastName}${c.firstName ? ', ' + c.firstName : ''}` : c.firstName) : 'Unknown';
+
 function renderCalendar() {
-  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('cal-month-label').textContent = `${months[calMonth]} ${calYear}`;
-
-  const firstDay = new Date(calYear, calMonth, 1).getDay();
-  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-  const today = new Date().toISOString().slice(0,10);
-
-  let html = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="cal-day-name">${d}</div>`).join('');
-
-  for (let i=0; i<firstDay; i++) html += `<div class="cal-cell other-month"></div>`;
-
-  for (let d=1; d<=daysInMonth; d++) {
-    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const dayAppts = appointments.filter(a => a.date === dateStr);
-    const isToday = dateStr === today;
-    html += `<div class="cal-cell ${isToday?'today':''}">
-      <div class="cal-date">${d}</div>
-      ${dayAppts.map(a => {
-        const c = clients.find(x => x.id === a.clientId);
-        return `<div class="cal-event" title="${a.type}" onclick="openDetail('${a.clientId}')">${c ? c.firstName+' '+c.lastName[0] : '?'}</div>`;
-      }).join('')}
-    </div>`;
-  }
-
-  document.getElementById('cal-grid').innerHTML = html;
-
-  // Upcoming list
-  const todayStr = new Date().toISOString().slice(0,10);
-  const upcoming = appointments.filter(a => a.date >= todayStr).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,10);
-  const ul = document.getElementById('upcoming-list');
-  if (!upcoming.length) {
-    ul.innerHTML = `<div class="empty" style="padding:20px 0"><div class="empty-icon">${I.calendar}</div><div class="empty-text">No upcoming appointments.</div></div>`;
+  if (!calSel) initCal();
+  const sel = fromISO(calSel);
+  document.getElementById('cv-seg').innerHTML = [['day','Day'],['week','Week'],['month','Month']]
+    .map(([k, l]) => `<button class="${calView === k ? 'active' : ''}" onclick="setCalView('${k}')">${l}</button>`).join('');
+  document.getElementById('cv-filters').innerHTML = Object.keys(KINDS)
+    .map(k => `<button class="cv-chip k-${k} ${hiddenKinds.has(k) ? 'off' : ''}" onclick="toggleKind('${k}')"><span class="dot"></span>${KINDS[k]}</button>`).join('');
+  const title = document.getElementById('cv-title');
+  if (calView === 'month') {
+    title.innerHTML = `${MONTHS[sel.getMonth()]} <span>${sel.getFullYear()}</span>`;
+    renderMonthView(sel);
+  } else if (calView === 'week') {
+    const start = addDays(sel, -sel.getDay()), end = addDays(start, 6);
+    title.innerHTML = start.getMonth() === end.getMonth()
+      ? `${MONTHS[start.getMonth()]} <span>${start.getFullYear()}</span>`
+      : `${MONTHS[start.getMonth()].slice(0, 3)} – ${MONTHS[end.getMonth()].slice(0, 3)} <span>${end.getFullYear()}</span>`;
+    renderTimeGrid(Array.from({ length: 7 }, (_, i) => addDays(start, i)), 'week');
+    document.getElementById('cv-agenda').innerHTML = '';
   } else {
-    ul.innerHTML = upcoming.map(a => {
-      const c = clients.find(x => x.id === a.clientId);
-      const [y,m,d] = a.date.split('-');
-      const mnames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      return `<div class="appt-item" onclick="openDetail('${a.clientId}')" style="cursor:pointer">
-        <div class="appt-date-block"><div class="appt-month">${mnames[parseInt(m)-1]}</div><div class="appt-day">${parseInt(d)}</div></div>
-        <div class="appt-info">
-          <div class="appt-title">${c ? c.firstName+' '+c.lastName : 'Unknown'}</div>
-          <div class="appt-sub">${a.type}${a.time?' @ '+a.time:''}${a.notes?' — '+a.notes:''}</div>
-        </div>
-      </div>`;
-    }).join('');
+    title.innerHTML = `${DOW[sel.getDay()]}, ${MONTHS[sel.getMonth()].slice(0, 3)} ${sel.getDate()} <span>${sel.getFullYear()}</span>`;
+    renderTimeGrid([sel], 'day');
+    renderAgenda(calSel, 'Appointments');
   }
+}
 
-  // Add button for calendar
-  const existing = document.getElementById('cal-add-btn');
-  if (!existing) {
-    const btn = document.createElement('button');
-    btn.id = 'cal-add-btn';
-    btn.className = 'btn btn-primary';
-    btn.style.marginBottom = '16px';
-    btn.textContent = '+ Add Appointment';
-    btn.onclick = () => openAddAppt(null);
-    document.getElementById('view-calendar').insertBefore(btn, document.getElementById('cal-grid').nextSibling);
+function renderMonthView(sel) {
+  const first = new Date(sel.getFullYear(), sel.getMonth(), 1);
+  const start = addDays(first, -first.getDay());
+  const weeks = Math.ceil((first.getDay() + new Date(sel.getFullYear(), sel.getMonth() + 1, 0).getDate()) / 7);
+  const days = Array.from({ length: weeks * 7 }, (_, i) => addDays(start, i));
+  const idx = apptIndex(ISO(days[0]), ISO(days[days.length - 1])), cm = clientMap(), today = todayISO();
+  const cells = days.map(d => {
+    const iso = ISO(d), list = idx[iso] || [];
+    const cls = ['cv-day', d.getMonth() !== sel.getMonth() ? 'out' : '', iso === today ? 'today' : '', iso === calSel ? 'sel' : ''].join(' ');
+    const shown = list.slice(0, 4);
+    return `<div class="${cls}" onclick="selectDay('${iso}')" ondblclick="selectDay('${iso}', true)">
+      <div class="cv-num"><b>${d.getDate()}</b></div>
+      ${shown.map(a => `<div class="cv-ev k-${kindOf(a.type)}" onclick="event.stopPropagation(); openApptEditor('${a.id}')" title="${esc(KINDS[kindOf(a.type)] + ': ' + shortName(cm[a.clientId]))}">
+          <span class="dot"></span>${a.time ? `<span class="t">${fmtTime(a.time, true)}</span>` : ''}<span class="n">${esc(shortName(cm[a.clientId]))}</span></div>`).join('')}
+      ${list.length > 4 ? `<div class="cv-more">${list.length - 4} more</div>` : ''}
+      <div class="cv-dots">${list.slice(0, 6).map(a => `<i class="k-${kindOf(a.type)}"></i>`).join('')}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('cv-body').innerHTML = `<div class="cv-month">
+    <div class="cv-dow">${DOW.map(x => `<div>${x}</div>`).join('')}</div>
+    <div class="cv-mgrid">${cells}</div></div>`;
+  const s = fromISO(calSel);
+  renderAgenda(calSel, `${DOW[s.getDay()]}, ${MONTHS[s.getMonth()]} ${s.getDate()}`);
+}
+
+function renderAgenda(iso, heading) {
+  const list = apptIndex(iso, iso)[iso] || [], cm = clientMap();
+  document.getElementById('cv-agenda').innerHTML = `<h3>${heading}</h3>` + (list.length ? list.map(a => {
+    const c = cm[a.clientId], k = kindOf(a.type), addr = c ? [c.street, c.city].filter(Boolean).join(', ') : '';
+    return `<div class="cv-item k-${k}" onclick="openApptEditor('${a.id}')">
+      <div class="bar"></div>
+      <div class="when">${a.time ? fmtTime(a.time) + `<small>${fmtTime(fromMin(apptEnd(a)))}</small>` : 'Any time'}</div>
+      <div class="what"><b>${esc(c ? `${c.firstName} ${c.lastName}`.trim() : 'Unknown')}</b><span>${esc(addr || a.notes || '')}</span></div>
+      <span class="cv-tag">${KINDS[k]}</span>
+      ${addr ? `<a class="dir" href="https://maps.apple.com/?daddr=${encodeURIComponent(addr + ', CA')}" target="_blank" onclick="event.stopPropagation()" title="Directions">${I.map}</a>` : ''}
+    </div>`; }).join('') : `<p style="color:var(--muted);font-size:0.9rem">No appointments.</p>`);
+}
+
+// Side-by-side columns for overlapping appointments, like Apple Calendar
+function layoutDay(list) {
+  const evs = list.filter(a => toMin(a.time) !== null).map(a => ({ a, s: toMin(a.time), e: apptEnd(a) })).sort((x, y) => x.s - y.s || y.e - x.e);
+  let cluster = [], clusterEnd = -1;
+  const close = () => { const n = Math.max(...cluster.map(x => x.col)) + 1; cluster.forEach(x => x.n = n); cluster = []; };
+  for (const ev of evs) {
+    if (ev.s >= clusterEnd && cluster.length) close();
+    const used = new Set(cluster.filter(x => x.e > ev.s).map(x => x.col));
+    let col = 0; while (used.has(col)) col++;
+    ev.col = col; cluster.push(ev); clusterEnd = Math.max(clusterEnd, ev.e);
   }
+  if (cluster.length) close();
+  return evs;
+}
+
+function renderTimeGrid(days, mode) {
+  const idx = apptIndex(ISO(days[0]), ISO(days[days.length - 1])), cm = clientMap(), today = todayISO();
+  let startH = 6, endH = 21;
+  for (const d of days) for (const a of idx[ISO(d)] || []) {
+    const s = toMin(a.time); if (s === null) continue;
+    startH = Math.min(startH, Math.floor(s / 60)); endH = Math.max(endH, Math.ceil(apptEnd(a) / 60));
+  }
+  endH = Math.min(24, endH);
+  const H = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hour')) || 52;
+  const hours = Array.from({ length: endH - startH }, (_, i) => startH + i);
+  const now = new Date(), nowMin = now.getHours() * 60 + now.getMinutes();
+  const head = days.map(d => `<div class="tg-dh ${ISO(d) === today ? 'today' : ''}" onclick="selectDay('${ISO(d)}', true)">${DOW[d.getDay()]}<b>${d.getDate()}</b></div>`).join('');
+  const allday = days.map(d => `<div class="cell">${(idx[ISO(d)] || []).filter(a => toMin(a.time) === null).map(a =>
+      `<span class="tg-pill k-${kindOf(a.type)}" onclick="openApptEditor('${a.id}')">${esc(shortName(cm[a.clientId]))}</span>`).join('')}</div>`).join('');
+  const cols = days.map(d => {
+    const iso = ISO(d), evs = layoutDay(idx[iso] || []);
+    return `<div class="tg-col ${iso === today ? 'today' : ''}" style="height:${hours.length * H}px" onclick="gridClick(event, '${iso}', ${startH})">
+      ${evs.map(({ a, s, e, col, n }) => {
+        const c = cm[a.clientId], k = kindOf(a.type), top = (s - startH * 60) / 60 * H, h = Math.max((e - s) / 60 * H - 2, 20);
+        return `<div class="tg-ev k-${k}" style="top:${top}px;height:${h}px;left:calc(${col / n * 100}% + 1px);width:calc(${100 / n}% - 3px)"
+          onclick="event.stopPropagation(); openApptEditor('${a.id}')" title="${esc(KINDS[k] + ' · ' + shortName(c))}">
+          <b>${esc(shortName(c))}</b><span>${fmtTime(a.time, true)} · ${KINDS[k]}</span>${mode === 'day' && c ? `<span>${esc([c.street, c.city].filter(Boolean).join(', '))}</span>` : ''}</div>`;
+      }).join('')}
+      ${iso === today && nowMin >= startH * 60 && nowMin <= endH * 60 ? `<div class="tg-now" style="top:${(nowMin - startH * 60) / 60 * H}px"></div>` : ''}
+    </div>`;
+  }).join('');
+  document.getElementById('cv-body').innerHTML = `<div class="tg ${mode}" style="--cols:${days.length}">
+    <div class="tg-row tg-head"><div></div>${head}</div>
+    <div class="tg-row tg-allday"><div class="lbl">all-day</div>${allday}</div>
+    <div class="tg-scroll" id="tg-scroll"><div class="tg-row">
+      <div class="tg-gut">${hours.map(h => `<div>${h === startH ? '' : fmtTime(fromMin(h * 60), true)}</div>`).join('')}</div>${cols}
+    </div></div></div>`;
+  // Open scrolled to the first appointment, or 7 AM
+  const firstStart = Math.min(...days.flatMap(d => (idx[ISO(d)] || []).map(a => toMin(a.time)).filter(x => x !== null)), 7 * 60);
+  document.getElementById('tg-scroll').scrollTop = Math.max(0, (firstStart - startH * 60 - 30) / 60 * H);
+}
+function gridClick(ev, iso, startH) {
+  const H = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hour')) || 52;
+  const r = ev.currentTarget.getBoundingClientRect();
+  const min = Math.floor(((ev.clientY - r.top) / H * 60 + startH * 60) / 30) * 30;   // the half hour that was tapped
+  openAddAppt(null, iso, fromMin(Math.min(min, 23 * 60 + 30)));
 }
 
 // ── MODAL UTILS ───────────────────────────────────────────────────────
@@ -1797,13 +2252,17 @@ function parseIcsLocation(loc) {
   return { street, city, zip: zipM ? zipM[1] : '' };
 }
 
+let icsCalName = '', icsUpdates = [];
 function parseIcs(text) {
   const unfolded = text.replace(/\r\n/g, '\n').replace(/\n[ \t]/g, '');
+  const cal = unfolded.match(/^X-WR-CALNAME:(.*)$/m);
+  icsCalName = cal ? icsUnescape(cal[1]) : '';
   const blocks = unfolded.split('BEGIN:VEVENT').slice(1).map(b => b.split('END:VEVENT')[0]);
   const prop = (b, k) => { const m = b.match(new RegExp('^' + k + '(?:;[^:\\n]*)?:(.*)$', 'm')); return m ? m[1] : ''; };
   return blocks.map(b => {
     const dt = prop(b, 'DTSTART').match(/(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2}))?/);
     if (!dt) return null;
+    const de = prop(b, 'DTEND').match(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/);
     const summary = icsUnescape(prop(b, 'SUMMARY'));
     const desc = icsUnescape(prop(b, 'DESCRIPTION'));
     // Name is before the first spaced hyphen ("Last, First - 123 Main..."); keeps "Flynn-Curran"
@@ -1822,6 +2281,7 @@ function parseIcs(text) {
       uid: prop(b, 'UID'),
       date: `${dt[1]}-${dt[2]}-${dt[3]}`,
       time: dt[4] ? `${dt[4]}:${dt[5]}` : '',
+      endTime: dt[4] && de && `${de[1]}${de[2]}${de[3]}` === `${dt[1]}${dt[2]}${dt[3]}` ? `${de[4]}:${de[5]}` : '',
       firstName, lastName,
       phone: phoneM ? normalizePhone(phoneM[0]) : '',
       email: emailM ? emailM[0] : '',
@@ -1840,6 +2300,8 @@ function handleIcsUpload(event) {
   reader.onload = (e) => {
     const events = parseIcs(e.target.result);
     const seenUids = new Set(appointments.map(a => a.icsUid).filter(Boolean));
+    icsUpdates = events.filter(ev => ev.uid && seenUids.has(ev.uid));
+    document.getElementById('ics-kind').value = KINDS[kindOf(icsCalName)];
     const byAddr = {}, byPhone = {};
     clients.forEach(c => { const k = addrKey(c); if (k) byAddr[k] = c; const p = phoneKey(c.phone); if (p) byPhone[p] = c; });
 
@@ -1867,20 +2329,25 @@ function handleIcsUpload(event) {
     }
     icsGroups = Object.values(groups).sort((a, b) => (b.match ? 1 : 0) - (a.match ? 1 : 0) || b.person.date.localeCompare(a.person.date));
     icsGroups.forEach(g => g.include = true);
-    renderIcsModal(events.length, skippedDup);
+    icsTotals = [events.length, skippedDup];
+    renderIcsModal();
     openModal('modal-ics');
     event.target.value = '';
   };
   reader.readAsText(file);
 }
 
-function renderIcsModal(total, skippedDup) {
+let icsTotals = [0, 0];
+function renderIcsModal() {
+  const [total, skippedDup] = icsTotals;
   const linked = icsGroups.filter(g => g.match).length;
+  const kind = document.getElementById('ics-kind').value;
   document.getElementById('ics-summary').innerHTML =
+    (icsCalName ? `Calendar <strong>${esc(icsCalName)}</strong> &rarr; <span class="cv-tag k-${kindOf(kind)}" style="display:inline-block">${kind}</span><br>` : '') +
     `${total} events, grouped into <strong>${icsGroups.length} people</strong> &nbsp;·&nbsp; ` +
     `<strong style="color:var(--green)">${linked}</strong> linked to existing clients &nbsp;·&nbsp; ` +
     `<strong style="color:var(--gold)">${icsGroups.length - linked}</strong> new leads` +
-    (skippedDup ? ` &nbsp;·&nbsp; ${skippedDup} already imported` : '');
+    (skippedDup ? ` &nbsp;·&nbsp; ${skippedDup} already imported (their type and times will be updated)` : '');
   document.getElementById('ics-table-body').innerHTML = icsGroups.map((g, i) => {
     const p = g.person, dates = g.events.map(e => e.date).sort();
     return `<tr id="ics-row-${i}">
@@ -1914,7 +2381,17 @@ function updateIcsCount() {
 }
 
 function commitIcsImport() {
-  let appts = 0, leads = 0;
+  let appts = 0, leads = 0, updated = 0;
+  const type = document.getElementById('ics-kind').value;
+  // Events imported before: correct their type and times instead of adding duplicates
+  const byUid = {}; for (const ev of icsUpdates) byUid[ev.uid] = ev;
+  for (const a of appointments) {
+    const ev = a.icsUid && byUid[a.icsUid];
+    if (!ev) continue;
+    if (a.type !== type || a.time !== ev.time || (a.endTime || '') !== ev.endTime || a.date !== ev.date) {
+      Object.assign(a, { type, time: ev.time, endTime: ev.endTime, date: ev.date }); updated++;
+    }
+  }
   for (const g of icsGroups) {
     if (!g.include) continue;
     let client = g.match;
@@ -1936,15 +2413,16 @@ function commitIcsImport() {
     }
     for (const ev of g.events) {
       const away = g.match && addrKey(ev) && addrKey(ev) !== addrKey(client);
-      appointments.push({ id: uid(), clientId: client.id, date: ev.date, time: ev.time,
-        type: 'Initial Inspection', notes: (away ? `At ${ev.street}, ${ev.city} · ` : '') + ev.notes, icsUid: ev.uid });
+      appointments.push({ id: uid(), clientId: client.id, date: ev.date, time: ev.time, endTime: ev.endTime,
+        type, notes: (away ? `At ${ev.street}, ${ev.city} · ` : '') + ev.notes, icsUid: ev.uid });
       appts++;
     }
   }
   save();
   closeModal('modal-ics');
   renderClients();
-  showToast(`${appts} appointments imported · ${leads} new leads`);
+  renderCalendar();
+  showToast(`${appts} appointments imported · ${leads} new leads` + (updated ? ` · ${updated} updated` : ''));
 }
 
 function convertCurrentLead() {
@@ -1954,6 +2432,312 @@ function convertCurrentLead() {
   save(); renderClients();
   editCurrentClient();   // opens the form so warranty dates can be filled in
   showToast('Converted to customer; add the job date to start the warranty.');
+}
+
+// ── PROPOSALS ─────────────────────────────────────────────────────────
+// Stored in their own table and loaded per client, so signatures never slow down startup.
+const RP_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA0UAAAE5CAQAAAD18UOtAAB2GklEQVR42u29K5ckObItvO85TfIwW+uihKIFRQs6beh0YMxPyKIfq6SXnaADgzZ0mlA0oWhCowE/IJNccpe/4h1ZZrVmeqa6KjMyHtoys/34P/8XT1kWv2FBABgEBkA3fwzhOxM89tiDYbCDBWOPDlpaWlpaq+uvp3zUhAYGAIPhYGHA4BuDUQAiDw8PhgXBguDg4PVtpaWlpfXdoYjQooUBw2OPA1q83bwnYvlnhz0YFjs08v+cvqm0tLS0ttV/4RmHczsYAASHPRgdHAACJ4C4XcXeLEChUyDS0tLS+hO6IpOGcwDQwMLcYU8Ugc+iwV4egVcg0tLS0vozoMiiQRySGfyGEfLArYkLgSxh0IDRZuCopaWlpfXNoYhgZTjH8CCBALrjI2qEyQdYWOXOaWlpaW2v//6f53q8P/A3LI74wj/Yg/ATRwBHvNzhsbzgBQwC4QUveMERryB84qhvKy0tLa3v3BUF4jbAOKADoZVe6X5dGo8e3UFHdVpaWlr45gw6JPjhu8JQXj6N5t7uQC3X0tLSgg7ocNMRncURhFcc8RP2jgO6UEcAhH/w//CJVxgQXmHwgi8d1GlpaWl9TyiK8ENCYaD0++HXy12g6AUHHODAsABe8AM/cIRXMNLS0tL6nlD0AxbAER/ohEFHeEmH/u3BKECRQwfgE59o8IojDF4VjLS0tLS+74CuAeBxwAGf+MLXgMV26/4oDAgJgAPg8QXCDwCveEF3FQID4QWvwuA73lFqbPCKF3kGtLS0tPAnSVwZLL1QMNohNEnbQxWXOFyZYxfoExY7sf05iAtDOKz9FXRVNvsJWf57/FNf1wbJooEF4MUSVn0mtLS0/igo8nAgGLRCm2Z0MqqzYgrEA4o1riyDZXF+2OEdHkAHxv/CgtHCXxSMCC12g5+EE+hQ5ocX4MFfCY7C4+h/ercQjEHiicEZ5zG+RvmjV8cKLS2FoqeBogMMLCx2sDjIEIzh4WDQTbrS8dW6I0p+eIw9vBzNb3IAX7Ja7FJPNO7/KPvfLAEa3YX9H0igvv/JQjdKIBxmIj0aCfKo9bi+iPjwCdxxMc/CcIFRmNPSUii6YA9yAGEHI7/CjiYcXg4ODhZW/g0lACL533zxoR2nr23QAngHA+jQoLloV0Jo0MJWviJlkETF7zVo8OuCYETpEQz7zqZiBxufdSNQhGrf44u+jtP/60HqPCDaoZVRrlM40tJ61Po///dZo/Nif+DhcCiO27g1MiB4MAgWLWxlbHc+HA03Uh6/cEAIsqAL5rmGkZg54W92QjPni3RlbzOufx3eBYwIRvqmAEWteGSU+7WpkRwXwuHurD3UDm/Jn8NJmpTCkZaWdkUX64yAnWSnGhg0cOlWHrsfnx1pXhbtNNrxnAdJw69HaMEgtDA4XHCZH6G35i/BC3/TyAHMJx/rscdqBf5rjyC8Ei79STMD+Iy5kSkVLD17BqBTMooKHVrY4/GFN3haWlp/KBQBwAGQA8/IMMyhy+K8uTj6OnTw2BXbm3K3choYccFXIxCsbIn8RcdzNg3GsKmz44xzx7Cpb8GmIVdwQ7dosp+IBkDkE3WdYNGMyBVj0F6zEwrQfupgzaZujKWXjmPaToPftbQUii4FRoE516CVRbqFl1+xL/LFn/dpZ2Gym/JpYBR5el7+2wlgkIwCD5Nr/EuMAk+za22AzWBEqceh7KuN+xwnlA0I9M2R6cuNFi/83BYt9icl69riMUeSfXgmHH4pGGlpKRRdSmPk4dHJKCf8x6djk+GkO+H0/yKVmBLJmBK/izYP7Dy6tFwPGUom7a/wkDu28OjW9wSUDTZ5gplI2fDPVll+a4ecNfg1aDa4nVPizGHA8ytpHYTfJ/WIWlpaCkUTcODTXiDvdkiox5zgCAmU/GC5HSkBdMKozqdjj0XmyugufOPmKunilG1Wm7wq3Eq6RLPqe3NG3KYLeabHr2M2/PQkXXKIVqRKCDwSCYOF78g3cJDX0tL65lDU74MwUrtEyrct9DZhnBbX2MAeHv87YHltCRSPrgNxXMcP/TwFgGnxvmLs1cqxPt29xAPe4pC6zcsf57TJkCia5Q7BmAYbxBZGOkR3JRiKCizOaOpaWlrfGIqGNILhYUCFviiKLoMjgUvrbA+Ww2zdvT6Mg3r9C9/459xGYuiPYgNgByyAEc3SJca9yGEgV73Hnqx/jecpHpHIYGCFNH7Z144SgcNklyAW49x5VwovzyHPWFlpaSkUPd02aXy/buTIbMQmh6Un8nIM0Mq+iNNWCndJj6UqRZoWgSr0Mb/Bs0fw2ns8iQsfnz2W5AtC1/IzwdJFsWy7LutKgYG4FyJ+5okeLG7lcpkvkjqrtE0qnQYVpLQUip4QmoDIvrNiIWTSPqbZQBzmzBUPd0qx5erxuq4vYQC/cUjMtzUcvGl4Y1j8PvOZ4AsM6PzGvVpv2nQ5tVG0nrKjPVvoM31Biu9BsUWTKd589ifixpMGuyfOunkFJC2FoieFJCcU8GimSolfh1VDKU7bCXfDR07Z5iEeQL7Q8/Ci415//O3AeL9IlxYFpTSxrl8z7px6pWjTK8sbvl9Pt+AFUF4/IGzkekOj/WOQP/fx8yRdWezF83eemXwmuLCThYi+OwUjLYUiPC37LnjYmRQ1QSuBCIXP2f7KYEQVkkaX3a5ZbuNBOUULfgblgLGddGEwG6yGemCeBpV15O3xV94iFt4qLKYUPLID43AmGBm5ENhMMzXcT+UU80bgO4yIacIjkUcRKPXnv9MDTUuh6NkhaY8OLd42EZHjlqi9qN9c/YAbG7COv5+DR4dd8jrgFeLdMJb0VX++9gTXu9JbjlZugbhgNJrs54w/1zWJ7/F1fAMJvfvU/VAPRDxhDMXZcx29EeuXBt60Q7N4S1uo2I2ZtEniCrxpD6WlUPTA8RNNhbu0rHxpZmMSLk9YIFjs4EXLxEW3xHAybuy5WzT7tVr40WMPhO8tBHcaEQa4esuffm4ZB7i0qO93RH4jFPkZSS4WngmcCEYkKVpmUQUVfxojGqx6p8gn+O218rM3leFebcz3zF58mm+lUPTNe6Pgerb9Rh2857qrfLh5gm3lpTsqB2x5UIbJFt00eQRbUQWVt+xpA9YlOCqVNJwR6WlhQHeJw7GDRbv5mKI0pvMbvB3GozlaoLP3dIQGzcw+jTaHNwKNOI/EviwX+fLAAphEX/d8hAdKv/zVwiG1FIruDkZ8wn00bkne0ODfV/hw1LqLfqtlK+7VLnUXwdN7aTxmYAf7ot5KlE4iUneZ5VJ+WNuZQMHLCGQ9DqIaOw3032A2d0aUmJjL0M3izjHuXehMan8QXNuMNLHcP5Y7x9PB4VaARkKPCTEwnVo3fZf67//R5yC+xV9B+IkGP3AEcMTL6r/7gqN8SF7xis8rfCgb/MQRyB4T4wjCC44gvFY3R0ccwfD4AmDxAq7+TMd0mH3K/w71E3/LTzU+wI6Tzw7L13T4Bx0+8YlPfMmvT7mFv8KMHsuLfE2Sx3s+y/AVL5tfxfA6vuIHjvjY9B1/4F/4mY7++vcMr5/HHl8g/I0GRp7hF/l1er2kr2TwE68geXfM/yJ5nr5wxOsZ1lIEg1dYeRXn9p0vk/9+bb3C4AdaWLziB36A4M/+mlraFT0MDFlhz/X5NrzSGjX+aSeMs11yNrv+zogzuaqZGG1FVlgzsz2hCnUYZ6zvndy164JjK4+ldrNvxMXvXCjaw2wctJaswl1le7Y2GWmZ3OCSZ+GldWYm+ZKvff1iACXJnpFPMmUiMYiqUcopPT+Qy8ipvnwksNekzjo860pjVyj6NlAULDT78YndeFB47OHQ4DcgJAC+meMCRBc1vWVx+Dd+Yzf5mIIdDVeGLnML47l9yBznjW8yaO1W2rhOdVW/gQ1gtMaXIlIjdolqcg4Y1WBvyNtb8z0ijT1cpvzmbKjA1mvkemGy/pwKxVkrm8e9eBWeZulkYNJX6qUUSmNXKPo2UGTk6PXiWG1TYilWbUwCRbfDHjsQ2gtz6WiSAQeR6i7RJRgHMYXlylHlRrumaUVRHxLIMxaphPtv/Vy6UNDKo7wU/7YbSOS80peChfvoNgZp1Cnza4TMS9GKyBiLVt7DfNJMgZMjYxRcU7raUerXdrDoZJMZNGPbvlMzuCaG7949DKfvtqw+ShdD1l3Rd6gfaPCKIxj/4P/hEx6fsmUIH9W53dFR/hPA6BMNfoDxeVEm3Sv+lg3Wy+AgeZFHvcfn4tF8xE+8Fl/lKNP7DxyKDY1BO/qzkP3OFxw+0gfvpboPecFxZmP2E03lZ4FsO7qNW5q568UP2U28TL5uc68p4QVu5R7CopX3yfzG50Vg7idIdjnHk3ZEYfPX7wRfsn3Xy6av8yK7v7DnNLJ/fJVHihU+6D/xt2y9jmlv9YKf+BsWP9Ie6afskQwMXkB4hYHFD/ncrXusDf7OrhcvspuitBG9N6/vFSbt4HCDDVZ4bg1ev0MUiXZF5Z2CBwqXcAtbExbRyogr6owuq9lgzLmQnxuOPcz1abCb6CeCoecBDX6nuMHarqWBmxxS0tXtULGCP0Yziqv+NV0etUa3ua26sGmPP1rVD7H4M5z/nFGxWTLYpZSvbjHu3WA32PzFXqhJv192XmEjaAsl3DrDJSN/j0fSYbqp9db0czEMBLm+asuk7+qenU2oUBSHOUFs2MBIfk2YnXfokiUQzwjrwthln3Q15qIjKsa5ftYk9/Zxfg+PXPQizbh+TMfnppNF9dRhbk7affBFP6SoelkPDUVrh39PX+DZYSvJu6bdGBfIg3cSbTRICtsmn4TMvBriaSHej0RZF6BufljXj+Zyb7xIKaeqtJkrVx/C++KxHSncPBlPf9+OyCS7px6IfOGtcel4xd79nUSOcbrjC02ebKxQdOvYvSaJFKO/m0/9EQ+OVqpo2IP9j7+D9I4XD2WbyR5psUuxVR1SHxzuM1rApYHlcjNvM+NjEG2T7IziKm5P2tneIHos2E12UfnGrQYWy4ZNDvvEKOujJWjG948XvC7K/SElEsJ+Ye9FA5iLOydMdHvjY9egWSENn3axuLdrRDgbbMbry+Xdc0lYNNBl8cZ3uE3MxPD8bCed5DlutfcG304xplDUc8xaGUuRDAJ8Gn/F+ydX/c16gWErmUfubFvNy7IDdxMmr70rmh986HnCP82lN7tbuC+fksh6uewdM8MAjEc5o02R89NWRKHb5Vn+mTnpAMjfTfnH3Yx6p9rj73lqHXYTHSpXjXJ4hbFqvzOcBgmSw7A2cKRV74h+ZLdEbe8DMLka0uIfoCcyxZiTF21qKc0eeihYT0u3YhtlMknH9owASpStWvAoMlYxKxTd0vTHw4h5S660McVQh0HwcOjSWygy08KbqoO7iDbmtPi8mlKnzWbYtai9kn9HM3fryC+Mb08zOjBPPR7GVqG4gP5/ju/oEDJsp4Gk9xec3heZybHRWg7c0JMipggvdzr9pnAPVLwTeWR+SoUejVZcIizaCSCmmSHssrZq7P3HM4nClO1Exq+RO6EXuPx1z074qlvY4vHRwL6oJ6lTel9iZXq0ndCsbbmwmey7o5JFzXIpvzoYKRSVhOcwXDBFWIStGEp6gRuTBjQkH4tr5MbQ7IFGFX2JTTeuZsJJjpMctXzEZsY6tVxku8wcqHY8TEkUcaIeCSfFik8LkoPKhbCb3bWQjD6WFunYQBgvjXfCz8yDV3Q3I0oePiYnRr48sRPjlIhkVklrKetQ26rYN0RO2pleZ5sRrZ0d0uXB7KcmDV/XiKgZ/NQ8ebWjrBeJnVEvJmlXkh1MFgZDhQHxNmFyvErZAXmFizmFkfOOFYpuO6r7JS9RdPIamlSygM+7HMwOHm9owHB4v9ILtgRG45Gcmf2bfRdyKI4Ak2bPdacEXvkcdpOHt5nwdYhQ56/4fHE2co2/8y7khPk7b30b0U/qaZGgMPWMdqPxTQ8f08QQi6boIuoQzhnM+dTj2cwzbk24YlP56j0NhlcO45augdP9FwrOHV1xv4gTTbma0bWDKh2GKdwjG5m2mEGsIq3MPqu5e6zdmfVDuXDO5U74PJmPxted9SgUTR0Rrlh893eZ3GqyzYYqMfMINwOi+EYsD4pogEoTd3POPipuAERhIGMmBjLryRhTb9pIjudJ8oi7YE9UB6Lhz1EX/w7zqHxlfJRzurYTxiGDXjcD583kK29mx4Y95IaBan4oOjRyo6aVebcNMGK4GRlj88msvTrgH07Y/N0XiMzEdSR/t+VjPEhM4hBKOF1ygV8rWXenPReULM5M6s544lo7vI6xQtE9AMlNHqVGzE5Knsk9eDycOG3l6IQmDoK88Q4eCzzxd2liv7KuU5v62LYzwRP+gh2lme1FSvB22ItKalphVDeCohXMxvnQiLmf2M88ouEAkqomQLXdgxMfiiaju8/nWQU6zvtgE0KbN2TzQSUxb6mbGCatA737ANE0TIYBLGenR+hdIpu1dLpkYSWu2fjwyZdaKqY++fsUs9eqdqMvo0LRlUnfDsAOb6Pl3qW1REusM57Y9NjJ7QVnrmC++JCUd906e85v6Fmm7lbzwRP+YgMAmjweKBEFhuHs7cw4LXYh6++mJMlJmEgw4tVQhsnxHU8+jj5Dq6mMbVioNe2KzqYPnXfZz0+rLIKpMkCblhTHvCVXYag+bldkJnZY/U6y/9SYjHY9zBsea91O+4St2Q+FR2ALD0ss6u/C2XJF49m/7sI2yVvBPF4NTxCFxYjMK6pk/nRXS1Gazubx6Lcwtjou4EH35mQ05EevzDSNe9zz8awGxK3yGighgi8ORbRKhRLoC3P2qWaDkzan73OAB8/mAtOJhPil5XZUkIVxaHDMrs3+bbrV0wIYNdkxVGez8UwXM4QlmuyMzKj3tienT93KvZInryT9AJYGSjceER36PpbPdBKZJn8gbYiWQhqpojaz13S1uDUUWVGm+4xL77Oj0ouK57EBibFHI4wlKl4qe6WXimfeXjRquedZUaGPGj/HdtaPfHy39pP3dpq8P/GNTH+2uoYHDpqZWcObzTdTDw+HvWyipifwbvOQcd29mRP7MwgSxqM6B4Nmdmg6vBPnvMGpa0bZt5XiyXn5bnjEbtbR4dFIC2svkaagi2Aiz9ivsFuCMPbmNWH1wVx/WmwXILBYYfF3gKIGbWKOYECWpixnpbtJ4s+lQKK/OTQg/PsKGyOaHGtYvEkmKE3wX7jQcvu0ykY1QJw3HOAOvqJsiDytfXW3QjNjJ7qB+9z0Ri9YGZmFOPDlV4UHfEMHP6BZ5xeDdpK4QCeN76aOJYtddRkeOre3RQ89kpxfTr4CmLDg4fSz+2yrlV+cMNt9DkndVEhHr6dEO++KyAswOaS40OTXWTMGr3H2sOCTH3l7NBgO8kol2Nzn+umgqBEYirFqVBjdG6EDxCfPXXSNfS1OG2WHfXipfuP94p2Rmbipk+xfat54PFhfxyN46ugzk8ZAUySOGMMw/lCEe5e/WCdzCcYhzyqecIJ5pZm8rVNh+JKHxZV+bLTZsaKPdeSNWT9Tw5VAFHibONzGAJ9rk2hw7FJGC3EJivIurSn2FFQd0ZXcQDtD476v6Y9J0Do9ovUDEF469v2Kn8ds6mkoMeZiT1SDUF7tlGKu9Xz/ddNwuvCx9NWNCgk3jcTvlyUL1D20lzcXd3oWgvevi79ctMBK4kqsHRVr+ZgiwwudBE9smbjaSfjJoR5tBhu6kB3qXLrT9DiMN6f00Mwj9pk1jxOzXa464bnNfQ9X/h7NbKKW7VW7LM+VZyCw5jtXuoUjyb9d9afwcjM3MzOGtjghKH3f6Zywe0lbmxkfxtJVzqza7qxz814vZe1pCk3mG55foUv+HK1asVypQfjrZh3RGwy6ieEQ0g4DktPYyH2/kdTHR+TSheRUGt0vGvzGvy/8cvGqMQxV3NxYnnWe+TpxfLA9o5QuBCzXNl0ci1u3DmGpejfF4roaQg+gTe4StNDZdauJ9euqA+NtNoKdRhtFGl1XvPREbhZGDzDVUWh8v1g02VeY587drydi2WLN9ZK88d25bg5Eqz9bcTTXCD+UKrZRPAKi+d74atSFvy6WIjj35Ac9iZ8Bolzt4uFxELGlSSOER6uDeHEj6ydykeklDFEp02evGRSWQzmXJS/xoiWinVAhTfcSZnJngNWGmDWj1cuwmi4VdN7v30rQr83r6w58POtLwZNmMnbyVa8dwDRzZPJKhww7w/Xr3yc0cYz2Fka8eI2btwxqKh4UtXeNv/PUZF5bxZt6brqAhVGdBj/my3E26PWZCS9nLuHTAoEHgyLKSIE9N4vTzYgr2TFuJaSEY6kDi8/VWxohPJpjnZef3xTKBwawm7V33GKyiCL7BYtjGCSP3w5+xWKXpPucPr656qtnkh80ZublW7rM7mIsTTPzzuLZOb1ZDXZ2IhhiC6zy5NVt2nOtNpSixayiNYccz4xbc+5W7cjzm6Lb6lSOkqnlkmP33NF9b64tbxDM28XelVf2Ousej0n7dzNSEHG6rvqUK9D70sV/TxPiajwOFEVjfJN+AM7e9B488FEyK5QQ4yc1uIO9oQFhf/bBfj3BawzOsyPwxdnyuWY277PO42MZynWrv09buQ9zARJuoifihT3W0ocoHznxRXMt644RvDh0nfZVo4HGflpCO7RiolluU13ZPres9xuOQEped272aDOrJNpTnnvbjGx5ISUqjoFo4lrBD2H5Qxusj9acfmtj9taBQXiP2uxUosHWr9zp9XERyxeSh4EiK8k+Lj3BnJg1UcNgcEjgYU6CoqjfYexgsQMWo53vdyuKmZdNZgZEF9FgmZXafir60m3OCHO6jdInbYv5DW96Fi858x8DEa+Gombmtk4DMfDUO6HblDpT75/M7IZk2w4i2M8cZhUneQbp9Gs0ffhu7U9qrMKa2Q89QEbr1jHwXF4UFthzp3dF5fwjjnjthIcCi+rNDf4OCXu5qZwJcSj6MGTuRkgFYQDUN/+5bXz8qO5HeoPTwOhNxnSHhyV3h32WE/PIywjvzKST3LSF6/oQ46nxXj0ZxQvryac3M13Y7+/67nNYpE+vdzaeIr7zhCv5lNdCs3psjbOElt2Es3ivN2kmOsKhrSdfhMfmUyD9mnTR62f+XtYtPydxbAEufwE+bR5fYidsvOJJMTQGzreiU+lQ/BhQFN6yFowO+8Hbz6MDYSeGOAzCm4ARnakbOQB4k87o8cZ05V3vXUY35ze4NGAXYcEGxqW18Wmx2zxJiNgJAFEGRX5AHL8MNR4X6CTtGY9n3ePofbx5wDoam9NOHTF99LbBtTcWtePDZAEoPUVi3IVwtv/yFW8/TjDlN0KRX/HOWRoaPuaeiCtj2nWnH19oQ0UFu68mNHAzr1kdbq4+FP1rczS1GWXclD2MkwBrhsEbKKlz6YwJ5EFWcO3F8myuB0Z7tDOuBafcuWgFk+iQetRtCY55PtG0GseOHouZNFGcfsPS1cdzNBNysSaufM5ZLQIKiY1o/SdylesAL/ScuEjezxaIzaPoKL2ac44GgUNZe27ppMsEZ0PfeXLIZZ04LjugWxqK+sqfpitAIFcVb1MDtlyAfG2x+ZWgyGKHZnbuHFf50VrS4C3NI7cYSqKiewgjhOaBh3Sh9vK2O9ePbuvAw208sm1a8NNCwNsUeRwXOyL4gjTu0+K982TNuTk8iWfbeqvV+deSTxD28mbwGn+P4R6Sq5SV/mcKYuam+tyeNrTxcLPbomVH7nv2RUtKvOHmZ83pZ8S69nwLMjN57c/H+HO9aDMbsnJnKCIZPXWLYMD4JZLW4D4QNwF05rTbiB3fI6qMhnsPEt7f6bwwXj3mi+RXv6EjagduVLRSQstn3N6vf6Qs/Ry8AERzBGoeBV1s2XnxjAPFWp0Gz+hH1j4rJOKA8U9B1YsHC8uKMxr3VjrI1Cc6uKHzGWZQfMeeqJk1aR0e9ssXpJzCvv3SOvR2qNFqKKUG+4XnvJ2xgbrac/5fm6bwwAH7VbTEA/bJpr65wB06ejFcZraOq2WX2KSfIli8rTCaXF6iLx2h0fvObtr4mWwpzKssbvI0W8wqsutOb/SgM3+kUWUzCzP9aLIewjHVE/USQz57IU4b7FrH7xIrN96mGurOxWtN6XXsRONnZpzg+KRJh1u4iJkFC9L7vW+mWKdDM9x1oEqDePrT3h2+iIsZhzyMxddzkwWMPAIfpCsKT9MWkvBe7D2Cp1Q0QzydCugv0FtdN80x3DQP0reRqI1wEo09fFRtiixfvheFpE2/ob/dej0o/dQxc2/qLuI1cfl+1S+seedSjniwTaoJAP0EMdsumCptkTCeMg4LJpa2iAgYW0WNneVc5l0456p+6gaXzzDI5WuyuVap1zCTSusHyrLTWLNbdEXx+jcfnrl8FtV3+vll685QFNbbh03DsXcAb7IlCh/wt7M8CPwExfDeIGQyY8ToTRDyO39LGPNpxurB/siusgwBWIxYeYOdIm3WT43HMzxajPKmzdVl3eeWfJJ5cidhZ72pw5o9CJlpw+iCMr3dFMT5DWJVP+FTRrNGOkZ+NQPhLI1cwjndryk5YJgserzu63eNbM/lsbG/o9cCLWwA+SQiQEhrcidKXH2Kf7ejTmYq/rL2CKZIObRAd7gJFEW6p98oXOzEpY2y0dDpHDh+uK7ISt+HbATTf0BcFsZ82n7LYS87N16hlgkrdXdyFzZ/cx0zpehMWOEzlt6nTNLHowmSD28z2RFxRmWGbNh4YTg5BrnpSD7elAwLSZvi1QlNJEe6Hbna8cCVOQeiQ+abQsnX+RrOaTxLGeaF7fF9/ef4gvLWPFJ9/pQ1k2NLP8hFosqfWDp9bQqZp+pn6Ir2s39tkPS5zS+9x0FGVPHtbtGeEb7kz9i8rLP832LAYdEK1JZxDZw123RW0Hiwotmt1O+wGMbwitvLNl7S0Fw+//CM37g0MWagGwSJ0+okmCjZDR8/O2PrGru83u6HVn5/KrwspoB4GyWm26y/4bQlmnJx50yQOXTQsyKWxIXcBi/jJ853TjMLfoV8Qak3JaOAORoLLdgN0WzX7hf3RFPDPUqe63eGIivaFX8CFDWJosjCznAnH8z+akAUm1ojd+D9AsvEJJsfrli5eBnmULZhOGdHZhfX1b3BvpXD5XKufSQKbc7gOh7QlNwlaDDO9SeELl/38HDFQWyFYoKMrECTGhEvnwJefFdwAdNm4W/RxiOaT3AlozTs4ur2j5PocfxqBAHH3ECXr9Jb8GpSD+6kH4xuEbz4rNAGpQ7LZ4dXjOdq71Y7Q+Ne7l/7rSYtRp/cBYrCx9afNFpzOAjryIvDtJHkou1tPa8QKZ46aNtJmlIYulmYSdJj9HYyGaeMM25Ti+Aj3mZxaaf2RT3biVdQdsv/vYMdmNJuGWiN+wkvweWR5RO1JvXBk1k9wLhN5kz5XUhe5WDTZGa4UHlf0c6MwXpTXC6GyTZ7l9RHMnQB/RXNhiKWJJNyKMdZwAPPUpYv4za4NuIQs0xGuuueKJ5rZhQ2yNUtFm1i/c4JVvIhK032RNMyZb869mLqk8r3hiIjzShOknwaWb2zmPA36ev5LA2VB/6/tSPqOnui6JgXYLMDYydwNO6NjFgflcO8nE5hxKPbFEk3dPIjazZINnlEN91vGmNwllZSJob6JPG06c94UHVgumWhfPtBC2UOXVMOcUPhadiW2MVXgjI73HXEEFqVdjtHX6bBNnbpgtFvhvqRXDeZm2QWgegaHm7xBu9mBvJ8d18VN8E1G3YPtNKnv3cln05KNaMBWt+5z+2ReFUrQfd8Xv/aEBB1nuSTZBwS7tG74lbGhUesFTWOx6/BS0pXuUE36XYDMS8CdiDsQANGmkGb7sZc8PR7GxXOopn7QRaf4f67/u5MAxlkA4v9aLBKC3uF3lmAR/aeZYyhqRiLTAcS0GoF0nV2gUb6ch6FPNREm/lIK8DW8ivBo4/1lr+x/Fxx1eJl3Vocg2g0Tta5/qy94vX8RHiVTx3uui+y1f6jG2wlt1iesUCK2zBAo8ySupbIus6hcsnd4srU+b82cJDOvT/YxCkLM9H8O9gURtyLYgm/8Z6OvnADP5c1M/45mkHSUACjQBZo8Fu0OiQ0xyYBESdukhm5ePVWOr3j06XJyfU/MQQGEhNZXnH36cm5PXgtzZdpYo7uN4yc+KrHW3xVmrT1nNrecbZZybsamnXXPtUVbs4qlTZ4yZlV/VqeXYQEQK5wj3683uOx/SbnAjDquUa08nRqJi9op1EWeOVn8q6w/9dN3lAHaR2t3Ko5W4FTysSMH0yTjoImG9NZgSJ/4o24P1R8GgCUkXdBxBu9HcLNOdgWUZbb6dN9mUctMRU7ABab0tOP23XZmzTbbEdlU/kBp9ngt7U6EVNV7bsZKenp9kbn+ym0mVcCRnRVGuxQTvFNpNmd27IUcmsGVJ8ztK5z7sdy/roakTPzfnixS+MHcKKckpr6CqF/K4+uLnqhReVnnavJ12S+PRMU9c5cBD9YpYcP0y7D9fxoYjTY4V1GKs3qoOZx9LMdHDXhK+Wiv+A7/G95yTow/hdWosF7kHFp/GYGXRZVGFuHK4j/uPievHhbZ1jsijd2/QjizdlBNEGC9pM8r/vcvGkydr3U2FA2MnYyfmlXOqSfesN0m7qi2hVr3fCHBwEBfGcYosFnb3x0cuEIf718q9tkvW79jK/noFIySZp+J7izk5Bu8Dn9C7dj4SP5s419f42Y3HDaSLD0QQ0O8DIaW/MGjHnuuaOWGR0oRqb/pSrG4jfeBSoj969/I4UZsF28ufa2g+4CqUU19lDcvpk0+afZht9kPxeAxP7hKoT6TT4T58qO+YKEc16MXOeZvY5PNpZO/Aa2wdC0gQ9PbKT8ZNjKuoMiX2LTis7Zp+zOLePTy49tYuLxeK/Ru/ujmkGau0s/R5kZJz2aZS1vu8b2ykgevO5r06SWmH4PsCs6f47IMqILx3tdIdBkk/xo8sOSqhN6kOU9UeiAmkpLzCO/LVvoTSJFOXdy67l//Qakf2Nx5Qbbf1QOV3Nhi6qnaOFpKyLT8ZiuBTIw4sn8+i0Ui218G7qiaVM0ppmzk6wfe7luyqVVvrvI7JwnMp2WlXJ8ASc0TDC7thF/+MqGWTwxIvZVtlgecf8IA7rlZ40WxMdTpOxT3nt05jZ2aWT6ELQFvgj1EbM6lw4OO7zJyzCc67sVt7lGDFymiOdctbMJcX+E3yLl653cyoPCiT2pWbBPJ3Q4XChVqXYn9OIMBnEAaFNu7vyHo4HBOw4DB+Ah06bb8Mi30VnOiU5co8UwMmXHjOpiqkfx2eBqm/tBTURKlbHfMAyRZ6jc02QVPul6yOk66DYO5tbtKvnCvhhD61m6WtTidQZvvEqSSgsd/Pot5dS7aauDeX3KwdkJ/gBdEV+EutAtyDxD79RmuaFcqFR4AYiCLtyJhaOtQB2nVNKm2EgxGO8CQwEGA2iG0SGEAByjFaZeLCTO3OEq9pD9/X3oZ2FW6hXeABwyew+q8Gz4KoF3U95YfCFdWLtIj6hLKDnrM7HRxLK0euKCV4mM3BJkDFQJ3KNKvOKUferYAXIr5cMLg3XraH05OJ43Xq9yKea0CzrNxL/xgwzeeOFT0Yc50mhUTJMO772b+pYrq5l0YeAzx3O0aax7ZSjiTU9NvetZ/th4dMnheksQNJINT4eDEMLzp5bgcMiGgxZe7tEs8V0eDr9kQBeoCk5gbZe0QvVRGA94Pd1VfIrnQT7eoeYafhYnCVdxseKTND7+QcZzMTOYVilrKAONqK+Z/rlpxYCSMlsUl27C0c+aRhmpw4PKj2g8dar5+F7qEkGbVh41fIKrwPwOgTcTiWiG7dX3PHOhFPwQceLTtqNLzzrLp41mZixGrFFvsUBZolfcxAV9CxTZM1s0vtoTaiR30GEvndchG9qgMmzzYPyW77iDwS+Jd2gEoMIREQkC03YkuTWoT1Kya0yjKWPyYeBnwVl4ARbZdH5SV3SZt9s9+HO84JNGg1gznwSec0cbLfIYuRjgxv0gpU1epMc0K8WiY3J2f00YR7SEq9tSz5KrVbZfJg8wch3jFQOp9dw5qkSO0OAqR4tdx+MQuXmiK8LERqxDJ2cPJu3IzOa9Hl3FSvgmjn9bdkV2dfTxMnRgQk9BxWDAbkpT8gmIAgvHZlN7gzcckqKo5AaRjHdy+x4rJHJfHHBcGS5Rtux2F37JeOUHvhPPc5sNN+p3eEI7cBLgjKjOF9FV3NOyn2aknT57tUL/widdnjizPvIpbTQXEUZbpE6YoXZiODg+Vk0xOh6O12ohIjGUex6MIO6PNvVWvNEt5XJHuK2YWeV9uV8dnP2IhIUlI9ScPYkE83XvBNoEF3TmBZ9mHf/8o+iKeMGIfou+oxEoqhFZc8U/yV2/mfGYjm9tMzLQ59Fk16S1LcvkntOLvqv0WcF1wGVNNGUT3tI63d3M1rM+n+7EO8/Mao3KnooG44Kt/dyWcPdr0YKxYkc0NCNa+0pNG8/0z5hP74zx14zDP1PZEtUP3umxz1TH2kkiEq+OwQ42v+5E4e75r0+fiDM+fv0KAcRjyFvrp+Ew8oQWf4oujWNp5KWOwefrdCfLcy95NzGf/WvDgvo8KIr25X1K4B7vo0VsJ6AQV6xvsHgDV0ng8X4V3hZj7henD3XujMADKkXYDb2N7q0GbxKNHbZkprDPLL0Jbrkd4hnjWS/ufWuD8MqN0zayhZlwqubJO317h+ekjwzbrvJassRZZ6bCM7f84Y6KTqAG7AH8XklfYLlAdBuZVXSR0Mp+SzRkGlKC7f7CYCY6ezxEV2Qn9IXDTCxaiIv0KV60bsl7S2MenrzG3cQn8q9NC2o6y3S0HTA1gtaFB99pj7f0dutECFeXe8V4ZyoozmXOjxkdv5QtZOPhuwdluvq4aLZCX3gHgeUuV0bIOTnirvfm4I3UEBanPJq4m02vgrce1HYQJLeUyeqv+Cx1icJPE/mt3UkhHX7WGtJvcNq75v2+w0Gyc7Aq65dELr7+OaGLCZGHXd/wNfJ3zvzd+nPQjC6PCtlE3fApQBGuTGziTWcNDZz53RnJ21eAIr+R61434Mk/ggYGuxRejIJSYIvAthCzu69SFWJLPMZtxkE+dDTKO2Lpd3jBl82iSVooL17d0U0BVzL2OW/vEoeFTQqx5lHzf4nvZKsU8nmthN+U27IVitpZFpg7WU5sBs8hz7rHnXvRoJOOmi5NGtaJkqOFKp1A7z63m6i/R8Jr5J/GzMdUOKgYuUCYyQRfn+2MePb7+JVmYHPvYb/ZWqwMcXGP40HH6CThpamOyrYGTRzg8AYD4DfsKIiBsqGAE1ZbO0LmOPBzk/JXj3c4sTvtG80+PrnUJNVvlVRAW5NMW91kFMK1wWj56HCikbpm+sh03iMvbF548Fbni3gh74WlVtuynGPANNVpbZmee/GhH34lPlGyev5FgmUqYYX1x2d9ddpwGW1GfFQapMguDSv5AX0W6nEwZqSeqsdI8OzkgSuauNr+mCa37m5lV+QzpimNVJ0PY4ca16+n9kW5cvqAvZCpbbLa4YH+JBJPAxQFB+08yC4mznTytXhSNMviweBEbT7+kzuBK16QRvb+eIfNuvzTs0d5IMhc92rtJZjDTBzQ5x9ntBko/eIzfF6qZplBdL51Jo3imbnYPfmN4dPlO6we8H1aYAPNWs9MvW4k75Dzenta2Y+NTapKSok/MSjjcTy5h5siO3k5cgUQ+YLLWlLF2gG40UbmHM/sKuvdEyeG6Bb/uhtDUbMxGrcWyhSU7SyMN5JEHS4SdbiYsToZ7OyKIV0Uhy3Puzt47MTSpg6Su4zhxDNv+0ZenP1tGtbK8b2eyurh0Qkd3q5QHWz/eNdsf8KxsmUzcrljpZuYuvMZWVG2on+Jg2N/gQEaX41nOCTr1/5tTuXpzpRG8ordSjPwlKNsF+GqA2B+SCiildGJ5S51yrgoZNXaCqMwErMOmf8CTX6G6EJhPlzs1W/ogf7Xhnvn9vyW8UejwzscGrzJfSi8BG8A3rMXxlSGOFRIvkgm3escZ/3Mh80UFkDTt584xLul/1V5NG1NhI2r9d/Zlo4uRPjkLASRCg87dyeT+bAxaiqH+Tn7zdv/FJfyfuaVXuaQu7u7IvG591coXSp6IOJKDhNVfRgfU+A6/n1acJPIL1F2Mi4jaB67tF2vBZz4xO+tsfDMpk9QPqCjR4UiThK8UxzWKLNH6VvXfiy3S/dpBw8Cy+AuAkngsDnpiyhx46aFsj5juvhZLlRNIMmDF5JGdzrcLBHSZven7cMUh19o06O/FBhx1TjInyCTveT2ylwUMsxo0k8ZwPMFfkq6QAdnijSuMhSeJqNASkhoCt/2y1vKWOFbUtap9aZLfuIKOCX1fQRyA18w+cfLmVe+Ur1ZVzw1aUJ+ehD3TJ70snMnpebSbSXr/7UJMwNK2zMSG3sQ6r2mwhjKDmaWBm9oM/Ze4MxFG5VGELsWPNZghx1aoVnYhU4mHylxyoCnZNto0s2TL6Ku2L4D6VLY+mnREw7veE9jRT4pq2Td2Ot+d1ZCK0ZPNLpN81mE3VrUwjZGXl0OOTWw5E2H21QEXRiE79PVgGenFeEzYy8+sMpF6DbzLy/ZWX6jG9p5W6trAhGtjm2o5RbQJJA3yYejfn51s8+KOWsmg8dLcWVR39gTfrR+sGewS/Y4ezi8oRG4cVnDuscOAOG3DNYoW+OZFD/uqwdC9GmOd3S3MMYLvVebfsZOPpi9N4TPmmO6oMoCKz3AvFj6uJPXy4wDOjT4XVHfzKXHbHVPWGukwxcfdvW02fF4jk6OMaDKY/WbO1MjPnHjAERfPVjMaovTHDC5GHx5EWcjbULnV9tAC6pSgGgRaubeOZGuYCayseq7XjMKzVt6j1FyEuGKyJRvdLvnE4kXrrApGye0Wtm1YcKMmW80eXiYFNfYnbTin3SKKzOhwW/h0R0SDBggM1tlHOSGG1yzbOaUtkupNFN8eRboCLeB9xUjI48uDfw6YZF4NOLW1oLgBvqkWw/pWCDEn7lL2adso/Eynk62IFrrlDd2e7jFres0R3madE32J4iBTREKMKdL4pnNwZYIumj0egDEcpMnDyZKYzoSmKVV5jV9lDVVpRtc2HINt0Rz1sF2ktGKCj269EL3yY4p9hS4MN91HctxKj2o/v5xC9cFMwHntHJYyN8LikIjaWCxO3mZFe9f8c0SSbjh7dwl+Wsf+GYHd4loNTnF1WLsk+Bx7bHhhM3X23H0Xg02CfP4qkodXN0XlyX8rwYifBLN3Ax02X41GdmfSbSuD27qH7nmpO9iJvopPlNTt6SBDw4j2wMJqXpTZvFyNLMalP72ff47A3JosiQN2+ojrNMVljvZfvxqBttmk2xWTUYOj8/PLYSay/5zNHmBjl6X0wA8l91EJ3etTwtFBwC/pVk8nCUJI/EIDvLEnXgvtHI4DWO744sVTUdJ4simGfKttL28mm5rBy945PfFMAGfPmTPW37GlsdtpkP4FCu4Tkrq4JOLdJxuXw6KpjOBggnoKZuiS/Hn+ApGLXMHDQ2k2bZgYc6N6Sx2OMANPge8ipJEWcxFkGpAUsR4QKnoLYSXOK1TfEESS2Uqvq8pZjCcucUFhaG/o8UOZZLRqdjQZmbQSVWy1RoBqz0zae4hoSiqN4Jlj9s8Qsi7ighm/dfp5700+NiQZKO6lVLPcFNwGw4gn5bfhzR/N4XVKUuP9izmJGu8A0qY3/q19uBsQ7P8NVgGoV5EwnTlAV3PQWpOYPY1k/dQPjnCYn0PfI4F6fB5jeZanDqUuq8Ipy6iSxcwnjTFyq+VOxC6dMUMUGQLC2Uq+i0/e4ROZ/xEtp8XQHLy9X2WEkxCTycJYTDy9RpZB9xmVzRW3C3RLrq0VCh5dP3wtDaTmfvMnfP+fwIoCg1/iwZv+LXyWA6NcweXpbGQOMuNl7qm0k3Vg8OWPvr+hDV83FsZ+Vlzhwd6mDBjnLF36mR8wtldy5/k/9VlCU+86pkJ41hemRaEi1r6uxOJNnRFxdic8905hrnD16KTPqeRgfPcmC7eoj28MAXNwmFHQiZyEptuB3f4YYC2X3y/0UIUuZdD2yRPgPznisDjiguFFVDGDV3qtr3u3UR6EbLkNpp0SFgi03f4ZlAE0fAH+sEaMLKJeP0O4HfiqkF4YX10A09w2jlLZ13Lptoejn1ITBVkuZm+uCc3G3rBx6xDNnaMy146WeC4tZfy2F9pyDl1JNOJDgY0M2A5/948T5PlTVeoNePW+BWDAqWZFDxTpqczhU0wzQikIzO2q0b/0WDzFAncfJYrNhK8YOAnwplfS/5oAgkKVwUjGkUg0qBT4llZiZvMx6rLE9bmbpkz+iLKrq4PBkXBMeE3CA3e8L74ZFi5xzhxW+jJ4CZzVYjHfq5b6j2019rZUzJm327PcxhMmcsX2ooP+PtT90R9mPrwDX6rnyoquq/DM5yyqNxqXDsXwcdnb4rGhphrvJZpE+S7GU9GL8Msmgj0679biHF5B2YixcvoCZpNGeJ0wfNnRKMQ1rmPv2Xj/jh83F3kMsmLzi2mSslfev+45F7Pi9EutGqWkY9d+UzLtivD0V8nqlSCwqcFsJ9F+ng7iKJAhy41obnPQZfmuCQQhcx81K18ykwCtlN2H3moRBzX+fS/WpgnsrFf/0HiB1Sq46SV8ZiD1AtSLxGaF49RvgjXyl9IC8JVIrefuUg6ybQyVW/CvIsx4vx4qMpoa9ETdS/z/lH5FYv2U/8tDVJQbWFi09Myru8hOa2L4hWhJGZleMh6/mngF249uyiJGkzmMcLX8mL468SP0i8w3mTI5iZf3Hi096OuYRPKo1ucG+TarBmJBFmrSWO105pRj3d0koPKEkIHGWXFdftzj+e+c3HWcQ8HQnwR8OSTPaz5ZIMfXgFqdkBU8CvoIx6cpfCOZcH9yPw3TOFHMr3J4dGGN59ueAlz8WcGRg5jDOo7lPFYK/YHLWjG5Ogyl6x6xutyXxEu+XSSxIMXeuytywVTMBNJLhEuU3I9BBRBuqFWAhioYuFBYrxDg50LV25fNCENo1WTcyM9CyVFEJ9xnDFa7GASZbzs0J59PPedq4PBW3EQ+tVpLUvhIHRGcgtXWG1Y2BXxRBpUbaiT+5/Qauf2QyLpoMqp64/8nXwHmoEjmnAu42ww51bnia4doC57+1FFPdWctavCKn+DWsYrrdy+tisf2zDJiGehO0IRrXx+e+uz0OHZwfqCRMPl7w9FjH3yhG0zLySf9Sk2BQXziCHHA7Kikya/GQgn/Qr3sV3yX+jOhovgQNdkCnWaiETQesS+yGZH5ul9LA8Mf/gMbwiuRI/wSk8KXugU+kDCrbSHQPG2SafDM5y6ZgCrdQ9oqu6HfPbr+iPceaeIXsp73md5jQddLePVrwq+dBNh5VNuJ1h5YW+ymdRS32lkR5Sfx5HrnCd68+U8U/7CuRkxFjthve/Qyi2UEs9lONTocxxdsjaHLEg76bNo01Pc54IEB7lLTPL/jVZSZss3ldUBHR6bkvGONoERn9wTXXafxZm7Oq2gzvNgvzLf64yPeN7kndJkrtnTnLpeIEGTsX/jG7o7kS93DjWEkzLLTMZh0tVEn1S9RoT/1626GDnspbfnBdOl/FmNaw2eZH8yLN7wLrR+qmYI95duI7GKvaQhdpSQ3ioyLOlSOa9/XeTjf0gWHzYblHUjC88YtRBEjiy8m1aAzI6U1rzBG40ushVA5ivxJjK9YFbYDBKTtB4TjDjJGv0ZNJO4g7kEOHlJ1I1y0fWCYi8OFjTjS9FHDPRdEm8SMXQywaDqUUbFgecSJ3YJSnvuIp8oxeYNUEWDZ81ne8PLMzb5pJ9pnfsLi4nA/GMfil8cDpIBNw1dBIO3NDeikWOeEYBDclKnASRSOsFppYXTTaGov5eFZs4kQ4rxhyKa+uVU604+9HYgdY1ARIuNZ3xhLqso7r27OryjSQ7DCkV4cHMjnz5CfCHfv/NWtMFt2xRH9DoDGS/H1/xIpRM+a28swxuP1aA3spkPY070pkzfdwDLpYwXQxu7k33fOBuLUvVUmPc3dFnozNQm5NxNEc+Y89AK2fFSCKRZSFjzgxFgl9FQpvs1K9caP8iE7hOLnRC2hvzK/p1hqiewewQoygWMKGxFp3j3fVJRCGmwMJJBtJX0alOG0eXtDvcAfstT3+Egzr9aeAqDo/P3TuED38dFnD6GcDgUgw5e0avkxxcvfu5M5pvRnWBuGyCmSZ/Qehh5ANEusyKlCQZbeBz+AiPN6ZgRGmzfOLvcLn1S+Srvr3hVPc8wisUiGqvHc/E9s1sc7AWbJpeCevImoZE0BJ/Npqj6bI9pYxdwofnrTseATYRHL0ByEF0IJ2oDLejyjegjrpdIEvRTDXbYo0MLuzkgQ+uZpcDlzc+fcbR2m47BQAkyq4+vcAm0K9K5MNNbeTgZk5f7gaFTYz/ToApXrR+Nnj4/8KKvQZHDlHNquXC15ESLiN7XzUTA9ulC5XkyPiXSlU9axDyMhTe6EHbZxpNWsTkDEXw3YeqEotO1MHBiamaK3CuquueV7wSuujmcLXT5C7fOhA8UwN2gBwqtP2eEaZowAOwZPBa7wnP48j5LLOK+ndixnheQofW8nZW/saw3HCzr/14nDnPnzAbCYd6s2JH51C1iggTuzxyOdhl9nAf5VvEY7k+IkrQfk5J4Rl7MF/DgznOde46ZK3Yr2ODQOKSUNCNmZA+9rpLn7KWbooXM3ni16g1rKYuepIFjIGXbP5rUcFmJGH0aKCoJ3Vz8zi4t1w7VIYYpeqU+sisaNhIa7C8OEjE/6Q2/cEgh5Qc9qbVw/a3XNf0Ap+YALtESaOQXSDeLj3fYy+bZDI7h2HFR+rU+jYhGsHWOrXCbDTN7UIqrBh6FYviNI11b3VHyjHC7w68k0Z9TXbEM6mza/phB/0kDbVi8fNjJEaDdbDl8Vyjy2UKSMndnm92wdmgyvnr/FNj0JygtdaMNi5H+6PIRDtEm1cLigE64fqxDOq1vC4AsQZIQD5P7mEMFqnmbHkHsiLpsB0UTsE2TLoJeKNV8kb14O/AUpEwMyqtcAZfjPGtXYzcTvGgKUglXhL7lhKqkcdc6sEhB8eI7igGrDsnP/YmgKIanhX+aTDBFmX7XDJppqlqu+6JJDX+iuYJL3EGmqE0idVslL2jh+48mKWUu38OtkJOCpc0oI6W1LS+Y1tR+MnehAbtLYXc+JXDF4EBTCKMxmd26Zv9HI2bifOrAIVMDcZV2kIv2aUa6nLcDMfuNJ90I6dxT8b//55ZvryNeYPGKD3zgBa94gcELvuDxiS+8ytv/mH4BBq94BQHZ7x5xxBf22OMr+8qvsCB84vPijxlitXpEh1f8AODwoSeW1jevI77gALzgCJb/94XjTR9D+H5fcPiEh8fninmERYOfeMURwMvAM6PDx8Uuqx6vsAA+ccA/8lUZBn/DDJ4lfxKbMFzDj3iRE4/xCY9PuNmf4Zj2P5x+/vyZiPVSnKeUTtwjXgAwjvL9PD7xAZd+IgODVxzlz/Xfk+Dxcc6746+b+4Tt8ZYN0ggmia4OaKXlzaeandw2bDEq8BXKKp+PzJMJTb/FGeIg2yKnIzqtP6JD2osRjbnydmiO2UcDi1MsmiObqosgX3hqEoymSsnJkLTAZ5A4wsbMZh3KGnvfThSRlPmk04zL4LBv4pFlEw/cLKYZzd3zQBHjgDZLbo2zz56X02ZzVpcaXyujsd5Zwa9qyS/3cTACm4fMzUlL609w9iOBIvcE9I3ejBQTmxZclFyxG4lNeQCbfJYiLZjrcAZGvMorps0iO8zA0RyVpNghTcElEOJRbqyp0r3PbAT+ustbu81AJefoe5G7RrjZ45DyjDp0eCsgbBzfS1dd5hq0krfE5y/pcE5SpIKg1q23R16lzxMbIwzCGjgT8vPZOqZAX9j6me8y42kSt89pzxAuDJv6yHee6ATNyBCIz3e7+esuLX8I3eOKz5XHL7yhSZRFHtxBTCIgUuH23SQAu9ZjJrRo0Egkt8FuRYLt5WHIJKcor4CkpbXJpJSvcrHGqG+I5mdxuOiuGkkxl5Ycx3NN1ivWafn9II4XfNSjI2dp2+tWRZw+mK7IF5z5IAsr6Yh24iXocBAQoqwrMaIRj0s1fxXuXyc6B4jUtT3D2ORUGLKpZ+zvLQpIWlpzRG7OjsvLf2K5soKAhG7eM/V5OCYsg294YJvU+2Msxz447DOFUeyJunO353/dyVSlSwQFg2aAp8HJuH4b2IOwkxWZT7mMTdEfHa5yPPfG8wf55+0o3SYLIoSwhMLNx2mHpKVVGdbXfPtvE33pRBbvHmio6UR+W0++5Y1WTR2AXbYswVk2T7gHmbv/0Y9oEt3yBT/wAp+IgB5H/AThC11G14bQBi3+xhEE4EOok//CD7zgBS+iUDpchXDKeMFPvMDhC19CaeSbkFst/oV/4Sd+wMjPGX6Fcd1P/EQDg88b02y1tB6xGvwLJPTifKn+hX8ySvK1z7cvHPH5UBdED8YXPvCZfgUJjYfHF77wuQlMvFDFI+3sAs/tX7gXSrvsrRIcgV3yIeaKSngcmNdI9JeRpSoJ06e9Sl/E6LCDQQsvI8YwpLv+La/nDnLl38UPIM60oNTS+g49kc0yUHMvdHfT2cEjzilKYSzN+lWscz0MHjgX6jfv0xUFUdQrfgiSHvGCn2jwE8ArfqLBDxCO+KgIVn/CJrFsXMN94D/4EBnqCxocryJBfcHfMHjBP2Ac8TdeccTHqG+7dL2ixc8kQBs+i70YODxrSjHX+pPrFa0Qm16StPMo1jXdTecGxwefUoRzg1cTxFGRH3uRH388RorrebTk3LycMmY6FflGtb9BaevUhzpFG8cdCO9XsEb1KcGQJbn2+jy63AiJZham4fn7XxxuSKcIc3ntxbQepyvCIHYv7kE6vaThOvzBCzET7wVFJlNE52+dMj2yyd5CJAlHNvndln5UlOwuWIZ07grkAWRQZNGihb+CH3iNEZTrEyj7/dL4MLD89jcBh+hB7M5nz9zhCkR3cg/QwpUzfGsu1p1el67mFHih+utOh0EzSuNAoj9SYopZvMkOycBI5HGOyF2xrmwL/QBd4THnEODRoQHQpszNa4IRS/Czy/RFZhBdximlkbLA9mtCUSuXA/NEg0ESQjyl6GmFo+91T+8/GXFLpED0BPXXQ9xQI3h0+CWJRdGe3ojcNdfU1Nf3OwkVJ4n1pYsDkU3iUmQZrwbtVZv/6FrucZBQDEp9kc1i2HOSZgvC/sqdiknPSABGh+fpipr0TgrpNbph+z7VgdGmCYYCkULRSgjqJI+VskQRThoezn65bINk08Cuk6O3hRW9b5P2OZd5lOGwbdDASifmMg+GRmLNDzcZPrjCej5y5mzSUnCKxWrkY3hdKOo7seeBIlPEfFhYODmuFI7wTaLgkbmu6SZToWhhFU/iOdfBpnjxBgb/FgtAl45TJ2Ttg7y5LP4XFpDkI0aLHQxYrErNxbYAeR8WsmMPgxjfSGSwN5CzxW5veAfsZGfTFKmRgd79fjWAMEWU+/MMuYy4v/NgWNyOXlutZwYjlw22tRSKZhNFeja7wzsOaLADweA33qXXGQcycXqjBcBpAbikJHBiI3QaT37s9RbcDUjg0FUt5r1ojfkG68EGhENlGOhxEF+opnCZai4UMr0ERc9086ztKEkiyiy6Kzl1aOFbmJ9qfUMoKvNEvMRENQIlvQ+wydRDuYkHy+BsB5dlvfe8PDrRiy4SAkw6bKMmgSc8bf3NAiOM0N3Ht/c+x2SXUTeoEmx8uQ7NZhLCZ9m1UPbOo8GwM77i2htpaf0xUFQ71j3+jTe8AbD4XxxSN1QzOM2JzHFHxDKoigfNG7B6cU/ZAWuSx3d0qO0mj1oLQnfF3mPsLhwg4B1TEcR53C8P/Msv3Vvk/lX8hD7NY294gzeYOziua2kpFN3dutCPzE6DdBTFoIlH4z3OEkMOyR6H0iFsJS122iyUMsWSScwqSrwqTuO3cShX/+j9lYHIS2wfr8iQZ4m1oqS84qv0tGXelHuao5tlnDuODOs7yRZQMNLS+lO6IkpjkfL330W/Qxn5oIHHHqU4ltJwKIz2zOCmHunXQakUD8sYMJF/fSqioDj9eVfpxOJ35mxH5G5wfJrVE3CfQey1uhVKQ1NKuY54GqpvI8YwcdNHmbCaBYyuLVvW0tJ6EIkrTx68v/CGXbaHgCQauWx7lDs0GLRyoPikwaFiA9Av1s0gYI/lb+bhUV1lHGiy/8S/d6uh1DCvdt0y9nrdypBIcu+ICtrEmIzMzHDx8DiARMGWU+FbcHb5wVMNHbW0FIpO6IqmE1PzQzcnJpsk+exkW9OIyvogwzubOhckVzoaeBNwutV3KcGdU3QURvY2vRdE6R1+GyjiwvzHz/La4sDpWtI+i7Z4Hu/dExnZjx1WarsOMgTm9Og9dik3uDeOck8k2o2WV6qN0lIo2ny8UiIKuNHNNY7pOI1OGjAOKbwO4j3AaPGWGfEEyWzc9xzAworq1UY93PmMqD0f0NAI8D2GKr8ORSQpryY7ZN2V2I8lp/ERoKhJ4Whrnr994v8ZIb1ECgpn28PdTcyTLusf4QtXRi0thaIVYxKblEHvFbXOL7yJFDEeEC2saGqc0KuD7LVNI7hc6dN3BYEE0RRubes+soQGLRrxWLiXsy8tJqFE5l8/QLymAWRJEOc7A1H42eMYd11XELZvBgyDHTq5tLwJFSNeWVoQfj3JFowSc9JeUdaspfXtoKgD4XfWF/kKWL3Lijnfz3gZpvW7AY89dkV4L1cOnnd0mYsdg/C2+JGNZj+E7s6MKlMEXI27EIudmB1R6ocOVzqQzIixx3fdhZiTYt0pCyYJ774OjF1mqBte/90VokaucVUxKS6uAeOXjum0FIqwIf8dMiRp5Xg1xQbGS+8Uh2tuIqU05Ab1XU6kLpQHuAcE2Ez6mu8ze5c8AOG+okcawKob/L5Bm3o+n+w9/U3Sk9zNxL1GhM2ciBNRFG03U9dL2XTs8hz2smtD5uR3eIIeox+ZXlPWrKX1LaEoKmDiPmYvH6oSHLyM2OaSMQLNwVe9vsd+bQSDNzRJSFtL9jFp4OXvOJirgVLPVjNJH9OrrMLY8bou4c2AP3cLKCJYtKLh4nTZ8HBpo7jN5sUWw9r+6HbYS3+Z+1U8OhSxEEk4I7loaSkUbRIbUkrYiRF5NbseXkV3jiRjk8jWfuL7/koGrC0MGK5wHrNo0cjozz8EJ2l8cIZOyBRpRv4G+a02O/pvx9gyqZ/lEal9ew9Agz6Ti8uKTX4dEIPeR1dNmew5UPtPLYWizR+gQJrtj38nndKp44VI17aiMZo+JkOv5WFgxVCV0vDPygLY4fAgyaSc8f5CB+mlS6BsaOdvMCyLz20vLnbVnrI/EvnCSbZmhs5BK4NBhn/OFyQMlwmKo9GSfxJXPS0thaLNYc4x8CAHo/NisH1m/rN8Xz/gAIvfsOI85mV8Z4UC8ThxW6Y4OoNdbH8T9hKr7jdKVLcNcowsx23h31YbXpbEeX8ROOeKZ9waruGyp3itLzLYZf/ewN4ki+qcjlG3Q1oKRZuDBWxGTugka7VBC4tdcjqgNLjLDwpaPIy8rO/XUg0cfqWkHyNjOZLDnR9mJd1m2wtISlPPKDxMeobPEdRJxpJ+ZRcRNme5extX4Zrk8VIS2tobkj7Wmb9SZhvlR7QEFnlAr2izaB6kP57+afAw5HotrYeHIiOQQ3Kf9omi4GQd3opIkeTw7Vl18fjwlaQZHqhrGG51f+XEP8FKeHmUbD4OEPUE4z7nNj5GThu29QdXm6DCyFhyvj8KR7GR4We/k/BVCW0gwJvBIHZ/IRNTmu2b/EpINhmxpaa+YnTSNyKTwfIDg1Gp89JtkZZC0cLCO2xhvOxhuNC/k6ymXVrFOgl+MOkA8RN6E5Kbe++LsOVmeECH31my5+PcK61w/bgYPnES+PIJ/Le+xwru5/MDvhAf2I4Mm2rBECSXgbIzMVloxelQdEjcPapeRPwGAyLK/A1r/gxckBdopKV6PCCCdkVaCkXrGVA2hX77Six2I37cvWWlK/JR/SRd1xZeA6dYnzB+wePt4bIf+8RRKqD3NKVT3xHl0XEhvZTFRmkMRO3A75yFSO1nhnN8catOxh4uOarnvhKUfOTWQZEpuoj6a90l18FI6H5MSjeN9l4KRVoKRZM30HAEkkzmpw5RJ3ujPoOodE/gmVthHw/hTiQ0RwtWA6664t139EIVTdZp49Em6wi48E8gYABGPRDxoJ+oUeVzykiZA1QzKqIkW/arX6Eu/V1Kmz2W3uawejw3tsTFRNTGFHEEDxaPjoENk47ntBSKqirwXvcyJxd12Gc5Mly5o08dLP2xNwd1azojlgzZ3/j3Q9wta0clZ+zDbUC0y6K0eRQ5YUXbVbpNNIOOhiePPDP607F/4kpfEv90t9kxbfic8Mm5TDwL6VzNesWDsedsljiMBQmDltYfCkXBGS2MzPaLd3mPfXHA8soBhUkH4/nOCHsAbyBY/H4IU8kOpiAt9Or639hvYHWRABFlGVDjjJ/c0icYyPbdAC0AQhSh8oDpOI60MGlcSxKKuL3HM9nGa+vxS0XcBi/Y9fIDD71KH3ZkwShaWgpFxYHTwAhJwa/kSa392uUtOIZ/uwtsJMLh38p24r6Vu6Ll/UxU7nSbmIuc2dnwCN7iVsTLUd8mFhll330OikxllMqDzR2l90UExPBM86b31k5GqXWwWxaErrOlsrOQdX8lT/6cD50dtbQUipIWJmYG7SeYb+sHH2NOVoCt4IBGF/wAMn4hBFe0MA8wpnN4x1tmRdM/bxZvoEXxZeC0tYPRXMygtQP3Ahooj/JBFg00RTyp1eEMwIajM5PI3j1Vege/WkRKAqymIJX7E1U4PPM+mB+TBhOie6fX2qLPndrLKThp/aFQZIWmEAZm44PCyGDNnDhQ4yIQwl34w8Z4h5cx3dudwyFQsLnKXiY8PjuroDKJMEJZRxQ8EA7wQigx2ebIiI7GZMAXtDelWqim78JgSzQmS8fHUx6StIEUQAJEyDoWt8k1wq66As3BVS/5dQ/iTzdtxGTSlUBL64+CIiPqHiPHnauQT21GyMWq+/BwCLHNLBWbDYT2MGKW6jcOj6510PQHPLJ7cICMqa7TpmObix1OIIN38v+akSWOLW7bwY/ADLpYXpEZxAPXChr0M+OLBQkYugW5LQ+Yl9uDt5dp+1ThGuYxdcF9YlsuFF3Ulc8s5vuSOJfHlCvtj7T+CCgKMBODjQ+jD2kcrVDBsOse8APCEmgO2WQ8iikqZxao8b93oGpUWlPEHfSDuShprR/0EZw4KZg68cKwk12QERL38MgdGsrmUQaUkQ5ckjXblD3kJhRkQ93S1k0RrYz9ywkB4yGjTeIBO/Hs15meNBkHP9WX8YIf91yMYdzLReeSw0pWqpbWU0ORyQ4Kl+K+c1K3SXaaLHfTx6WeBv8HK2ZE3Z0jAFjo7R0Iu+QL0S/+acT3M5nGJ98XhE6VZ7qOXD3kBUzGhptURM/F4y7vN0ogouIRUSXxKB6cEF7dYdQvl7qlSxCta5uV+EhMklYfBsSL2NeHn7gFFsa4lKxkbdYp8krT2vonhLKUKkqP1Fcg08rPFF6xQ/VCoQCl9W2gqL9/HSSwIN8/7ERx4nFIt/sG9s6HPBYIAwcBz91qbt81gKhNDDonVA3Is9l3RuE4dBM0gpLP1s2IN7lgy7EwE3PLHR7FzVGRl5N/nxKI2oEYc0gKMIV7XXTmmNMtneuMwVVX8Rw0qRK9YVIoPRIY8czGjjJ3RCNXC5/6OZ6lZ5j0GowfrU07w5pKigbgH79iOc6kBKl+o5OhgpfWQ0JR3A/xSGIaPg5NGvZ06eAhSeXEw2ZjHmQM09yxe7PZkj5C5L/FMS8XqTYw+HcBRnV5rKt0QcMjJh/mIYvsRpHiEzVgJsvL4QzG3eDwnidRD1l7kJh5rso5L2Fzw5XNSoybtxk7rxsc3rbo7ViGpMCvWSBq0zMd8o9YepRDlRbRb8UAK48gdI9cDZmnZAfbd9Jm4AfIVYKISZEq6z1KTLZ1VEjSehgosvKLwNgXHy2ThUI46ZbKY88/eFDzeyJ2A+93+NhRxn7LM3ve4bHLCAkQWW5/tPlkk2Mn+WmEHXbV3omE3MACIpCOzGZdS/QI7O1Oe5Ze7tkdw8DN6LsgDWvz7UsJDK7YQ+ZyzlNGS5Qdxjx4N5r0PqYEMuNxZv58cmbMNKWO4kFsRtww9aHw+0E3G76mTQJjgza9pr1CzxTi1qHQdzgOnaJf9AGMDLPSzT4KawmETrdPWo8BRb3NqS96nj6ZKFr4uMEHrnnwnqi/3VsZLx3uLHjNgTzw+spcoLjR6WSMd0gRG01hpjrsuMZmq71sOHqcBaID4y0dopQIHbXxnBt5gZtCSEtZP8eFDi3fOBnxYsjpCjQCMt64d8PgeyNtMW369yxO38NxJhWdWb/zZHmH8OSIlQZ9Y5Qqt6OOm0a2sqbYuO7h08i0tDDKv44deF/UaA3RIaP/vsu5xXHwRylURcFI6+5QZGUHFHYD+4Km0EpcQ53saiUs4vHfxB322MkH192VRuEGx/0eHd4KmGEQ3mBlaxQ2LZRtFcKh67Ij0oyI4mP9DAktn0XLH+/iBjswuKrT4aohUPgpqNgZecnetYNMprgDC+LXRl4DjDZFfjMFJPfbDv1HK7f8PhfXpxyr8SCaZgj2Y0rAFH2k/xkbuAIAaGBrxIOhZTDuNQMfwfxzZkZAFIG3/InKAR7JKLhbGM2ZLMvXSvqxltYdoahJckWP9+xuRGlzNO2STUL4fnzhHaOTeOm3lRqo69ih1mDb4x2uWOaT9EYHvFePbsJODhuTuZnz4Fbe38WjX0aXQYlNXzmAkRn52RFaGVblY7WYjdsUsMdywHEa9w25eb4AUydgRpOu3/OSVcr+V8gkiiEYlLqLehZU7FV6XpvJ8oipgPnSGYIGwMUjeOvS9++HZlyFXiNZxxh4LPTkCircNXgwEOcZC6Qgmp5TdZkRcZ8ePFZQ65tDEUngQFzsHorDo5XkzqlYbpI723NI7jwOaFOsNN8FjKaeK489HHw68Dljnx1Gh1E86Eg2IyaNmMq+iLLltC+ykSKrMG6TbHLGRsYqCwRnl1hgOb3fDFbnlCXnenAR0wfpoJC2Yl6+hq2C6JrRUv6MhGO9B5f4y1WSmCKV3KQlv5O+suwZeOQ+bgb7mqGTA0lKbPxfeUc05jbGTFlfAHqZHmWKLREn6j0PCEU0cmgnWOwmqOmU+rVSIkzKp9O6HxRZvMkHryvWrtHPeTiwq92unuUuFeSurRDQDzcHQlSpvCisYBu8ZVw4BvAbEGlukKgiGwjZNNTpJJ2JJvqIoZUto5NOuD9YnQzZ2sLX+20Ac13aXdlKIpNLt3oHJGsgkh0MZ2LbUtq5fkBHIr8uVUk2jR0jBPmJjSilLiKKhDsQGG+Ze0RPYjCpf8BgTOZlNJiLWPtAQDsamnKVL1e+Yn5AE6EJU6CuSvbHIC6kqU4yqODk5dH2pEeo1r2gKOr4S6tTSg5jbmXK6LPcpRgdGukobt0XBYfoJTJ5B8hz399y30DYg8H4VZC/UXQ7nI2RhjZDtQuFx3siJlMiNHgQWPKQhkdUP/IaHoFceNyV3uhckBzilYeTDJazriiOe3mFj3W+OaHUBfGC80KbZKKxv3OZOHcIAibbP/EgMOMgA8cmI4BwwbOj4vdZyCOU+foZ6WxRdZ6rGQKxCKR50DlRpbsxsKMLF2XBiHN+fVpaN4AiSqrxVpQ2+SbIpvV0t8LklJ9Mk+Cwx06OmNsyhoI+fvn234HBqTMJg5w3AHuwOEdQQULuu9mor2kxJNrXLxSd2A9RcQyGZfpuQKLody9u5MJGySG8vIV7dBnRAdK3HLIMVzMAgLD1Oiy860qmX/iZXTUYHRPaGyQajp+xSo1i77x3pNR3dcLNKxVdUQI8DO+IHD4u9oFlTzUkBpnRBgij1zInk/Ao2ZZGTvj553tsfavjOa0bQVEcqvREVjf4ANjUD62J86ZKbBsefl8UhjRvI/OUa9cBDrSCvecEUKjg0wXCdXDWJgl150T5HhrAIgt3mIt+dxVdD+OQ3ik08LvjSkQ6y1caf5cOJtM79fZDyIjrucqnlUc+l1fFxXYlAuB62gxng7m6V0Xsbewg6SnPbYog5kdgagvOXA7AHkgj4qE7HY3iIvsxYg67pQ0XJWeUaJNasvxKAgYV+sBcLMsqc9W6JRSF/U+Zyjlck0Yg2q8aYJmLOhTfzpNuJ4LPe+yL1m61umy1zNmwJiYC1ZlZkVQdLwh+ccTKE9lKNvUtXAktsBmZeuxUWPr/NdlQ61Dx0g5E7DehQiyNiRhdMV7aEi0RnpuxSNsU+zmfdFimQtouXeqpoIiYKoUgf3Z4FOpO2WPjau/HRWflq8500Xc9yAJq2yZKFsdUIVzwU7Bgtb4NFEUVUCfMnSElNIwWHParDmkaOQo/R3VC/o18JzzoVgtyyzXC+7JpEDe/n+sSp86fnMPj4Aq3ulpSFWcudVPfJTADKQ0KeWCKw0WeL2Rc7BeHrJRCCLewN4MaqjZ2Nmlj4yRKw6SeJH/HD73QzcDZfOg+ETsirv75aWXVmKDNA0eE6I0S+7zgJhGoL1POCjYLCuTCAQQPbGis9e2giNNNuabFzikMh9U5K+YJw7w4MYx4VSzAPUEzxO01KVNnbV6sTSOba/VwVNil8iyo1fJ9qGIeFLdRvDqEcNu7z+NQja2g7PH55BQ37lzKAEEa+PFxdfnvByQDmqAJ8KDrHLowlIKKJvkrcCXEY0qeHL97h0MiZdQsWLW0rg5F/eEwVBftZBjUbYiEpoFj1jP1RXYiJu7xHmswLcLqDo4TLwxX9tWLwyc+gWNJA2NWzmje1+w1qZoIZQefEspsVPu9GY/GlLti78KJHVenAlAyaK1vwFDx6esfBw9Gcyb5jedkkrE1VM+Zy9OnjJhJ0WLik5bWFaCIqm86SsRa3kBypqRYebaKh7u5i9j1lNj1rWHrfPVnsEvkFj65N80j7SIdG5tsf7YTkHlieMWZjRBnLtcu9SfDbKJe9pun6iKjd2MkRrWVcIyxwen86JsyIBoPR4dOdSZLh/LpZ8KA4aeBEVo3hSInK+26zT5t/mg/i+lP7SgNR+FukKXzyICEB2Mi+k2UgRpPkAu9Em8KE6/LQHGSFTANhlle7GjDsLAZbYPKmEFkPuadOPGhQkbIPR3GSbk8Obzs+ykn3L4mydLHfuN5AF/Ub7WgTLLhM9DNmZYKRFo3I3N3eEeLZjSiC+7PgT23k9vWuq7oWSfMHnu0yXNc6xwowVljUpwAaXnPYC4waCzf003GswvvFSpc4fpeo4cRzqjqfhCTnquUhqJgrozHKJO99kM+i50owUw2Su8mfhpKHvqmgK2858oTe5U/p3VTKApJLDbTjPikj/DiB2DwBge7YmpPTx1hfJCPtELRvfo0hz2ajXTs8fuOUvTfeWlSXMhSu+y61k8MgompS+6AXiIJo2WPq0S02+RYPrUnGu6UTCJo5yM0I6PDyHsbB1+UIB3hjSRlrMsCEq1sinL+HKcph5bWTdwWDnDyZmwG0/7gxvWGFi0aNIvaInrygzRGJNgn3HZ9Dyg7yA7Mn8SAvJSggDPzoQCK5bjQo0tMs0iyzvNSjXiTuApEG+zgR3qj+U9QJJKHfVyTDfVMsatzE24SwxhBkkfHGfuOKtq00Od1+mnQupXxT/Qri97bbaZYYLzD4U0MJ82MxiPy554bjOgJKN3fufzJmz66mO2UTxo7j0PlazqhLnChsurdJ2hAO/DwiWZNKU+2p9bTrJQ3sueiqILxVpgscWLN+QkCRr8JsgnUDpnDpM2Yc0MBrOqLtG5qh8op3bJJ6a0u5UceMt2CEVsVnmQx8RNvO5yYoyp36NkAzMmx2V2AARkBaJrB10m+sUk7mHy7MgTDsJE1A1JAhK4Y7WcLOgQXI73oX87ZRo0zMsL0ni73yzNiFDu0ZCo9HHrrVHo6R0mtb+LM7cQoxAqTDDjgXf7ZYScdUwuPfcU61JzAuHu0A62bcCjWeoZrBC6mQ+pkUMiT75T37Pq15M0YEr5aGa1FV243kLpy9t7raQsk7hr9/iy6T/R5V9NdC2VmQZxkq2OSkhkAEZJCUJNcte6UV+TwC0akekALiwP2Kea6wZuEcDUD2xF8i12F3v+eF4p+wVxQ07b0XvCJS7duDuBk5kAVp8exXVEfUmGSr6PLjJV89vh41v2k/+q96RPP7HojXEVFoX4itO4WKO4z/UH0O4sG+CGNM7J/qIhn5m9wnHsZuljlDT3dNcLdZafBm95bfsbxmqv/j2QY54uYQ7eJ0OFTgKGfJX1wGkuebxKlpZXVf//PqX/zCIcOwA/5MBzxBU6/H+DpBT/xEy844kvubz9B6PDPE4PRERYGLzjiU++DT/jqPXp94Qs88TgN/gbhCOAFn+jkUxXkqOFzd9z8fDAMvuDwgX9mAwR/II4FP/EBB4cPBSKtR4Ci/h73ih8gGLykt/IRn/gAw+AVrzCweIHHC/5Ggxd8PE2ceP3D+5o4RvpR1LplNfiZoMin4XcLiyM8PuBOgFrGFz5TpPv0e97iFUd8wsPjAx/4egJY18J3H9ANc0Y9LCx2ILF2iaMGThaiJGmQpphh42lHdPZJwy60nrfqhkVRs+RP5gU6rPMPbNMuSVVEWg8HRUDkzpEkah6wT8ES7yBh1RnsJtaveErHAH56ua7Wc3tV8CC39boA4bBPkKRjaa0HhaLIndthB0ILK+FnPUl1h3aQ5vI9bqlaWvd55/VEApOI3Lgy//BdGaRajw5FgbHzLuOCYPm4T2ygYPfYZsoELS2tS1x+SHqiW+wtdTOqhcelLZRw9A8Yr8kO/xVfOOIowtAXWAAv38Bc/oif+AHgAx/6BtK6Wb3ib1i8yGfqC//gCIsdXvGFD3zoRU9LuyIUxqnBb8Gghc1ii/fwaNGAxIsBKnPV0jo5mKL8p7I5tRSKqjI9L/JXK+b0XvKNPBpY7J7cLEQ/9lqPcQWi9JnT0oIO6MYfmjAweMULDH7iRRQPX3BJl3N8YmUCocErOh3QaeG2IzqbdEVf6AD8jZ844gMHVfloKRRhYqPi8YEX/AThFST7ofC7r/gbBj8BfD7xoaBQpIWb7igpc1tgeEkmYhz0nailUDT30fnCp3RBP0D4wpf8rsMP/JTf46e8zxlYpS1o3aUbD1D0glf8gAHhAwexANLSUijC1Kiuwyt+APiBH4nlw/iExQteYZ5yzv0Ci1d8qOpc68bvu1ag6AjgFQbAEf/BP/rUaD17/dcNvsc7foku/H9TyLLDv9ElrbhKXLW0TqEusIZ5a2lXhA0e3oDBKwwInzJM+IIXgd7zmaO+4m/8gD/JflJLC2cYolq8pF9HeHT40HehlkLR2vrACyyOeMVrgp4vODSwwNMd6RZ/w+LzqR3GtfCEA7pXEI4pb/ULH4v5sFpa+DN1RVO1B7CDgc1C51hCyLunUhmRhETogE4LNx7P7dFl7zt+emthLa2bQxHjAAsCYECJvuDgYdA+GXnBpGBlLa1bJ9FqaUFpCzjT3TfmGPW/4wC0aJ4uN4YVirS0tLSeqysiWFgA+4FblodLrDqo/Y+WlpaWQhGuuOjfgdClEGRUoujwdIkxWlpaWlp4lgFd7InGCZCBzv18MlddGGtpaWk9HRSFnElfIQD0JIbnAiIl0WppaWnheQZ0wbTRV3oiCC36fsMuEijc0uOQ9HHaFWlpaWk9DRSF5KJDhYYaFTr3O9YtdgKTh9WPIcKXQpGWlpbWk0CREap2/eg2wqK7HxRZGBkT7lc9irD3UiDS0tLSwiPuioykto5/lyY4ciYNu3A3QrYHi1KIVsOXeULOn5aWltYf0BVZtLDiFJzLP40c8TwxnrsvF62TEWFXJVVMUTB49Z/W0tLS0rohFBkhbEcagodDB5KOw0+MusKxznfkwnUycPOb2ICddkVaWlpajwZFlEDHojf1acACNzzRFdHdmWgebhMJ4Tl1UFpaWlp/ABRx8d8xFM9kB34diu5vKhoMJtcCIqkRqpaWltbjDujC+p/hccBBKNxNErDSZCd1fy83t8HtmGB0U6SlpaX1qFDk0MGmvsHDw8HBwKKRUVx9/X//rQtvjIfwatSvpaWlhYdMcT3iiBf8wAssCF/4whGf+IATIOrwiTKR8id+wOE/d4Qiwsum/FgDixd8aJC4lpaW1qMGin/hCz/wAy8w+AlI78D4hJf48BKKGlh4fNwRin7ib7ziazWwWKGrf+kbR0tLS+sxoSiA0SsMXvCKHzjC4yjEAIYfHOA/0cLgC+5uBzvhJ/6Fv2HwteoxEP7GK/xThZ9raWlp4c8z/ukSM87gDcA++/2hRaq9s2cBw8OjQbOSuGCFlqGlpaWl9cBdERAICwY/wHjFD7zgo/qnXvA3fgA43pWNFqgVXkaIS0D0Nww6fOieSEtLS+vx7VC7lEJksAPgRLUz7UKHu3rQrclLMmhh4e7qDKGlpaWlXRHWctJe8AqDVwBHvOAnLAiveMULXgDpKV7xL/zAEa/gu/cZx1VbohZH/Edp3FpaWlqP3RWRaIio0BExDFrpiRgsAlgrTgyMFoxfD/4sWTQbpbBaWlpaWnexQ23QSiCESy5twfyHRnY/fZgEoYXD4YGfI4MGBm5DuJ6WlpaW1s2hiASIolXoQXYqgSdnijQgK4apfddE2IEfmCIdfCE67Ym0tLS0HhuKWrQSn7DHIbMLdZJ6SgmCan50Fu3Dul0bWECBSEtLS+vRociigZGUog5e+iQr26EhS44zSPKyW2rAeH/AAZgRT4hO9URaWlpajw1FIY01SldJeiBb7Z94BEtGyNLu4QLpwoBRDVC1tLS0ngCK+hgIK6BEE3ohHsARybYouDM02D/Qod8DkXZEWlpaWnh0XRGn0DwPxguATzgc8YKj/PpAB48XvOKIo+iPGIQXeHwAeMERRtRIXw/hZ0Dir/CJg/ZEWlpaWs8ARR/4whcc/sl+ebziFQDg8At7eBixEz2CcEQQl36gwyuM/L/g6f1190EdweAnSNiAWlpaWlp4Bl1R4JhxYaoTqQvh35EE7B1gsEMDAoOSwojS5mgHi/3dyN2U6OfhcetwTktLS+uJ3BZ4Jt8VsNjBosMBPvuzDAuDDgcQIPAUZbH3ITEEtznAYS/eeVpaWlpaT2eHWvoqxE4jHvB+QGpgsDgZGLCAEdDAYo/9zaEgcP8MnNr8aGlpaeFpQyJQ5LT+FArCD1gw9tLpvEg0dwjWO+A/8DjiCx9gWLzI3/4BCwxiyK8JQq8wsPiJF3xgj07DILS0tLSevysKfDqCQQuGxyGN3OK/gWh2fPobHVo0WVdF0qFctzsiibUIottOdURaWlpa36UrCiERBsArjvgP/pP6jCMIf4OE7u3xmXUgFgZHfAql+xU/YfFyVU6dwU80+AkCg/GB7m4R51paWlraFV28HPYgNJKWioJdx8kM1Yz2Swcc4GHxBiucuiYN9y4JQUb2VlZ85jolKmhpaWl9NygKYOTAM44FJImvvQt2GJIBHpDYCSPBEh4OnJmtngpB0UvcJHmug1fLUy0tLa3vCUWh10B1j2Sy7sRnmp7eHOgAhx1aIIVLdPDSufiTOpjoE24E3rzAm+qHtLS0tL4xFE2VF/p2ACMSeWt08+b0p/YwaBL5u03/loXwsExpMNJ5UerBYu/VJyvpWE5LS0vrj4MihpNQcQahlZEcJZ+D0t+OBXJC12QyOHPSHXFyBi//mzImHqWhoZO/o0w5LS0trT+6K8q7GQsrUDT08ybxxj7gAE6psJFuEOElQlEfUj4M6KMEVk7oCVpaWlpafzwUDSO7kZEWfBbJ14LQCXuOcUCXOp0Q2DeGnXEHRvDZ11CWnJaWlpZCUWF/GsGCZKuTQ1Hwgyv5d31349BJymr8W34AQEb+HaPDu3ZCWlpaWgpFWAju9gIbPu19SKDHTxAfPCAcOycjvOFXfUMLghMTVi0tLS2tB6z/utt3ZumFAuBYvKGFGWSmhn83r/dx0g/VmHReRKu6G9LS0tL6Q7oi2kSKpuS5QEJBCK7cvogbD5QFv/B1MCl7DcM9hSItLS2tPwCKKFGzc1gY/jN3WLAgMTq1ImI1A3NUA5ti9+atTGkCigyaxa5KS0tLS+tbQJFBg11m3zOM0+PRYM4ImaADS0oRBiTvAG5+0XkuVwyNQ/BaFbBqaWlp/QlQFCjXFluSXkNg3nBwlnPlSIx+3AovhSmQamB0OKelpaX1J0BRpFwj/Ydm4KEHHC9mP01SFeWbIgOzQgPUj+e46rwdUpK0tLS0tL41FFGiKwTKdDAatWI2ypn9DhI1uwPDgNAkFl0d3pbFqFEU6ybizNXmVEtLS+uPYtA57AG0CYRi+moJRlGKamQXBDggSVE5oyzQCiiKf85XxoZWHbe1tLS0/gwoKiWpjAaNZP8cVuiKYje1wy7rboLz3DKQxNC7GhC1km+kUKSlpaX1B3RFDh4NGBY7HABxN3ArvLmRiVFzWAt5Qm4xAKLvnbgCRBhlx2ppaWlpfVMoCt0LwaAFYGQ0hxPksWHQFvy355Jfy0jw4Z+LvVLNCkhLS0tLC9/T+KeTYZzBTkAEGzl4JnNfsGhhVtj1UCJH+Aqrzq/ozLS0tLS0vg0UBU4czdK45yClGaiSSHwX1vREY7vUeq+kpaWlpfXN7VA77JOzNqHdCEi9aVBPf1g2/LGS58qjnij0VDqc09LS0vrDnLnf02aG0G4CIxLw4UzyumbIZ5KqqMap055IS0tL6w8MidgLf44BvGGHLZui2N0Y7NCkrdEyhJUbJYtGKA9K4tbS0tL6I6HIY5/o1wY77FZ1RiTGP4HIHULC1yQMxV7KZ4M9ix1aAJ2a/WhpaWn9qdF5Lg3pWBJUsWpPFEO/vTjKdStSV/tNERfRE3FvpaWlpaX1h6a4HnBIbnMkHgpYlKkiaZGio9xyT2SSkVBJd3DYK2FBS0tL60+Gon60RjIwaxYDJijRFKx0NcvjtSaRG1yWmURiyaqlpaWlhe/otkCrcohCf9OA4YRWvRtY/JRfs5WeiAWW1lEODBqx/HGZgWoD0sRWLS0tre8KRYEiXYbU9T7bJP8M9qbhz3V4B+MNOzTy76Z6IiOWqMFIdV2sQxS39hmvwaHBa1CelpaW1neDosBSMwmIqOqvHY1M85yg0AntxUnBVHuVft/j0AkRYQ3lIP97rgja055IS0tL61tBEUmikBGHOB75GpTReaYAKEIjQRHNYqZrgJAYC+FWxOWZAZE7fAen9qdaWlpa3weKQi8T6NJ9SiuyOAekODyqQpRBI4lES750lPy4sSJAvJ5mRCu1SFpaWlpaTwNFwbXAZJQEGgERklEPjYgNDING/jlNQ4gw5sAyYHOrpKlGnLedQFhILVJZq5aWlta3giKT6AQl7PhE1ObkGUfCgSP5Ff8sC3QdJjc4AVIC/bqBWSVs7W2CIsGhkcfqdDinpaWl9b2giDLhaFDvuCzarqRv06jTKeGIJ6WtNoVBmJVE7Pi3Yvg4oUEL6JZIS0tL67tBkYPPxnNe8lB5pCHCDNRg0XmuSUBkYVYG7lnJNnISShH1RRoJoaWlpYXv5bbgJJUViZnmL3rUhxgJm0CvgVlJWDBinhpyYy12QlhQKNLS0tL6ZlDUp7Ke3vcsA1HYOBnxWPCrCAs2Oc3lBAYFIi0tLa1v6EHnhULAJ4aELxEPIoQ4GbLxKj2RTc7dLgET46DcOS0tLa3vCEWMvRzwMRf1kl1RJHHvBVJy34RpAGuFYB7o4YRWDFC1J9LS0tL6ps7cPvPY3l0UjKJxTwcHls7GryAstKJVChF7O3Wd09LS0vr+IRGhUwkmPrvC2OdcIDKjWAi30os7wtIOO9jE7Ztz0Lv0eFFLS0tLC7ezQ/XoktTVormQdsekfY8XPhyvkLbGPxmh0cjf22fmP/k/KZPCRgOiqHXq/1tLS0tL6+GduX3yTABsInifXjZRDQJB3MqeyG9MTSIBs344Z4XkHZ3xzEQvxClTSUPHtbS0tJ4mryjABsGgPaMvilETQZC6F7c5Sv0RViXEMnwxcGPh0ZlEraBqzJ+Xv2eyLos1eFxLS0vrUaGIkDsiRIkr4Q0t+ITOKHQofeaRz0K/KfO1w4KeCGAcwOK2wMKpM7BopROa9n/oJA+pj/8zaFaar2ppaWlp3QSK4kCL0v8K4lObjE9RSF6XY8cpDcqsbG1I/Oz6cLzQpSxDUTD78ULbtrIzCn1am74jF4+CR/upOAa0VxLuamlpaWmdDEUkxjuUcc7iqp8kJryVUdpy6Hj4c5SlGeVbm8B484NYcF5B4g76IZftr3LrVQxMWnnwaI30UpQA0a1yAdfS0tLSuhEUWexGHU9+zDcSgzctQw0w1FYI33mwXsl4i/Aw5z1HsGhEP+TkT3bizsCjLNjheDHPlLUjoroKY7W0tLQeBoo8PLxodni0c6HMDWGqjzDYSWw4VQZfnLJac8Yb4Q3NYjCExa5g3AFAhz1+p96rdw/3BXOuNk7M4ytUbaSlpaX1ULsih/eia4jjtRjcEPNVfRUsLKwY8gTngxyQTBr8hQg9n7KGAoXAz0JRcKcLfyqnXnc4ZFssSj50nMlnOYPWfvdlhD4OWLzBKXFBS0tL61GgiCth3LHH8XLU+xEE9b5wkDHbAfsMDrzsecJX2UtWayvWpzEJdg4KKMHKoQAsjz128n05IynkZG/O/m3/+HuiQ3Cwc4CCkZaWltaj6oqmg/IAoJXtEslBH7qSLv1NI7EP0R9hL+O1KESlVSOy8f4nHxyapA8K3VMrkedc7I84QaqDE79xkyxeLd5AF5DuamlpaWldVeKK0ejOpp4kULFZ/jv6ZhshMITdUNARcXLSjiRuXgFFBxg0AFogC5GglFHEBW1iCJ2Rgk6pY/KpS2LJqTVFeLqWlpaW1oNDUQyuC0O2GNYQDnub7Eq9gIyX/RIlOeouoxTkHct0dQIVLSwOcEJWoCSNdakLahJ/rydsl71XTmnwwggMj1KBSEtLS+tJoIjScc+pEwpx4G3mmR0hglL4HglU7DJ7UiRChF0IEj8A2CXDIC72WAyLg4zXDjiIiskKNJo0Hox+CyQ+DZHS4OWXlpaWltZTdUWBvxZ7k7D7iay0QH9wCRAasDDgPAid9EJxlOZBAHYLoXnB7McmAOPMeTsw94x0Sz5BYTArimO7CJ4H2TD1hHWv/ZCWlpbW8+2KYnQEw6IRiWrf5zi8SyprmyIdCASXEmE9GC1+Z55xFu0CJHDqfGpdWhi7xZFdnhB7kK1VCwNCI2Dk9CXX0tLSerT67/9Z+ydf8AM/8IoXHEH4lxzxRwCEIzz+kXjwIHn9gRcAn/jEJzr8g0984QtHAEf8wA8AL3gB4QgDgsNx8yM/4hMO/+ADDl8gAF/4wgsMfsCiwQ8wHD7g8ALCD7ziFUZzirS0tLSeGYqO+MIRBJJDPZAAjgBe8IkD/oNP+ZN/w+KIDnv8gw4f6PA1IGIHoPoHDgYGr2D4E8Ao0rXD1ucTTnY/Dg5f+Im/8YIvfOIDjE8QfuInfsDgWDweLS0tLa2ngSKA8YkjvvCFL3h84ks6G8YB/y8d7xY/AXxgj3/gUy+E0daJ8f/hHxgYvMDg80z6AOMLDMYXPuHwgX/wIrskxiccOnyKR/jfC8JaLS0tLa0HhiLgCCdDL4cPfOEVBkd0OKSOyKKFxefAH6GsL9kyfcDhAy+woAXywin1CY9X/MAPvMBLT/dDRopfypvT0tLSwhPTFnJZaYxucJmPdrPgLAdEuaoRgsF1zElZIstj2pEHiazVolU1kZaWltYzQ1GsBjsQ9njPoGkHU3W0m4KzKDi1V/rpHBwIOzRoZLPkUiaTQpGWlpbW00MRFb1M6D0sOBG3MatQQkYOd5kgFVfojvY4SJpS8Icg5dFpaWlpfQ8ochJit5MxmJW48DWRdIQ8P8iJ8PVaZILIsTPyT9IwcS0tLa3vAkXv8DDiaBCO+SAsxQqZbOykupt1KD0xQmFIS0tL65tAEcSBLmYTefHnxioochJB3iVHBvVB0NLS0oKSuXGC48EXPkVU6qoKoikoOuInXuX//QBmyd9aWlpaWgpFi4B03OyV8CWuDRYGR3zgUx0QtLS0tBSKbltHOAA/8QKIaFZLS0tL6w+t//N/7/e9Sfy7vQKRlpaWlkKRlpaWlpbW3er/B/MSJ2+UX6ViAAAAAElFTkSuQmCC';
+const RP_TERMS = 'All work to be completed in a workmanlike manner according to standard practices. Any alteration or deviation from the below specifications involving extra costs will be executed only upon written orders. And will become an extra charge over and above the estimate. All agreements contingent upon strikes, accidents or delays beyond our control, remodeling or natural disaster.';
+const RP_SPECS = '- Inspect structure of house for possible rodent access and activity.\n- Seal all rodent access.\n- Set and monitor traps as needed.\n* Two year warranty against all rodents entering structure of house.';
+const PROP_FIELDS = ['number','date','to','phone','street','cityState','zip','jobName','jobLocation','salesman','specs',
+  'optRepellent','optOdor','optWarranty','optOther','optOtherText','amount','payment','withdrawDays','sigCompany','sigCustomer','sigCustomer2','acceptDate'];
+let currentProposal = null, propSaveTimer = null, propListCache = {};
+
+const esc = v => String(v ?? '').replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[ch]);
+const todayISO = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+const shortDate = iso => { if (!iso) return ''; const [y, m, d] = iso.split('-'); return `${+m}/${+d}/${y.slice(2)}`; };
+const money = v => { const n = parseFloat(String(v || '').replace(/[^0-9.]/g, '')); return isNaN(n) ? String(v || '') : n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+function lastSalesman() { try { return localStorage.getItem('rp_salesman') || ''; } catch { return ''; } }
+function rememberSalesman(v) { try { if (v) localStorage.setItem('rp_salesman', v); } catch {} }
+
+function newProposalFor(c) {
+  const amt = (c.notes || '').match(/Job amount:\s*\$?([\d,.]+)/i);
+  return { id: uid(), clientId: c.id, createdAt: new Date().toISOString(), isNew: true, data: {
+    number: '', date: todayISO(), to: `${c.firstName} ${c.lastName}`.trim(), phone: c.phone || '',
+    street: c.street || '', cityState: [c.city, c.state || 'CA'].filter(Boolean).join(', '), zip: c.zip || '',
+    jobName: '', jobLocation: '', salesman: lastSalesman(), specs: RP_SPECS,
+    optRepellent: false, optOdor: false, optWarranty: false, optOther: false, optOtherText: '',
+    amount: amt ? amt[1].replace(/,/g, '') : '', payment: 'Due at proofing completion', withdrawDays: '',
+    sigCompany: '', sigCustomer: '', sigCustomer2: '', acceptDate: '' } };
+}
+
+async function fetchProposals(clientId) {
+  const { data, error } = await sb.from('proposals').select('*').eq('client_id', clientId).order('created_at', { ascending: false });
+  if (error) throw error;
+  return data.map(r => ({ id: r.id, clientId: r.client_id, createdAt: r.created_at, data: r.data || {} }));
+}
+
+async function renderDetailProposals(c) {
+  const el = document.getElementById('detail-tab-proposals');
+  const draw = (list, msg) => {
+    el.innerHTML = `<button class="btn btn-primary btn-sm" onclick="startProposal()">${I.file} New proposal</button>
+      ${msg ? `<p style="color:var(--muted);font-size:0.88rem;margin-top:14px">${msg}</p>` : ''}
+      <div class="prop-list">${(list || []).map(p => {
+        const d = p.data, signed = !!d.sigCustomer;
+        return `<div class="prop-item" onclick="openProposal('${p.id}')">
+          <div class="appt-date-block"><div class="appt-month">${esc(shortDate(d.date).split('/').slice(0,2).join('/'))}</div><div class="appt-day" style="font-size:0.95rem">${esc((d.date||'').slice(0,4))}</div></div>
+          <div class="appt-info"><div class="appt-title">${d.amount ? '$' + esc(money(d.amount)) : 'No amount yet'}${d.number ? ' · #' + esc(d.number) : ''}</div>
+            <div class="appt-sub">${esc((d.specs || '').split('\n')[0].replace(/^[-*]\s*/, '').slice(0, 60))}</div></div>
+          <span class="prop-status ${signed ? 'signed' : 'draft'}">${signed ? 'Signed' : 'Draft'}</span>
+        </div>`; }).join('')}</div>`;
+  };
+  if (!sb) return draw([], 'Proposals need the database connection.');
+  draw(propListCache[c.id], propListCache[c.id] ? '' : 'Loading…');
+  try {
+    const list = await fetchProposals(c.id);
+    propListCache[c.id] = list;
+    if (currentClientId === c.id && detailActiveTab === 'proposals') draw(list, list.length ? '' : 'No proposals yet.');
+  } catch (e) {
+    console.error(e);
+    draw([], /PGRST205|proposals/.test(e.code + e.message) ? 'Proposals are not set up in the database yet: run the updated schema.sql in Supabase.' : 'Could not load proposals; check the connection.');
+  }
+}
+
+function startProposal() {
+  const c = clients.find(x => x.id === currentClientId);
+  if (!c) return;
+  currentProposal = newProposalFor(c);
+  openProposalEditor();
+}
+function openProposal(id) {
+  const p = (propListCache[currentClientId] || []).find(x => x.id === id);
+  if (!p) return;
+  currentProposal = JSON.parse(JSON.stringify(p));
+  openProposalEditor();
+}
+function openProposalEditor() {
+  renderProposalEditor();
+  document.getElementById('prop-save-state').textContent = currentProposal.isNew ? 'Not saved yet' : 'Saved';
+  openModal('modal-proposal');
+}
+
+function renderProposalEditor() {
+  const d = currentProposal.data, locked = !!d.sigCustomer, dis = locked ? 'disabled' : '';
+  document.getElementById('prop-title').textContent = `Proposal for ${d.to || 'client'}`;
+  const f = (key, label, attrs = '', full = false) =>
+    `<div class="form-group ${full ? 'full' : ''}"><label>${label}</label><input ${attrs} ${dis} value="${esc(d[key])}" oninput="setProp('${key}', this.value)"></div>`;
+  const chk = (key, label) => `<label class="opt-row" style="text-transform:none;letter-spacing:0;color:var(--text);font-weight:500"><input type="checkbox" ${dis} ${d[key] ? 'checked' : ''} onchange="setProp('${key}', this.checked)"> ${label}</label>`;
+  const sig = (key, label, sub) => `<div class="sig-row"><div class="sig-label">${label}<small>${sub}</small></div>
+      ${d[key] ? `<img class="sig-thumb" src="${d[key]}" alt="signature">` : ''}
+      <button class="btn btn-outline btn-sm" ${locked && key !== 'sigCustomer2' ? 'disabled' : ''} onclick="openSignPad('${key}')">${I.pen} ${d[key] ? 'Re-sign' : 'Sign'}</button></div>`;
+  document.getElementById('prop-body').innerHTML = `
+    ${locked ? `<div class="lock-note"><span>${I.check} Signed by the customer${d.acceptDate ? ' on ' + esc(shortDate(d.acceptDate)) : ''}; editing is locked.</span>
+      <button class="btn btn-outline btn-sm" onclick="unlockProposal()">Unlock (removes signatures)</button></div>` : ''}
+    <div class="section-label" style="margin-top:4px">Customer</div>
+    <div class="form-grid">
+      ${f('to', 'Proposal submitted to', '', true)}
+      ${f('phone', 'Phone', 'type="tel"')}
+      ${f('date', 'Date', 'type="date"')}
+      ${f('street', 'Street', '', true)}
+      ${f('cityState', 'City, State')}
+      ${f('zip', 'Zip', 'inputmode="numeric"')}
+    </div>
+    <div class="section-label">Job</div>
+    <div class="form-grid">
+      ${f('jobName', 'Job name')}
+      ${f('jobLocation', 'Job location')}
+      ${f('salesman', 'Salesman')}
+      ${f('number', 'Number (box by Salesman)')}
+    </div>
+    <div class="section-label">Specifications and estimate</div>
+    <div class="form-group"><textarea ${dis} rows="6" oninput="setProp('specs', this.value)">${esc(d.specs)}</textarea></div>
+    <div style="margin-top:8px">
+      ${chk('optRepellent', 'non-toxic repellent')}
+      ${chk('optOdor', 'animal odor neutralizer')}
+      ${chk('optWarranty', 'all work is subject to the attached warranty')}
+      ${chk('optOther', 'other (specify)')}
+      ${d.optOther ? `<input ${dis} style="width:100%;margin:4px 0 6px" placeholder="Specify" value="${esc(d.optOtherText)}" oninput="setProp('optOtherText', this.value)">` : ''}
+    </div>
+    <div class="section-label">Price and terms</div>
+    <div class="form-grid">
+      ${f('amount', 'Sum of ($)', 'inputmode="decimal" placeholder="650.00"')}
+      ${f('withdrawDays', 'Withdrawn if not accepted within (days)', 'inputmode="numeric"')}
+      ${f('payment', 'Payment to be made as follows', '', true)}
+    </div>
+    <div class="section-label">Signatures</div>
+    ${sig('sigCompany', 'Authorized signature', 'Rat Patrol')}
+    ${sig('sigCustomer', 'Customer signature', 'Accepts the proposal; locks editing')}
+    ${sig('sigCustomer2', 'Second signature', 'Optional, e.g. a co-owner')}
+    <div class="form-grid" style="margin-top:10px">${f('acceptDate', 'Date of acceptance', 'type="date"')}</div>`;
+}
+
+function setProp(key, val) {
+  currentProposal.data[key] = val;
+  if (key === 'optOther') renderProposalEditor();
+  if (key === 'salesman') rememberSalesman(val);
+  queueProposalSave();
+}
+function queueProposalSave() {
+  document.getElementById('prop-save-state').textContent = 'Saving…';
+  clearTimeout(propSaveTimer);
+  propSaveTimer = setTimeout(saveProposal, 700);
+}
+async function saveProposal() {
+  clearTimeout(propSaveTimer);
+  const p = currentProposal;
+  if (!p || !sb) return false;
+  const { error } = await sb.from('proposals').upsert({ id: p.id, client_id: p.clientId, data: p.data });
+  const state = document.getElementById('prop-save-state');
+  if (error) {
+    console.error('Proposal save failed', error);
+    state.textContent = /PGRST205|proposals/.test(error.code + error.message) ? 'Not saved: run the updated schema.sql' : 'Not saved; check the connection';
+    return false;
+  }
+  p.isNew = false;
+  state.textContent = 'Saved';
+  const list = propListCache[p.clientId] || (propListCache[p.clientId] = []);
+  const i = list.findIndex(x => x.id === p.id);
+  const copy = JSON.parse(JSON.stringify(p));
+  if (i >= 0) list[i] = copy; else list.unshift(copy);
+  return true;
+}
+async function closeProposal() {
+  if (propSaveTimer) await saveProposal();
+  closeModal('modal-proposal');
+  const c = clients.find(x => x.id === currentClientId);
+  if (c && detailActiveTab === 'proposals') renderDetailProposals(c);
+}
+async function deleteProposal() {
+  const p = currentProposal;
+  if (!p || !confirm('Delete this proposal?')) return;
+  clearTimeout(propSaveTimer); propSaveTimer = null;
+  if (!p.isNew) {
+    const { error } = await sb.from('proposals').delete().eq('id', p.id);
+    if (error) { showToast('Could not delete; check the connection.'); return; }
+  }
+  propListCache[p.clientId] = (propListCache[p.clientId] || []).filter(x => x.id !== p.id);
+  currentProposal = null;
+  closeModal('modal-proposal');
+  const c = clients.find(x => x.id === currentClientId);
+  if (c) renderDetailProposals(c);
+  showToast('Proposal deleted.');
+}
+function unlockProposal() {
+  if (!confirm('Unlock this proposal for editing? This removes the customer signatures so it can be signed again.')) return;
+  Object.assign(currentProposal.data, { sigCustomer: '', sigCustomer2: '', acceptDate: '' });
+  renderProposalEditor(); queueProposalSave();
+}
+
+// The printable sheet, laid out like the paper form
+function buildSheet(d) {
+  const v = x => `<div class="ps-val">${esc(x)}</div>`;
+  const cell = (label, val, extra = '') => `<div class="ps-cell" ${extra}><div class="ps-lab">${label}</div>${v(val)}</div>`;
+  const box = on => `<span class="box">${on ? '&#10003;' : ''}</span>`;
+  const sigImg = url => url ? `<img src="${url}" alt="">` : '';
+  return `<div class="ps-page">
+    <div class="ps-box ps-main">
+      <div class="ps-title">PROPOSAL</div>
+      <div class="ps-head">
+        <div class="ps-logo"><img src="${RP_LOGO}" alt="Rat Patrol, Inc."><div class="ps-addr">4040 Balfour Ave<br>Oakland, CA 94610<br>888-551-5513</div></div>
+        <div class="ps-terms">${RP_TERMS}</div>
+      </div>
+      <div class="ps-grid">
+        ${cell('Proposal submitted to', d.to)}
+        <div class="ps-split">${cell('Phone', d.phone, 'style="flex:1"')}${cell('Date', shortDate(d.date), 'style="flex:1"')}</div>
+        ${cell('Street', d.street)}${cell('Job Name', d.jobName)}
+        ${cell('City, State', d.cityState)}${cell('Job Location', d.jobLocation)}
+        ${cell('Zip', d.zip)}
+        <div class="ps-split">${cell('Salesman', d.salesman, 'style="flex:2.3"')}${cell('', d.number, 'style="flex:1"')}</div>
+      </div>
+      <div class="ps-spec"><div class="ps-lab">We hereby submit specification and estimates for</div>
+        <div class="ps-lines">${v(d.specs)}</div></div>
+      <div class="ps-checks">
+        <div class="ps-check">${box(d.optRepellent)} non-toxic repellent</div>
+        <div class="ps-check">${box(d.optOdor)} animal odor neutralizer</div>
+        <div class="ps-check">${box(d.optWarranty)} all work is subject to the attached warranty</div>
+        <div class="ps-check">${box(d.optOther)} other (specify) <span class="ps-val" style="padding-left:6px">${esc(d.optOther ? d.optOtherText : '')}</span></div>
+      </div>
+      <div class="ps-sum">
+        <div class="ps-propose">WE PROPOSE hereby to furnish material and labor in accordance with the above specifications, for the sum of</div>
+        <div class="ps-amount"><b>$</b><span class="ps-line" style="min-width:2.2in"><span class="ps-val" style="padding:0;display:inline">${esc(money(d.amount))}</span></span>(dollars)</div>
+        <div class="ps-pay"><span>Payment to be made as follows</span><span class="ps-line"><span class="ps-val" style="display:inline">${esc(d.payment)}</span></span></div>
+        <div class="ps-rule"></div><div class="ps-rule"></div>
+        <div class="ps-authsig"><div class="ps-siglbl">Authorized<br>Signature</div><div class="ps-sigline">${sigImg(d.sigCompany)}</div></div>
+        <div class="ps-note">Please note: This proposal may be withdrawn by us<br>if not accepted within <span class="ps-line"><span class="ps-val" style="display:inline;padding:0">${esc(d.withdrawDays)}</span></span> days</div>
+      </div>
+    </div>
+    <div class="ps-box ps-accept">
+      <div class="ps-accept-text"><b>ACCEPTANCE OF PROPOSAL</b> - The above prices, specifications and conditions are satisfactory and are hereby accepted. You are authorized to do the work as specified. Payment will be made as outlined above.</div>
+      <div class="ps-row"><span>Signature</span><div class="ps-sigline">${sigImg(d.sigCustomer)}</div></div>
+      <div class="ps-row"><span>Date of acceptance</span><span class="ps-line"><span class="ps-val">${esc(shortDate(d.acceptDate))}</span></span></div>
+      <div class="ps-row"><span>Signature</span><div class="ps-sigline">${sigImg(d.sigCustomer2)}</div></div>
+    </div>
+  </div>`;
+}
+
+function openProposalPreview() {
+  const inner = document.getElementById('preview-inner'), wrap = document.getElementById('preview-wrap');
+  inner.innerHTML = buildSheet(currentProposal.data);
+  openModal('modal-preview');
+  const fit = () => {
+    const page = inner.firstElementChild; if (!page) return;
+    const scale = Math.min(1, wrap.clientWidth / page.offsetWidth);
+    inner.style.transform = `scale(${scale})`;
+    wrap.style.height = page.offsetHeight * scale + 'px';
+  };
+  requestAnimationFrame(fit);
+  window.onresize = fit;
+}
+async function printProposal() {
+  if (propSaveTimer) await saveProposal();
+  document.getElementById('print-area').innerHTML = buildSheet(currentProposal.data);
+  // Let the logo and signatures finish decoding before the print sheet opens
+  await Promise.all([...document.querySelectorAll('#print-area img')].map(img => img.decode().catch(() => {})));
+  window.print();
+}
+
+// ── SIGNATURE PAD ─────────────────────────────────────────────────────
+let sigKey = null, sigInk = false;
+const SIGN_TITLES = { sigCompany: ['Authorized signature', 'Rat Patrol signs here.'],
+  sigCustomer: ['Customer signature', 'Signing accepts the proposal as written above.'],
+  sigCustomer2: ['Second signature', 'Optional second signer.'] };
+function openSignPad(key) {
+  sigKey = key;
+  document.getElementById('sign-title').textContent = SIGN_TITLES[key][0];
+  document.getElementById('sign-hint').textContent = SIGN_TITLES[key][1] + ' Use a finger in the box.';
+  openModal('modal-sign');
+  requestAnimationFrame(() => {
+    const cv = document.getElementById('sign-canvas'), r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+    cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineWidth = 2.6; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#111';
+    sigInk = false;
+  });
+}
+function clearSignPad() {
+  const cv = document.getElementById('sign-canvas');
+  cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
+  sigInk = false;
+}
+(function setupSignPad() {
+  const cv = document.getElementById('sign-canvas');
+  let drawing = false, last = null;
+  const pt = e => { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  cv.addEventListener('pointerdown', e => { e.preventDefault(); cv.setPointerCapture(e.pointerId); drawing = true; last = pt(e);
+    const ctx = cv.getContext('2d'); ctx.beginPath(); ctx.arc(last.x, last.y, 1.2, 0, Math.PI * 2); ctx.fillStyle = '#111'; ctx.fill(); sigInk = true; });
+  cv.addEventListener('pointermove', e => { if (!drawing) return; e.preventDefault();
+    const p = pt(e), ctx = cv.getContext('2d'); ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); last = p; sigInk = true; });
+  const end = () => { drawing = false; };
+  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+})();
+function finishSignPad() {
+  if (!sigInk) { showToast('Nothing signed yet.'); return; }
+  const cv = document.getElementById('sign-canvas'), ctx = cv.getContext('2d');
+  const { width: w, height: h } = cv, px = ctx.getImageData(0, 0, w, h).data;
+  let x0 = w, y0 = h, x1 = 0, y1 = 0;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (px[(y * w + x) * 4 + 3] > 10) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  const pad = 6, cw = Math.min(w, x1 - x0 + pad * 2), ch = Math.min(h, y1 - y0 + pad * 2);
+  // Trim to the ink and cap the size so signatures stay small in the database
+  const scale = Math.min(1, 500 / cw);
+  const out = document.createElement('canvas');
+  out.width = Math.round(cw * scale); out.height = Math.round(ch * scale);
+  out.getContext('2d').drawImage(cv, Math.max(0, x0 - pad), Math.max(0, y0 - pad), cw, ch, 0, 0, out.width, out.height);
+  currentProposal.data[sigKey] = out.toDataURL('image/png');
+  if (sigKey === 'sigCustomer' && !currentProposal.data.acceptDate) currentProposal.data.acceptDate = todayISO();
+  closeModal('modal-sign');
+  renderProposalEditor();
+  queueProposalSave();
 }
 
 // ── ICONS ─────────────────────────────────────────────────────────────
@@ -1975,7 +2759,11 @@ const ICON_PATHS = {
   phone:    '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
   home:     '<path d="M3 11l9-7 9 7M5 10v10h14V10"/>',
   map:      '<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/>',
-  logout:   '<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/>'
+  logout:   '<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/>',
+  file:     '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
+  eye:      '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  printer:  '<path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/>',
+  pen:      '<path d="M3 21c3-1 5-3 7-5l9-9-3-3-9 9c-2 2-4 4-5 7z"/>'
 };
 const I = {};
 for (const k in ICON_PATHS) I[k] = `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATHS[k]}</svg>`;
